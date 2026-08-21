@@ -1,0 +1,60 @@
+.tts-reader {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 4.5rem;
+  z-index: 999;
+
+  .tts-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid var(--lightgray);
+    border-radius: 999px;
+    background: var(--light);
+    color: var(--darkgray);
+    font-size: 0.85rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      background: var(--secondary);
+      color: var(--light);
+      transform: translateY(-2px);
+    }
+
+    &[data-tts-state="playing"] {
+      border-color: var(--tertiary);
+
+      // 播放时声波图标轻微律动
+      .tts-wave-1,
+      .tts-wave-2 {
+        animation: tts-pulse 1s ease-in-out infinite;
+      }
+      .tts-wave-2 {
+        animation-delay: 0.25s;
+      }
+    }
+  }
+}
+
+@keyframes tts-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// 打印时隐藏
+@media print {
+  .tts-reader {
+    display: none;
+  }
+}

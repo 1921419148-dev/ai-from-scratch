@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>感知机小实验：亲手教电脑分类</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  @media (prefers-color-scheme: dark), (prefers-color-scheme: no-preference) {
+    /* 深色主题由 JS 根据父页面切换 */
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+  }
+  .widget {
+    max-width: 720px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--canvas-bg);
+    overflow: hidden;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all .15s ease;
+    user-select: none;
+  }
+  .tool-btn.active-cat { border-color: var(--cat); background: color-mix(in srgb, var(--cat) 15%, transparent); }
+  .tool-btn.active-dog { border-color: var(--dog); background: color-mix(in srgb, var(--dog) 15%, transparent); }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.cat { background: var(--cat); }
+  .dot.dog { background: var(--dog); }
+  .spacer { flex: 1; }
+  .primary-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--line);
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s ease;
+  }
+  .primary-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .ghost-btn {
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-sub);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  .statusbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    padding: 9px 14px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-sub);
+    min-height: 38px;
+    align-items: center;
+  }
+  .statusbar b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .epoch-chip {
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--line) 15%, transparent);
+    color: var(--line);
+    font-weight: 600;
+  }
+  .hint { font-size: 12.5px; line-height: 1.55; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="toolbar">
+    <button id="btnCat" class="tool-btn active-cat"><span class="dot cat"></span>放一只「猫」</button>
+    <button id="btnDog" class="tool-btn"><span class="dot dog"></span>放一只「狗」</button>
+    <span class="spacer"></span>
+    <button id="btnTrain" class="primary-btn">▶ 开始训练</button>
+    <button id="btnReset" class="ghost-btn">清空重来</button>
+  </div>
+  <canvas id="board"></canvas>
+  <div class="statusbar">
+    <span class="hint" id="statusText">👆 先在画布上点几个点：绿色代表猫，橙色代表狗（各放 3 个以上），再点「开始训练」。</span>
+    <span class="spacer"></span>
+    <span id="epochChip" class="epoch-chip" style="display:none">第 <b id="epochNum">0</b> 轮</span>
+  </div>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById("board");
+  const ctx = canvas.getContext("2d");
+  const btnCat = document.getElementById("btnCat");
+  const btnDog = document.getElementById("btnDog");
+  const btnTrain = document.getElementById("btnTrain");
+  const btnReset = document.getElementById("btnReset");
+  const statusText = document.getElementById("statusText");
+  const epochChip = document.getElementById("epochChip");
+  const epochNum = document.getElementById("epochNum");
+
+  // ---------- 状态 ----------
+  // 数据点在「归一化坐标」[0,1]x[0,1] 中存储，绘制时映射到像素
+  let points = [];          // { x, y, label: +1(猫) | -1(狗) }
+  let currentLabel = +1;    // 当前放置类别
+  let model = null;         // 感知机参数
+  let animating = false;
+  let rafId = null;
+
+  // 感知机：y = sign(w·x + b)，学习率固定
+  const LR = 0.08;
+
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  // ---------- 画布尺寸 ----------
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.width * 0.56 * dpr;
+    canvas.style.height = (rect.width * 0.56) + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  // ---------- 绘制 ----------
+  function toPixel(p) {
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    return [p.x * w, h - p.y * h]; // 数学坐标 y 向上
+  }
+
+  function drawBoundary(w, b) {
+    // 直线 w0*x + w1*y + b = 0
+    if (Math.abs(w[1]) < 1e-9) return;
+    const f = (x) => -(w[0] * x + b) / w[1];
+    const pts = [];
+    for (const px of [-0.05, 0.5, 1.05]) pts.push([px, Math.max(-0.05, Math.min(1.05, f(px)))]);
+    ctx.beginPath();
+    let started = false;
+    for (const p of pts) {
+      const [sx, sy] = toPixel({ x: p[0], y: p[1] });
+      if (!started) { ctx.moveTo(sx, sy); started = true; } else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = css("--line") || "#4a90d9";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+  }
+
+  function draw() {
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    ctx.clearRect(0, 0, w, h);
+
+    // 网格背景
+    ctx.strokeStyle = css("--border") || "#eee";
+    ctx.globalAlpha = 0.35;
+    ctx.lineWidth = 1;
+    for (let i = 1; i < 8; i++) {
+      ctx.beginPath(); ctx.moveTo(w * i / 8, 0); ctx.lineTo(w * i / 8, h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, h * i / 8); ctx.lineTo(w, h * i / 8); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // 分类边界（训练后）
+    if (model) drawBoundary(model.w, model.b);
+
+    // 数据点
+    for (const p of points) {
+      const [sx, sy] = toPixel(p);
+      ctx.beginPath();
+      ctx.arc(sx, sy, 7, 0, Math.PI * 2);
+      ctx.fillStyle = p.label === +1 ? css("--cat") : css("--dog");
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = css("--canvas-bg");
+      ctx.stroke();
+
+      // 被分错的点画一个警示环
+      if (model) {
+        const score = model.w[0] * p.x + model.w[1] * p.y + model.b;
+        if (score * p.label < 0) {
+          ctx.beginPath();
+          ctx.arc(sx, sy, 11, 0, Math.PI * 2);
+          ctx.strokeStyle = "#ef4444";
+          ctx.setLineDash([3, 3]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+    }
+
+    // 图例文字
+    ctx.font = "12px 'Noto Sans SC', sans-serif";
+    ctx.fillStyle = css("--cat");
+    ctx.fillText("● 猫", 10, 20);
+    ctx.fillStyle = css("--dog");
+    ctx.fillText("● 狗", 58, 20);
+  }
+
+  // ---------- 感知机训练 ----------
+  function trainOnce(w, b) {
+    let mistakes = 0;
+    for (const p of points) {
+      const score = w[0] * p.x + w[1] * p.y + b;
+      if (score * p.label <= 0) {   // 分错了 → 调整直线
+        w[0] += LR * p.label * p.x;
+        w[1] += LR * p.label * p.y;
+        b += LR * p.label;
+        mistakes++;
+      }
+    }
+    return mistakes;
+  }
+
+  function startTraining() {
+    const nCat = points.filter((p) => p.label === +1).length;
+    const nDog = points.filter((p) => p.label === -1).length;
+    if (nCat < 2 || nDog < 2) {
+      statusText.textContent = "⚠️ 「猫」和「狗」至少各放 2 个，才能开始训练哦。";
+      return;
+    }
+    stopAnim();
+    btnTrain.textContent = "⏸ 暂停";
+    epochChip.style.display = "";
+
+    let w = [(Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2];
+    let b = (Math.random() - 0.5) * 0.5;
+    model = { w, b };
+
+    let epoch = 0;
+    let settled = 0; // 连续全对轮数
+
+    function step() {
+      if (!animating) return;
+      epoch++;
+      const mistakes = trainOnce(w, b);
+      epochNum.textContent = String(epoch);
+
+      if (mistakes === 0) {
+        settled++;
+        statusText.innerHTML = "🎉 第 " + epoch + " 轮：<b>全部答对了！</b>" +
+          "这条蓝色直线就是机器自己「学」出来的分界线 —— 它就是一个最简单的<b>模型</b>。";
+        if (settled >= 25) {
+          animating = false;
+          btnTrain.textContent = "✅ 训练完成";
+          btnTrain.disabled = true;
+          draw();
+          return;
+        }
+      } else {
+        settled = 0;
+        const wrong = countWrong();
+        statusText.innerHTML = "🔄 第 " + epoch + " 轮训练中… 还有 <b>" + wrong +
+          "</b> 个点被分错（红圈标出）。看，直线正在自己调整位置！";
+      }
+      draw();
+      rafId = requestAnimationFrame(step);
+    }
+
+    animating = true;
+    step();
+  }
+
+  function countWrong() {
+    if (!model) return 0;
+    return points.filter((p) => {
+      const s = model.w[0] * p.x + model.w[1] * p.y + model.b;
+      return s * p.label <= 0;
+    }).length;
+  }
+
+  function stopAnim() {
+    animating = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    btnTrain.disabled = false;
+    btnTrain.textContent = "▶ 开始训练";
+  }
+
+  function reset() {
+    stopAnim();
+    points = [];
+    model = null;
+    epochChip.style.display = "none";
+    statusText.textContent = "👆 先在画布上点几个点：绿色代表猫，橙色代表狗（各放 3 个以上），再点「开始训练」。";
+    draw();
+  }
+
+  // ---------- 交互 ----------
+  canvas.addEventListener("pointerdown", (e) => {
+    if (animating && e.pointerType !== "mouse") return;
+    if (animating) { stopAnim(); model = null; }
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+    const y = Math.min(1, Math.max(0, 1 - (e.clientY - rect.top) / rect.height));
+    points.push({ x, y, label: currentLabel });
+    draw();
+  });
+
+  btnCat.addEventListener("click", () => {
+    currentLabel = +1;
+    btnCat.classList.add("active-cat"); btnDog.classList.remove("active-dog");
+  });
+  btnDog.addEventListener("click", () => {
+    currentLabel = -1;
+    btnDog.classList.add("active-dog"); btnCat.classList.remove("active-cat");
+  });
+  btnTrain.addEventListener("click", () => {
+    if (animating) { stopAnim(); statusText.textContent = "已暂停，点击「开始训练」继续。"; }
+    else startTraining();
+  });
+  btnReset.addEventListener("click", reset);
+
+  // 预置一组示例点，让读者打开就能直接点「开始训练」
+  function seed() {
+    const cats = [[0.22, 0.72], [0.32, 0.86], [0.14, 0.52], [0.30, 0.60]];
+    const dogs = [[0.68, 0.28], [0.80, 0.42], [0.60, 0.14], [0.76, 0.62]];
+    for (const c of cats) points.push({ x: c[0], y: c[1], label: +1 });
+    for (const d of dogs) points.push({ x: d[0], y: d[1], label: -1 });
+  }
+
+  // ---------- 深色模式同步 ----------
+  function syncTheme() {
+    try {
+      if (window.parent) {
+        // Quartz 在 <html> 上用 saved-theme 属性标记主题
+        const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+        document.documentElement.classList.toggle("dark", attr === "dark");
+        draw();
+      }
+    } catch (err) { /* 跨域时静默 */ }
+  }
+
+  seed();
+  resize();
+  window.addEventListener("resize", resize);
+
+  // 监听父页面消息（Quartz 主题切换）
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+      draw();
+    }
+  });
+
+  // 尝试立即同步一次
+  setTimeout(syncTheme, 100);
+})();
+</script>
+</body>
+</html>
