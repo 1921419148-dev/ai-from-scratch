@@ -16,7 +16,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     locale: "zh-CN",
-    baseUrl: "example.pages.dev", // TODO: 首次部署到 Cloudflare Pages 后回填真实域名
+    baseUrl: "ai-from-scratch-v2.eutopia.workers.dev",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
