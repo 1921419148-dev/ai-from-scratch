@@ -39,7 +39,15 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      mapFn: (node) => {
+        // 用 index 页面的 frontmatter title 作为文件夹显示名（如「机器学习 Machine Learning」）
+        if (node.isFolder && node.data?.title) {
+          node.displayName = node.data.title
+        }
+        return node
+      },
+    }),
   ],
   right: [
     Component.Graph(),
