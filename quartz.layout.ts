@@ -10,7 +10,7 @@ export const sharedPageComponents: SharedLayout = {
     links: {
       学习路线: "/roadmap",
       术语表: "/appendix/glossary",
-      GitHub: "https://github.com/Eutopia0619/ai-from-scratch",
+      GitHub: "https://github.com/1921419148-dev/ai-from-scratch",
     },
   }),
 }
