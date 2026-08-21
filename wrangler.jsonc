@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // 「零基础 AI 学堂」静态站点 —— Cloudflare Workers Static Assets 配置
+  "name": "ai-from-scratch",
+  "compatibility_date": "2026-08-01",
+  "assets": {
+    "directory": "./public",
+    // /roadmap 自动命中 roadmap.html；文件夹路径 /ml/ 命中 ml/index.html
+    "html_handling": "auto-trailing-slash",
+    // 找不到页面时返回构建产物里的 404.html
+    "not_found_handling": "404-page"
+  }
+}
