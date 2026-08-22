@@ -55,19 +55,19 @@ description: 全站术语中英对照速查表
 
 ## 3B1B 伴学指南新增（神经网络系列）
 
-| 英文                         | 中文                                        |
-| ---------------------------- | ------------------------------------------- |
-| Activation / Activation Value| 激活 / 激活值（神经元的输出数字）           |
-| Cost Function                | 代价函数（对全部样本平均后的损失）          |
-| Hidden Layer                 | 隐藏层                                      |
-| Sigmoid                      | Sigmoid 函数（S 形挤压函数，通常不翻译）    |
-| Gradient                     | 梯度（各方向偏导数组成的向量）              |
-| Stochastic Gradient Descent  | SGD 随机梯度下降                            |
-| Mini-batch                   | 小批量（每次抽一小撮样本估梯度）            |
-| Chain Rule                   | 链式法则                                    |
-| Vanishing Gradient           | 梯度消失                                    |
-| ReLU (Rectified Linear Unit) | ReLU 激活函数                               |
-| MNIST                        | 手写数字数据集（机器学习的「Hello World」） |
+| 英文                          | 中文                                        |
+| ----------------------------- | ------------------------------------------- |
+| Activation / Activation Value | 激活 / 激活值（神经元的输出数字）           |
+| Cost Function                 | 代价函数（对全部样本平均后的损失）          |
+| Hidden Layer                  | 隐藏层                                      |
+| Sigmoid                       | Sigmoid 函数（S 形挤压函数，通常不翻译）    |
+| Gradient                      | 梯度（各方向偏导数组成的向量）              |
+| Stochastic Gradient Descent   | SGD 随机梯度下降                            |
+| Mini-batch                    | 小批量（每次抽一小撮样本估梯度）            |
+| Chain Rule                    | 链式法则                                    |
+| Vanishing Gradient            | 梯度消失                                    |
+| ReLU (Rectified Linear Unit)  | ReLU 激活函数                               |
+| MNIST                         | 手写数字数据集（机器学习的「Hello World」） |
 
 ## 大模型时代
 
@@ -83,5 +83,22 @@ description: 全站术语中英对照速查表
 | RLHF (RL from Human Feedback)  | —    | 基于人类反馈的强化学习   |
 | Diffusion Model                | —    | 扩散模型                 |
 | Multimodal                     | —    | 多模态                   |
+
+## AI 英语板块新增（阅读与构词）
+
+| 英文                    | 中文                                 |
+| ----------------------- | ------------------------------------ |
+| Prefix / Suffix / Root  | 前缀 / 后缀 / 词根（单词的偏旁部首） |
+| Transfer Learning       | 迁移学习                             |
+| Fine-tuning             | 微调                                 |
+| Preprint                | 预印本（未经同行评审的论文版本）     |
+| Peer Review             | 同行评审                             |
+| Citation                | 引用                                 |
+| Survey / Review         | 综述（某领域的论文地图）             |
+| State-of-the-art (SOTA) | 最先进水平                           |
+| Ablation Study          | 消融实验（拆零件证明各组件有用）     |
+| Novel                   | 新颖的（论文高频词，与「小说」无关） |
+| Deprecated              | 已弃用（文档里见到要警惕）           |
+| Workaround              | 应变方法（绕过 bug 的临时办法）      |
 
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]

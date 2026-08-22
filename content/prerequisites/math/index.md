@@ -25,12 +25,12 @@ description: 从加减乘除补到微积分——AI 需要的全部数学，零�
 
 看视频之前读导读、看完视频玩演示——把「视觉化天花板」真正看懂：
 
-| #   | 课程                                                                 | 状态 |
-| --- | -------------------------------------------------------------------- | ---- |
-| B1  | [[prerequisites/math/3blue1brown/b1b-nn-01-what-is-a-neural-network\|但什么是神经网络？]] | ✅ |
-| B2  | [[prerequisites/math/3blue1brown/b1b-nn-02-gradient-descent\|梯度下降，网络如何学习]]      | ✅ |
-| B3  | [[prerequisites/math/3blue1brown/b1b-nn-03-backpropagation\|反向传播在做什么？]]           | ✅ |
-| B4  | [[prerequisites/math/3blue1brown/b1b-nn-04-backprop-calculus\|反向传播的微积分]]           | ✅ |
+| #   | 课程                                                                                      | 状态 |
+| --- | ----------------------------------------------------------------------------------------- | ---- |
+| B1  | [[prerequisites/math/3blue1brown/b1b-nn-01-what-is-a-neural-network\|但什么是神经网络？]] | ✅   |
+| B2  | [[prerequisites/math/3blue1brown/b1b-nn-02-gradient-descent\|梯度下降，网络如何学习]]     | ✅   |
+| B3  | [[prerequisites/math/3blue1brown/b1b-nn-03-backpropagation\|反向传播在做什么？]]          | ✅   |
+| B4  | [[prerequisites/math/3blue1brown/b1b-nn-04-backprop-calculus\|反向传播的微积分]]          | ✅   |
 
 → 完整目录见 [[prerequisites/math/3blue1brown/index|3Blue1Brown 伴学指南]]
 

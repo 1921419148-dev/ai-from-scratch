@@ -14,14 +14,14 @@ source: https://www.3blue1brown.com/lessons/backpropagation
 
 ## 🎬 视频信息
 
-| 项目 | 内容 |
-| --- | --- |
-| 官方标题 | Backpropagation, intuitively \| Deep Learning Chapter 3* |
-| 主讲 | Grant Sanderson（3Blue1Brown） |
-| 首次发布 | 2017-11-03 |
+| 项目     | 内容                                                                                                                       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 官方标题 | Backpropagation, intuitively \| Deep Learning Chapter 3\*                                                                  |
+| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                             |
+| 首次发布 | 2017-11-03                                                                                                                 |
 | 观看地址 | [YouTube](https://www.youtube.com/watch?v=Ilg3gGewQ5U) · [官网课程页](https://www.3blue1brown.com/lessons/backpropagation) |
 
-> 核实于 2026-08-22。*YouTube 上标题编号为 Chapter 3，官网因多一节纯网页互动课而列为 Chapter 4——见[目录页说明](prerequisites/math/3blue1brown/index)。本集是「直觉篇」，配套的数学推导在第 4 集和官网文字版。
+> 核实于 2026-08-22。\*YouTube 上标题编号为 Chapter 3，官网因多一节纯网页互动课而列为 Chapter 4——见[目录页说明](prerequisites/math/3blue1brown/index)。本集是「直觉篇」，配套的数学推导在第 4 集和官网文字版。
 
 ## 🗺 先拿地图
 
@@ -73,12 +73,12 @@ flowchart RL
 
 本集刻意回避公式。但请记住对应关系，第 4 集会全部兑现：
 
-| 直觉语言（本集） | 数学语言（下一集） |
-| --- | --- |
-| 锅的总量 | 损失 C |
-| 「该往哪变、变多少」的敏感度 | 偏导数 ∂C/∂a |
-| 责任按权重比例摊 | 链式法则乘以 ∂a/∂w |
-| 层层倒推 | 递归应用链式法则 |
+| 直觉语言（本集）             | 数学语言（下一集） |
+| ---------------------------- | ------------------ |
+| 锅的总量                     | 损失 C             |
+| 「该往哪变、变多少」的敏感度 | 偏导数 ∂C/∂a       |
+| 责任按权重比例摊             | 链式法则乘以 ∂a/∂w |
+| 层层倒推                     | 递归应用链式法则   |
 
 ## 📐 数学在哪里？
 

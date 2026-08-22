@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>论文摘要五句拆解器</title>
+<style>
+  :root {
+    --bg: #faf8f5; --canvas-bg: #ffffff; --border: #e5e2dc;
+    --text: #2b2926; --text-sub: #6b675f;
+    --cat: #1a6b54; --dog: #d97706; --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c; --canvas-bg: #1e2126; --border: #33373d;
+    --text: #eceeef; --text-sub: #9aa0a8;
+    --cat: #4ec9a0; --dog: #f59e0b; --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:720px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .controls { display:flex; gap:10px; align-items:center; padding:8px 16px 12px; font-size:13.5px;}
+  select {
+    flex:1; min-width:200px; padding:8px 10px; border-radius:8px;
+    border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13.5px;
+  }
+  button {
+    padding:8px 16px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--line); color:#fff; font-size:13.5px; font-weight:600;
+  }
+  button.ghost { background:transparent; color:var(--line); border:1px solid var(--line);}
+  .paper { padding: 4px 18px 6px; }
+  .ptitle { font-size:14px; font-weight:700; margin-bottom:2px;}
+  pvenue { font-size:11.5px; color:var(--dog); margin-bottom:10px; font-weight:600;}
+  .sent {
+    display:flex; gap:10px; align-items:flex-start; padding:7px 10px; margin:5px 0;
+    border-radius:9px; border:1.5px solid transparent;
+    opacity:.28; transition: all .35s ease; line-height:1.65; font-size:13.5px;
+  }
+  .sent.on { opacity:1; border-color:var(--tagc, var(--border)); background:var(--tagbg, transparent); }
+  .slot-tag {
+    flex:none; width:74px; text-align:center; font-size:11px; font-weight:700;
+    padding:3px 0; border-radius:6px; margin-top:1px;
+    color:#fff; background:var(--tagc,#999);
+  }
+  .legend { padding: 10px 18px 4px; display:flex; gap:8px; flex-wrap:wrap; font-size:11px;}
+  .legend span { padding:3px 9px; border-radius:99px; color:#fff; font-weight:600;}
+  .takeaway {
+    margin: 8px 18px 16px; padding: 11px 13px; border-radius:9px; font-size:13px;
+    line-height:1.6; background: rgba(26,107,84,.08);
+    opacity:0; transition:opacity .4s ease .15s;
+  }
+  .takeaway.show { opacity:1; }
+  .takeaway b { color: var(--cat); }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🔬 摘要五句拆解器
+    <small>经典论文摘要（中文示意版）→ 看每句落在模板的哪个槽位 → 抓住「问题句」和「方案句」就赢了</small>
+  </div>
+
+  <div class="controls">
+    <select id="pick"></select>
+    <button id="btnGo">逐句拆解</button>
+    <button id="btnReset" class="ghost">重置</button>
+  </div>
+
+  <div class="legend">
+    <span style="background:#6b7280">① 背景铺垫</span>
+    <span style="background:var(--dog)">② 问题（核心！）</span>
+    <span style="background:var(--cat)">③ 方案（核心！）</span>
+    <span style="background:var(--line)">④ 实验证据</span>
+    <span style="background:#8b5cf6">⑤ 升华意义</span>
+  </div>
+
+  <div class="paper">
+    <div class="ptitle" id="ptitle"></div>
+    <pvenue id="pvenue"></pvenue>
+    <div id="sents"></div>
+  </div>
+
+  <div class="takeaway" id="takeaway"></div>
+</div>
+
+<script>
+(function () {
+  // 数据：真实论文，摘要为忠实原意的中文化简写（结构对应原文），事实信息于 2026-08-22 从 arXiv 核实
+  const PAPERS = [
+    {
+      title: "Attention Is All You Need（注意力就是你所需要的一切）",
+      venue: "NeurIPS 2017 · arXiv:1706.03762 · Transformer 开山之作",
+      sents: [
+        ["bg",   "序列转录模型（如机器翻译）长期被循环神经网络 RNN、卷积网络配合编码器-解码器架构统治。"],
+        ["prob", "但 RNN 要一个词一个词按顺序算，训练慢；而且长句子翻到后面容易「忘了」开头。"],
+        ["sol",  "我们提出 Transformer：完全抛弃循环结构，只用注意力机制来建模输入和输出之间的全局依赖。"],
+        ["exp",  "在英德、英法翻译任务上，Transformer 取得了当时最先进（SOTA）的成绩，且训练时间大幅缩短。"],
+        ["glory","我们相信注意力机制还能推广到更多模态——事实证明：今天几乎所有大语言模型都建立在它之上。"],
+      ],
+      take: "问题句 = RNN 又慢又健忘；方案句 = 用注意力取代循环。GPT 的 T 就是它！",
+    },
+    {
+      title: "Deep Residual Learning（深度残差学习 / ResNet）",
+      venue: "CVPR 2016 · arXiv:1512.03385 · 让百层网络成为可能",
+      sents: [
+        ["bg",   "大家都发现：神经网络越深，能学到的特征越丰富。"],
+        ["prob", "但实际加深网络后效果不升反降——不是过拟合造成的，而是深层网络根本「学不动」了。"],
+        ["sol",  "我们提出残差学习框架：让每一层只学「相对理想的还差多少」（残差），并提供了跳跃连接把信号直接传过去。"],
+        ["exp",  "152 层的 ResNet 在 ImageNet 分类错误率降到 3.57%，拿下当年冠军，比人类误判率还低。"],
+        ["glory","残差思想已成为极深网络的标配，后续几乎所有大模型的结构里都有它的影子。"],
+      ],
+      take: "问题句 = 网络深了反而更差；方案句 = 不学全部、只学「差多少」。跳跃连接至今仍是标配。",
+    },
+    {
+      title: "Language Models are Few-Shot Learners（GPT-3）",
+      venue: "NeurIPS 2020 · arXiv:2005.14165 · 大模型时代的起点之一",
+      sents: [
+        ["bg",   "在 GPT-3 之前，想让语言模型干新任务，通常要收集数据再微调（fine-tune）一轮。"],
+        ["prob", "这带来两个麻烦：每个任务都要标注新数据；而且大模型每微调一次的计算成本高得离谱。"],
+        ["sol",  "我们训练了 1750 亿参数的 GPT-3，并证明：不微调，只在提示词里给几个例子（few-shot），它就能完成新任务。"],
+        ["exp",  "在翻译、问答、填空等几十个任务上，few-shot 表现接近甚至超过专门微调过的模型。"],
+        ["glory","「提示即编程」的范式由此确立——这正是今天 prompt engineering 的源头。"],
+      ],
+      take: "问题句 = 微调又贵又麻烦；方案句 = 把例子直接写进提示词。你天天写的 prompt 就是这么来的。",
+    },
+  ];
+
+  const SLOT = {
+    bg:   { name: "背景", c: "#6b7280" },
+    prob: { name: "问题", c: "var(--dog)", hex: "#d97706" },
+    sol:  { name: "方案", c: "var(--cat)", hex: "#1a6b54" },
+    exp:  { name: "实验", c: "var(--line)", hex: "#4a90d9" },
+    glory:{ name: "升华", c: "#8b5cf6" },
+  };
+
+  const pick = document.getElementById("pick");
+  const titleEl = document.getElementById("ptitle");
+  const venueEl = document.getElementById("pvenue");
+  const sentsEl = document.getElementById("sents");
+  const takeawayEl = document.getElementById("takeaway");
+  const btnGo = document.getElementById("btnGo");
+  const btnReset = document.getElementById("btnReset");
+
+  PAPERS.forEach((p, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = p.title.split("（")[0];
+    pick.appendChild(o);
+  });
+
+  let timers = [];
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+  function reset() {
+    clearTimers();
+    const p = PAPERS[+pick.value];
+    titleEl.textContent = p.title;
+    venueEl.textContent = p.venue;
+    sentsEl.innerHTML = "";
+    takeawayEl.classList.remove("show");
+    takeawayEl.innerHTML = "";
+    return p;
+  }
+
+  btnReset.addEventListener("click", () => { reset(); });
+
+  btnGo.addEventListener("click", () => {
+    const p = reset();
+    let delay = 100;
+    p.sents.forEach(([slot, text]) => {
+      const s = SLOT[slot];
+      const row = document.createElement("div");
+      row.className = "sent";
+      row.style.setProperty("--tagc", s.c);
+      row.style.setProperty("--tagbg", (s.hex || "#6b7280") + "14");
+      row.innerHTML =
+        '<span class="slot-tag" style="--tagc:' + s.c + ';background:' + s.c + '">' +
+        (s.hex ? "" : "") + s.name + "</span><span>" + text + "</span>";
+      sentsEl.appendChild(row);
+      timers.push(setTimeout(() => {
+        row.classList.add("on");
+        row.style.setProperty("--tagc", s.c);
+        // 给激活行上色
+        if (slot === "prob" || slot === "sol") {
+          row.style.borderColor = s.c;
+          row.style.background = (SLOT[slot].hex || "#888") + "1c";
+        } else {
+          row.style.borderColor = "var(--border)";
+        }
+        row.querySelector(".slot-tag").style.background = s.c;
+      }, delay));
+      delay += 650;
+    });
+    timers.push(setTimeout(() => {
+      takeawayEl.innerHTML =
+        "<b>🎯 两句话记住这篇论文：</b>" + p.take;
+      takeawayEl.classList.add("show");
+    }, delay + 150));
+  });
+
+  // slot-tag 颜色直接内联，避免 CSS 变量兼容问题
+  document.querySelectorAll(".legend span").forEach(el => { /* 颜色已内联 */ });
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+})();
+</script>
+</body>
+</html>

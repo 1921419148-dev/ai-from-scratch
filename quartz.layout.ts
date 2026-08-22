@@ -22,6 +22,11 @@ export const defaultContentPageLayout: PageLayout = {
       component: Component.Breadcrumbs(),
       condition: (page) => page.fileData.slug !== "index",
     }),
+    // 首页专属：板块统计仪表盘（构建时计算各板块课程数/字数/最近更新）
+    Component.ConditionalRender({
+      component: Component.Dashboard(),
+      condition: (page) => page.fileData.slug === "index",
+    }),
     Component.ArticleTitle(),
     Component.ContentMeta(),
     Component.TagList(),

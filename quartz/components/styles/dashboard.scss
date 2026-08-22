@@ -1,0 +1,124 @@
+.dashboard {
+  margin: 1.5rem 0 2rem;
+}
+
+// 顶部概览条
+.dashboard-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2.5rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 10px;
+  background: var(--light);
+  margin-bottom: 1.2rem;
+}
+
+.dashboard-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+
+  &-num {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &-label {
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+}
+
+// 板块卡片网格
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+
+.dashboard-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 10px;
+  background: var(--light);
+  transition:
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    text-decoration: none;
+
+    .dashboard-card-name {
+      color: var(--secondary);
+    }
+  }
+}
+
+.dashboard-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-card-icon {
+  font-size: 1.15rem;
+}
+
+.dashboard-card-name {
+  font-weight: 600;
+  color: var(--dark);
+  transition: color 0.15s ease;
+}
+
+.dashboard-card-stats {
+  font-size: 0.88rem;
+  color: var(--darkgray);
+
+  .dashboard-card-pages {
+    font-weight: 500;
+  }
+
+  .dashboard-card-sep {
+    margin: 0 0.35rem;
+    color: var(--gray);
+  }
+}
+
+.dashboard-card-date {
+  font-size: 0.78rem;
+  color: var(--gray);
+  min-height: 1.1em;
+}
+
+.dashboard-note {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+// 移动端：概览条纵向堆叠
+@media all and (max-width: 600px) {
+  .dashboard-overview {
+    gap: 0.6rem 1.5rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media all and (max-width: 400px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

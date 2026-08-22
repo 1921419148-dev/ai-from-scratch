@@ -14,11 +14,11 @@ source: https://www.3blue1brown.com/lessons/gradient-descent
 
 ## 🎬 视频信息
 
-| 项目 | 内容 |
-| --- | --- |
-| 官方标题 | Gradient descent, how neural networks learn \| Deep Learning Chapter 2 |
-| 主讲 | Grant Sanderson（3Blue1Brown） |
-| 首次发布 | 2017-10-16 |
+| 项目     | 内容                                                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 官方标题 | Gradient descent, how neural networks learn \| Deep Learning Chapter 2                                                      |
+| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                              |
+| 首次发布 | 2017-10-16                                                                                                                  |
 | 观看地址 | [YouTube](https://www.youtube.com/watch?v=IHZwWFHWa-w) · [官网课程页](https://www.3blue1brown.com/lessons/gradient-descent) |
 
 > 核实于 2026-08-22。这一集是全系列与本站关联最深的一集——它就是 [[prerequisites/math/gradient-descent|M7 梯度下降]]的视频版。
@@ -78,11 +78,11 @@ MNIST 例子里约 1.3 万个参数 → 损失地形是 13002 维的空间（参
 
 ## 📐 数学在哪里？
 
-| 视频内容 | 数学本质 | 补课链接 |
-| --- | --- | --- |
-| 「沿负梯度走一小步」 | 导数 = 变化率；多元版叫梯度 | [[prerequisites/math/gradient-descent|M7]]（零基础版推导） |
-| 「平方误差」 | 为什么用平方而不是绝对值：处处平滑、好求导 | M6《导数》 |
-| 「13000 维空间」 | 不需要真的想象高维！只要记住「每个参数是一个坐标轴」即可 | M8 |
+| 视频内容             | 数学本质                                                 | 补课链接                              |
+| -------------------- | -------------------------------------------------------- | ------------------------------------- | -------------------- |
+| 「沿负梯度走一小步」 | 导数 = 变化率；多元版叫梯度                              | [[prerequisites/math/gradient-descent | M7]]（零基础版推导） |
+| 「平方误差」         | 为什么用平方而不是绝对值：处处平滑、好求导               | M6《导数》                            |
+| 「13000 维空间」     | 不需要真的想象高维！只要记住「每个参数是一个坐标轴」即可 | M8                                    |
 
 现在还不需要会算梯度——只需要接受一件事：**数学给了我们一台「坡度探测器」**。第 4 集会拆开这台机器。
 

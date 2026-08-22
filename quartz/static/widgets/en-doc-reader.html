@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三遍阅读法练习器</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding: 12px;
+  }
+  .widget {
+    max-width: 720px; margin: 0 auto; border: 1px solid var(--border);
+    border-radius: 12px; background: var(--canvas-bg); overflow: hidden;
+  }
+  .head { padding: 14px 16px 10px; font-weight: 700; font-size: 15px; }
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .scene { padding: 10px 16px; font-size: 13.5px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .scene label { color: var(--text-sub); }
+  select {
+    flex:1; min-width:220px; padding:8px 10px; border-radius:8px;
+    border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13.5px;
+  }
+  /* 三步进度条 */
+  .steps { display:flex; gap:6px; padding: 12px 16px 4px; }
+  .step {
+    flex:1; text-align:center; padding:9px 4px 7px; border-radius:10px;
+    border:1.5px solid var(--border); font-size:12.5px; line-height:1.45;
+    transition: all .3s ease; position:relative;
+  }
+  .step b { display:block; font-size:13.5px; margin-bottom:2px;}
+  .step.active { border-color: var(--line); background: rgba(74,144,217,.09); transform: translateY(-2px); }
+  .step.done { border-color: var(--cat); opacity:.62; }
+  html.dark .step.active { background: rgba(106,169,233,.12); }
+  .timer {
+    text-align:center; font-variant-numeric: tabular-nums;
+    font-size:34px; font-weight:700; letter-spacing:1px; padding: 8px 0 2px;
+    color: var(--line);
+  }
+  .phase-tip {
+    text-align:center; font-size:13px; color:var(--text-sub); min-height:38px;
+    padding: 0 20px 6px; line-height:1.5;
+  }
+  .btnrow { display:flex; gap:10px; justify-content:center; padding: 6px 16px 14px; }
+  button {
+    padding: 9px 22px; border-radius: 8px; border:none; cursor:pointer;
+    background: var(--line); color:#fff; font-size:13.5px; font-weight:600;
+  }
+  button.secondary { background: transparent; color: var(--line); border:1px solid var(--line);}
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  /* 检查清单 */
+  .checklist {
+    border-top:1px dashed var(--border); padding: 12px 18px 16px; font-size:13px;
+    display:none;
+  }
+  .checklist.show { display:block; }
+  .checklist h4 { font-size:13.5px; margin-bottom:8px; color:var(--cat);}
+  .checklist label { display:block; padding:4px 0; cursor:pointer; line-height:1.5;}
+  .checklist input { accent-color: var(--cat); margin-right:7px; }
+  .verdict {
+    margin-top:10px; padding:10px 12px; border-radius:8px; font-size:13px; line-height:1.55;
+    background: rgba(26,107,84,.08); display:none;
+  }
+  .verdict.show { display:block; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">⏱️ 三遍阅读法练习器
+    <small>选一个真实任务 → 按三步节奏限时读文档 → 完成后用清单自查「忍住了逐句读吗」</small>
+  </div>
+
+  <div class="scene">
+    <label>任务场景：</label>
+    <select id="scene">
+      <option value="save">「找到训练完怎么保存模型」（预计 10 分钟）</option>
+      <option value="install">「确认我的电脑能不能装这个框架」（预计 5 分钟）</option>
+      <option value="plot">「让训练曲线画出图来」（预计 8 分钟）</option>
+      <option value="err">「看懂报错信息在说什么」（预计 6 分钟）</option>
+    </select>
+  </div>
+
+  <div class="steps" id="steps">
+    <div class="step" id="s0"><b>① 骨架 30 秒</b>标题·代码块·加粗字<br>有我要的答案吗？</div>
+    <div class="step" id="s1"><b>② 段首 3 分钟</b>只读每段第一句<br>标记需要的段落</div>
+    <div class="step" id="s2"><b>③ 精读 按需</b>只读标记的段落<br>+ 对照代码跑一遍</div>
+  </div>
+
+  <div class="timer" id="timer">0:30</div>
+  <div class="phase-tip" id="tip">点「开始」进入第 1 遍——只看骨架，30 秒后自动进入下一步</div>
+
+  <div class="btnrow">
+    <button id="btnStart">开始</button>
+    <button id="btnNext" class="secondary" disabled>跳到下一步 »</button>
+  </div>
+
+  <div class="checklist" id="checklist">
+    <h4>✅ 读完了？对照检查（可多选）：</h4>
+    <label><input type="checkbox" class="ck"> 第 1 遍时我没有逐句读，只扫了标题和代码块</label>
+    <label><input type="checkbox" class="ck"> 我先读懂了代码块/命令本身，再看正文解释</label>
+    <label><input type="checkbox" class="ck"> 装饰性副词和作者吐槽我都直接跳过了</label>
+    <label><input type="checkbox" class="ck"> 遇到 ⚠️ Warning 框我认真读了</label>
+    <label><input type="checkbox" class="ck"> 任务完成！我找到了答案或明确了缺的前置知识</label>
+    <div style="margin-top:10px;"><button id="btnScore" class="secondary">看看我的阅读策略得分</button></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const PHASES = [
+    { secs: 30, tip: "第 1 遍：只看骨架——页面标题、代码块、加粗字。问自己：这里有我要的答案吗？" },
+    { secs: 180, tip: "第 2 遍：只读每个段落的第一句。遇到需要的段落做个记号，不要陷进去。" },
+    { secs: 0, tip: "第 3 遍：现在才允许精读你标记过的段落。对照代码跑一跑，任务完成就去下方打勾。" },
+  ];
+  const TIPS_DONE = {
+    save: "参考路径：Quickstart → 训练示例末尾的 saving/loading 小节（通常叫 torch.save / model.save）。",
+    install: "参考路径：Installation 页的 Prerequisites 与系统要求表——Python 版本对不对是头号坑。",
+    plot: "参考路径：搜 plot / visualization 关键词，教程里画图几乎总在训练循环后面几行。",
+    err: "参考路径：报错信息最后一行往往是错误类型；把它当关键词去文档里 Ctrl+F。",
+  };
+
+  let phase = -1, remain = 0, tickId = null;
+
+  const timerEl = document.getElementById("timer");
+  const tipEl = document.getElementById("tip");
+  const btnStart = document.getElementById("btnStart");
+  const btnNext = document.getElementById("btnNext");
+  const btnScore = document.getElementById("btnScore");
+  const checklist = document.getElementById("checklist");
+  const verdict = document.getElementById("verdict");
+
+  function fmt(s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+  function setStep() {
+    for (let i = 0; i < 3; i++) {
+      const el = document.getElementById("s" + i);
+      el.classList.toggle("active", i === phase);
+      el.classList.toggle("done", i < phase);
+    }
+  }
+
+  function enter(i) {
+    phase = i;
+    setStep();
+    if (PHASES[i].secs > 0) {
+      remain = PHASES[i].secs;
+      timerEl.textContent = fmt(remain);
+      clearInterval(tickId);
+      tickId = setInterval(() => {
+        remain--;
+        if (remain <= 0) {
+          clearInterval(tickId);
+          if (phase < 2) enter(phase + 1);
+        }
+        timerEl.textContent = fmt(Math.max(remain, 0));
+      }, 1000);
+    } else {
+      timerEl.textContent = "∞";
+      clearInterval(tickId);
+    }
+    tipEl.textContent = PHASES[i].tip;
+    btnNext.disabled = phase >= 2;
+    btnStart.textContent = "重新开始";
+  }
+
+  function stopAll() {
+    clearInterval(tickId);
+    for (let i = 0; i < 3; i++) { document.getElementById("s"+i).classList.remove("active","done"); }
+    phase = -1;
+  }
+
+  btnStart.addEventListener("click", () => {
+    checklist.classList.remove("show");
+    verdict.classList.remove("show");
+    enter(0);
+  });
+  btnNext.addEventListener("click", () => { if (phase >= 0 && phase < 2) enter(phase + 1); });
+
+  btnScore.addEventListener("click", () => {
+    const boxes = document.querySelectorAll(".ck");
+    const n = Array.from(boxes).filter(b => b.checked).length;
+    let msg;
+    if (n === 5) msg = "🏆 满分！你已经完全掌握三遍阅读法——工具书思维满格。";
+    else if (n >= 3) msg = "👍 不错，策略基本到位。漏掉的项再想想：是不是哪一步又忍不住逐句读了？";
+    else msg = "🌱 别灰心——逐句读是多年英语课养成的肌肉记忆，需要几次刻意练习才能改掉。明天再试一轮。";
+    verdict.innerHTML = msg + "<br>" + (TIPS_DONE[document.getElementById("scene").value] || "");
+    verdict.classList.add("show");
+  });
+
+  // 场景切换时重置
+  document.getElementById("scene").addEventListener("change", stopAll);
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 术语拆词机</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+  }
+  .widget {
+    max-width: 720px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--canvas-bg);
+    overflow: hidden;
+  }
+  .head { padding: 14px 16px 10px; font-weight: 700; font-size: 15px; }
+  .head small { display:block; font-weight:400; color: var(--text-sub); margin-top: 3px; font-size:12.5px;}
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    padding: 10px 16px; border-top: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  select {
+    flex: 1; min-width: 200px;
+    padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+    font-size: 13.5px;
+  }
+  button {
+    padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;
+    background: var(--line); color: #fff; font-size: 13.5px; font-weight: 600;
+  }
+  button.ghost { background: transparent; color: var(--line); border: 1px solid var(--line); }
+  .stage { padding: 14px 18px 18px; min-height: 300px; }
+  /* 拆开的积木块 */
+  .blocks { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; min-height: 58px;}
+  .blk {
+    border-radius: 10px; padding: 9px 13px; text-align: center;
+    opacity: 0; transform: translateY(8px) scale(.92);
+    transition: opacity .35s ease, transform .35s ease;
+    cursor: default;
+  }
+  .blk.show { opacity: 1; transform: none; }
+  .blk .en { font-size: 17px; font-weight: 700; letter-spacing: .5px; }
+  .blk .zh { font-size: 12px; margin-top: 3px; opacity: .85; }
+  .blk.prefix { background: rgba(74,144,217,.14); color: var(--line); border: 1.5px solid var(--line);}
+  .blk.root   { background: rgba(26,107,84,.12);  color: var(--cat);  border: 1.5px solid var(--cat);}
+  .blk.suffix { background: rgba(217,119,6,.13);  color: var(--dog);  border: 1.5px solid var(--dog);}
+  html.dark .blk.prefix { background: rgba(106,169,233,.15); }
+  html.dark .blk.root   { background: rgba(78,201,160,.13); }
+  html.dark .blk.suffix { background: rgba(245,158,11,.14); }
+  .plus { align-self: center; color: var(--text-sub); font-weight: 700; opacity: 0; transition: opacity .3s; }
+  .plus.show { opacity: 1; }
+  .meaning {
+    border-top: 1px dashed var(--border);
+    padding-top: 12px; text-align: center; font-size: 14px; line-height: 1.7;
+    opacity: 0; transition: opacity .4s ease .1s;
+  }
+  .meaning.show { opacity: 1; }
+  .meaning .word { font-weight: 700; font-size: 15.5px; }
+  .meaning .cn { color: var(--cat); font-weight: 700; }
+  .meaning .note { color: var(--text-sub); font-size: 12.5px; margin-top: 5px;}
+  .quiz-tag {
+    display:inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px;
+    border: 1px solid var(--dog); color: var(--dog); margin-left: 6px; vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🧩 AI 术语拆词机
+    <small>选一个术语，看它被拆成「偏旁部首」；或点「随机考我」先遮住答案自己拆</small>
+  </div>
+
+  <div class="controls">
+    <select id="pick"></select>
+    <button id="btnGo">拆开它</button>
+    <button id="btnQuiz" class="ghost">随机考我 🎲</button>
+  </div>
+
+  <div class="stage">
+    <div class="blocks" id="blocks"></div>
+    <div class="meaning" id="meaning"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // 数据：每个术语 = 前缀/词根/后缀积木 + 整词含义 + 记忆注解
+  const TERMS = [
+    { word: "transformer", cn: "变换器（GPT 的核心架构）", blocks: [
+      ["prefix","trans-","转移、穿过"], ["root","form","形式、形状"], ["suffix","-er","……的东西"]],
+      note: "把一串词「变换」成表示再变换成输出——名副其实的变换器。" },
+    { word: "unsupervised", cn: "无监督的（无监督学习）", blocks: [
+      ["prefix","un-","不、非"], ["root","super + vis","在上 + 看"], ["suffix","-ed","形容词尾"]],
+      note: "没有人在上面看着你 = 不给标准答案，让模型自己找规律。" },
+    { word: "backpropagation", cn: "反向传播（训练神经网络的核心算法）", blocks: [
+      ["prefix","back-","向后"], ["root","pro+pagat","向前 + 传播"], ["suffix","-ion","名词后缀"]],
+      note: "把误差信号从输出层往回逐层传播，告诉每个权重该调多少。" },
+    { word: "regression", cn: "回归（最基础的预测算法）", blocks: [
+      ["prefix","re-","往回"], ["root","gress","走"], ["suffix","-ion","名词后缀"]],
+      note: "原意「退回」——统计学的典故是数据会「退回到平均值」。" },
+    { word: "prediction", cn: "预测", blocks: [
+      ["prefix","pre-","提前"], ["root","dict","说"], ["suffix","-ion","名词后缀"]],
+      note: "提前说出来 = 预测。dictionary 词典也是 dict 家族（说话的集合）。" },
+    { word: "generalization", cn: "泛化（举一反三的能力）", blocks: [
+      ["root","gen","产生"], ["suffix","-al→ize→ation","形容词→动词→名词"]],
+      note: "从训练数据里「生出」通用规律，在没见过的数据上也管用。" },
+    { word: "convolution", cn: "卷积（CNN 看图的秘密）", blocks: [
+      ["prefix","con-","一起"], ["root","volut","转、卷"], ["suffix","-ion","名词后缀"]],
+      note: "小窗口在图片上滚动扫描 = 「卷」的动作，提取局部特征。" },
+    { word: "hallucination", cn: "幻觉（AI 一本正经地编）", blocks: [
+      ["root","hallucin","心智漫游"], ["suffix","-ation","名词后缀"]],
+      note: "模型生成了现实中不存在的内容——像做梦一样逼真但不真实。" },
+    { word: "decoder", cn: "解码器", blocks: [
+      ["prefix","de-","解开、还原"], ["root","cod(e)","编码"],
+      ["suffix","-er","……的东西"]],
+      note: "把内部表示还原成人类能读的文字。encoder 编码器方向正好相反。" },
+    { word: "multimodal", cn: "多模态（又能看图又能读字）", blocks: [
+      ["prefix","multi-","多"], ["root","mod","方式、形态"], ["suffix","-al","形容词尾"]],
+      note: "mode（模式）→ modal 模态的：图像、文字、语音都是不同的模态。" },
+  ];
+
+  const pick = document.getElementById("pick");
+  const blocksEl = document.getElementById("blocks");
+  const meaningEl = document.getElementById("meaning");
+  const btnGo = document.getElementById("btnGo");
+  const btnQuiz = document.getElementById("btnQuiz");
+
+  TERMS.forEach((t, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = t.word;
+    pick.appendChild(o);
+  });
+
+  let timers = [];
+
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+  function render(idx, hideAnswer) {
+    clearTimers();
+    const t = TERMS[idx];
+    blocksEl.innerHTML = "";
+    meaningEl.classList.remove("show");
+
+    let delay = 120;
+    const parts = [];
+    t.blocks.forEach((b, bi) => {
+      if (bi > 0) {
+        parts.push("+"); // 占位，稍后一起插入
+      }
+    });
+
+    // 依次弹出积木
+    t.blocks.forEach((b, bi) => {
+      if (bi > 0) {
+        const plus = document.createElement("span");
+        plus.className = "plus"; plus.textContent = "+";
+        blocksEl.appendChild(plus);
+        timers.push(setTimeout(() => plus.classList.add("show"), delay));
+        delay += 180;
+      }
+      const d = document.createElement("div");
+      d.className = "blk " + b[0];
+      d.innerHTML = '<div class="en">' + b[1] + '</div><div class="zh">' + b[2] + "</div>";
+      blocksEl.appendChild(d);
+      timers.push(setTimeout(() => d.classList.add("show"), delay));
+      delay += 320;
+    });
+    delay += 250;
+
+    // 显示整词含义；quiz 模式则显示提示语并延迟揭示
+    const quizTag = hideAnswer ? ' <span class="quiz-tag">你猜对了吗？</span>' : "";
+    if (hideAnswer) {
+      meaningEl.innerHTML =
+        '<span class="word">' + t.word + '</span> = ？' +
+        '<div class="note">先在心里拆一遍，答案马上揭晓……</div>';
+      meaningEl.classList.add("show");
+      timers.push(setTimeout(() => {
+        meaningEl.innerHTML =
+          '<span class="word">' + t.word + '</span> = <span class="cn">' + t.cn + "</span>" + quizTag +
+          '<div class="note">💡 ' + t.note + "</div>";
+      }, delay));
+    } else {
+      timers.push(setTimeout(() => {
+        meaningEl.innerHTML =
+          '<span class="word">' + t.word + '</span> = <span class="cn">' + t.cn + "</span>" +
+          '<div class="note">💡 ' + t.note + "</div>";
+        meaningEl.classList.add("show");
+      }, delay));
+    }
+  }
+
+  btnGo.addEventListener("click", () => render(+pick.value, false));
+
+  btnQuiz.addEventListener("click", () => {
+    const i = Math.floor(Math.random() * TERMS.length);
+    pick.value = i;
+    render(i, true);
+  });
+
+  pick.addEventListener("change", () => { clearTimers(); meaningEl.classList.remove("show"); blocksEl.innerHTML = ""; });
+
+  // 深色模式同步（与站内其他 widget 一致）
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+})();
+</script>
+</body>
+</html>
