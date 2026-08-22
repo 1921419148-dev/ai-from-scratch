@@ -1,14 +1,15 @@
 ---
 title: 数学学习资源与 24 周计划
-description: Khan Academy / Paul's Notes / 3Blue1Brown / Professor Leonard / 武忠祥等 22 个数学资源评估 + 配合本站 M1–M10 的本地学习计划
+description: Khan Academy / Paul's Notes / 3Blue1Brown / Professor Leonard / 武忠祥等 23 个数学资源评估 + 配合本站 M1–M10 的本地学习计划
+last_verified: 2026-08-22
 ---
 
 > [!abstract] 这页解决什么
-> 站内 [[prerequisites/math/index|M1–M10]] 是「课程」，这页是「配套资源」：把 22 个常见数学频道/平台逐一评估，告诉你**哪些进主线、哪些当字典、哪些现阶段不碰**，最后给出一份可执行的 24 周计划。
+> 站内 [[prerequisites/math/index|M1–M10]] 是「课程」，这页是「配套资源」：把 23 个常见数学频道/平台逐一评估（用户指定清单 22 项 + 苏德矿），告诉你**哪些进主线、哪些当字典、哪些现阶段不碰**，最后给出一份可执行的 24 周计划。
 >
 > ⚠️ 编写说明（2026-08-22）：本页基于模型内置知识整理，编写时无法实时联网复核。资源本身评价稳定，但播放列表长度、B 站搬运是否失效请使用前自行确认一分钟。标 ⚠️ 的条目为不完全确定的信息。
 
-## 一、22 个资源逐个评估
+## 一、23 个资源逐个评估
 
 ### ★★★ 主力级 —— 直接进计划
 
@@ -62,7 +63,7 @@ description: Khan Academy / Paul's Notes / 3Blue1Brown / Professor Leonard / 武
   M8 线代时加 MIT 18.06 Strang；Python 阶段加 MIT 6.0001
 ```
 
-其余 15 个全部是「卡住了才查的字典」或「休息时的零食」，不进日程表。
+其余 16 个全部是「卡住了才查的字典」或「休息时的零食」，不进日程表。
 
 ## 三、与本站课程的具体映射
 
