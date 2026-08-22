@@ -7,6 +7,19 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## AIC-INFRA-002 — 2026-08-22
+- **Agent**: AIC Writer（AI 课程 Agent，基建任务）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - 新增 `quartz/components/Dashboard.tsx` + `styles/dashboard.scss`：首页板块统计仪表盘（构建时从 allFiles 聚合各板块课程篇数、CJK 感知字数、最近更新日期；slug 门控仅首页渲染；卡片网格布局，CSS 变量适配暗色模式）
+  - 注册：`quartz.layout.ts`（ConditionalRender, slug === "index"）、`quartz/components/index.ts`
+  - 更新 `content/index.md`：静态板块表替换为动态仪表盘引导
+- **技术要点**: 复用现有数据管道——fileData.text（Description 转换器产出）算字数、dates.modified（CreatedModifiedDate git 优先）算更新时间、resolveRelative 生成板块链接；无新增 emitter/客户端 JS
+- **协作备注**: 提交 f2d1887 同时并入了同分支并行完成的 ENG-E1-E4 全部产出与 MATH B1–B4 页面的 prettier 格式化
+- **自检**: 第二十二章清单通过——tsc 通过、prettier 全绿、build 通过（28 文件 52 输出）；本地 serve 验证首页渲染 10 张卡片且其余页面无泄漏；数值抽查与文件系统一致（数学 6 篇含 3B1B×4）
+- **审查**: 待 REV 审查（建议 REV-AIC-INFRA-002）
+- **状态**: 完成（已合并至 main 并上线验证）
+
 ## ENG-E1-E4 — 2026-08-22
 - **Agent**: ENG Writer（英语 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
