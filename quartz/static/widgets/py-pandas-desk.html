@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>迷你 DataFrame 操作台</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:760px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .ops { display:flex; gap:8px; flex-wrap:wrap; padding: 2px 16px 12px; }
+  button {
+    padding:7px 13px; border-radius:8px; cursor:pointer; font-size:12.3px; font-weight:600;
+    background:var(--line); color:#fff; border:none;
+  }
+  button.grp1 { background:#6b7280; }   /* 体检 */
+  button.grp2 { background: var(--dog); } /* 筛选 */
+  button.grp3 { background: var(--cat); } /* 加工 */
+  button.active-op { outline: 2.5px solid var(--text); outline-offset: 2px; }
+  .panes { display:flex; gap:12px; padding: 0 16px 14px; flex-direction:column;}
+  @media (min-width: 700px) { .panes { flex-direction: row; } .pane{flex:1;} }
+  .pane-label { font-size:11.5px; color:var(--text-sub); margin-bottom:5px; font-weight:600; letter-spacing:.5px;}
+  pre.out {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12.2px; line-height: 1.7;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 9px; padding: 10px 12px;
+    min-height: 210px; white-space: pre; overflow-x: auto;
+  }
+  .explain-box {
+    border-top:1px dashed var(--border);
+    padding: 10px 16px 14px; font-size:13px; line-height:1.65; color:var(--text-sub);
+    min-height:52px;
+  }
+  .explain-box b { color: var(--dog); }
+  code.op {
+    font-family:Consolas,monospace; background:rgba(74,144,217,.10); color:var(--line);
+    padding:0 5px; border-radius:5px; font-size:12.3px;
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🐼 迷你 DataFrame 操作台
+    <small>一份 8 行的学生数据。按真实项目顺序点：先体检 → 再筛选 → 后加工，看每一步的输出与代码</small>
+  </div>
+
+  <div class="ops" id="ops"></div>
+
+  <div class="panes">
+    <div class="pane">
+      <div class="pane-label">📺 输出（模拟 print 结果）</div>
+      <pre class="out" id="out">点上方任意按钮开始。
+当前数据 df：</pre>
+    </div>
+  </div>
+
+  <div class="explain-box" id="explainBox">👆 建议按从左到右的顺序玩——那就是真实项目的操作顺序。</div>
+</div>
+
+<script>
+(function () {
+  const DATA = [
+    { idx:0, 姓名:"小明", 年龄:16, 城市:"北京", 成绩:88 },
+    { idx:1, 姓名:"小红", 年龄:17, 城市:"上海", 成绩:45 },
+    { idx:2, 姓名:"小刚", 年龄:16, 城市:"北京", 成绩:92 },
+    { idx:3, 姓名:"小美", 年龄:18, 城市:"广州", 成绩:60 },
+    { idx:4, 姓名:"小强", 年龄:17, 城市:"上海", 成绩:58 },
+    { idx:5, 姓名:"小丽", 年龄:16, 城市:"北京", 成绩:75 },
+    { idx:6, 姓名:"小军", 年龄:18, 城市:"广州", 成绩:83 },
+    { idx:7, 姓名:"小芳", 年龄:17, 城市:"上海", 成绩:49 },
+  ];
+
+  const outEl = document.getElementById("out");
+  const explainEl = document.getElementById("explainBox");
+  const opsEl = document.getElementById("ops");
+
+  function pad(s, w) {
+    // 中文字符宽度 2 的简易对齐
+    const vis = [...String(s)].reduce((a, ch) => a + (ch.charCodeAt(0) > 255 ? 2 : 1), 0);
+    return String(s) + " ".repeat(Math.max(0, w - vis));
+  }
+
+  function renderTable(rows, note) {
+    if (rows.length === 0) {
+      return (note ? note + "\n" : "") + "Empty DataFrame\nColumns: [姓名, 年龄, 城市, 成绩]\nIndex: []";
+    }
+    const W = { idx:4, 姓名:7, 年龄:6, 城市:7, 成绩:6 };
+    let s = note ? note + "\n" : "";
+    s += pad("", W.idx) + pad("姓名", W.姓名) + pad("年龄", W.年龄) + pad("城市", W.城市) + "成绩\n";
+    rows.forEach((r) => {
+      s += pad(r.idx, W.idx) + pad(r.姓名, W.姓名) + pad(r.年龄, W.年龄) + pad(r.城市, W.城市) + r.成绩 + "\n";
+    });
+    return s.trimEnd();
+  }
+
+  function show(text, explain, opBtn) {
+    document.querySelectorAll(".ops button").forEach((b) => b.classList.remove("active-op"));
+    if (opBtn) opBtn.classList.add("active-op");
+    outEl.textContent = text;
+    explainEl.innerHTML = explain;
+  }
+
+  function addOp(label, group, fn) {
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.className = group;
+    b.addEventListener("click", () => fn(b));
+    opsEl.appendChild(b);
+  }
+
+  // ---- 体检三步 ----
+  addOp("① head()", "grp1", (b) => {
+    show(renderTable(DATA.slice(0, 5), "df.head()"),
+      "<code class='op'>df.head()</code> 默认给前 5 行——快速「瞄一眼」数据长相。<b>任何项目第一步</b>。", b);
+  });
+  addOp("② info()", "grp1", (b) => {
+    let s = "df.info()\n<class 'pandas.DataFrame'>\nRangeIndex: 8 entries, 0 to 7\nData columns (total 4 columns):\n";
+    s += " #   Column  Non-Null Count  Dtype\n---  ------  --------------  -----\n";
+    s += " 0   姓名     8 non-null      object\n 1   年龄     8 non-null      int64\n 2   城市     8 non-null      object\n 3   成绩     8 non-null      int64";
+    show(s, "<code class='op'>df.info()</code> 报家底：<b>Non-Null Count</b> 少于总行数 = 有缺失值；Dtype 是每列类型。真实数据的惊喜都藏在这里。", b);
+  });
+  addOp("③ describe()", "grp1", (b) => {
+    const s =
+      "df.describe()          （只统计数字列）\n" +
+      "        年龄        成绩\ncount   8.000000    8.000000\nmean   16.875000   68.750000\nstd     0.834523   18.124569\nmin    16.000000   45.000000\n25%    16.000000   55.750000\n50%    17.000000   67.500000\n75%    17.250000   84.250000\nmax    18.000000   92.000000";
+    show(s, "<code class='op'>df.describe()</code> 秒出统计摘要：平均分 68.75、最低 45、最高 92。min/max 和 mean 一对比，异常值立刻现形。", b);  });
+
+  // ---- 筛选 ----
+  addOp("筛选：成绩 < 60", "grp2", (b) => {
+    const rows = DATA.filter((r) => r.成绩 < 60).map((r) => ({ ...r }));
+    show(renderTable(rows, "df[df[\"成绩\"] < 60]"),
+      "<b>布尔过滤</b>：内层取列 → 比较得 True/False → 外层只留 True 的行。两行不及格被留下，行号 1、7 也跟着显示——<b>索引忠实记录它们来自原表哪里</b>。", b);
+  });
+  addOp("筛选：北京 且 及格", "grp2", (b) => {
+    const rows = DATA.filter((r) => r.城市 === "北京" && r.成绩 >= 60).map((r) => ({ ...r }));
+    show(renderTable(rows, "df[(df[\"城市\"] == \"北京\") & (df[\"成绩\"] >= 60)]"),
+      "组合条件：<code class='op'>&amp;</code> 表示「且」，<b>每个条件必须各自套括号</b>。结果只剩小明、小刚、小丽三位——条件越严，留下的行越少。", b);
+  });
+
+  // ---- 加工 ----
+  addOp("新增列：及格？", "grp3", (b) => {
+    const rows = DATA.map((r) => ({ ...r, 及格: r.成绩 >= 60 }));
+    let s = renderTable(rows, "df[\"及格\"] = df[\"成绩\"] >= 60");
+    show(s.replace(/成绩(\s+)/, "成绩  及格$1").replace(/(成绩)\n/, "$1      及格\n"),
+      "一行代码给整张表<b>新增一列</b>：比较运算作用于整列，自动得到 True/False 列。「整列同时算」正是 P7 向量化思维的延续。", b);
+  });
+  addOp("统计：各城市平均分", "grp3", (b) => {
+    const groups = {};
+    DATA.forEach((r) => {
+      (groups[r.城市] = groups[r.城市] || []).push(r.成绩);
+    });
+    let s = "df.groupby(\"城市\")[\"成绩\"].mean()\n城市\n";
+    Object.keys(groups).forEach((c) => {
+      const m = groups[c].reduce((a, x) => a + x, 0) / groups[c].length;
+      s += c + "    " + m.toFixed(1) + "\n";
+    });
+    s += "Name: 成绩, dtype: float64";
+    show(s,
+      "<code class='op'>groupby</code> = 「分组 → 聚合」：<b>按城市分组，各组算平均</b>。Excel 透视表、SQL 的 GROUP BY、训练时按类别统计准确率——全是同一个思想。", b);
+  });
+
+  // 初始画面
+  outEl.textContent += "\n" + renderTable(DATA);
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+})();
+</script>
+</body>
+</html>

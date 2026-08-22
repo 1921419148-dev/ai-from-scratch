@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>售货机模拟器：对象与方法的直觉</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:740px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .stage { display:flex; gap:14px; padding: 4px 16px 12px; align-items:flex-start; flex-wrap:wrap;}
+  /* 机器本体 */
+  .machine-wrap { flex:none; width: 300px; }
+  .machine {
+    border: 3px solid var(--line); border-radius: 16px;
+    background: linear-gradient(180deg,
+      color-mix(in srgb, var(--line) 10%, var(--canvas-bg)),
+      color-mix(in srgb, var(--line) 4%, var(--canvas-bg)));
+    padding: 12px;
+    box-shadow: inset 0 -8px 0 color-mix(in srgb, var(--line) 15%, transparent);
+  }
+  .slots { display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; }
+  .slot {
+    border:1.5px solid var(--border); border-radius:10px;
+    text-align:center; padding:8px 2px 7px;
+    cursor:pointer; user-select:none;
+    transition: all .15s ease;
+    background: var(--canvas-bg);
+  }
+  .slot:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--dog); }
+  .slot:disabled { opacity:.45; cursor:not-allowed; }
+  .slot .emoji { font-size:24px; }
+  .slot .price { font-size:11.5px; color:var(--dog); font-weight:700; margin-top:2px;}
+  .slot .stock { font-size:10.5px; color:var(--text-sub); }
+  .display {
+    margin-top:10px;
+    border-radius:8px; padding:9px 10px;
+    background:#101418; color:#7fd08a;
+    font-family:Consolas,monospace; font-size:12.5px; line-height:1.55;
+    min-height:58px;
+  }
+  html.dark .display { background:#0b0e11; }
+  /* 按钮面板 */
+  .panel { margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  button {
+    padding:7px 13px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--line); color:#fff; font-size:12.5px; font-weight:600;
+  }
+  button.coin { background: var(--dog); }
+  button.ghost { border:1px solid var(--border); background:transparent; color:var(--text-sub); font-weight:400;}
+  .credit {
+    margin-left:auto; font-family:Consolas,monospace; font-weight:700;
+    color: var(--cat); font-size:14px;
+  }
+  /* 方法日志 + 属性透视 */
+  .right-pane { flex:1; min-width:250px; display:flex; flex-direction:column; gap:10px;}
+  .pane-label { font-size:11.5px; color:var(--text-sub); font-weight:600; letter-spacing:.5px;}
+  .method-log {
+    border:1px solid var(--border); border-radius:10px;
+    font-family:Consolas,monospace; font-size:12.3px; line-height:1.75;
+    padding:9px 12px; max-height:150px; overflow-y:auto;
+    background:var(--bg);
+  }
+  .mline { display:block; }
+  .mline .ok { color:var(--cat); }
+  .mline .no { color:#e05252; } html.dark .mline .no { color:#ff7b7b; }
+  .attrs {
+    border:1px solid var(--border); border-radius:10px; overflow:hidden;
+    font-family:Consolas,monospace; font-size:12.3px;
+  }
+  .arow { display:flex; border-bottom:1px solid var(--border);}
+  .arow:last-child{border-bottom:none;}
+  .arow .an { flex:none; width:44%; padding:6px 10px; color:var(--line); font-weight:700; background:rgba(74,144,217,.07);}
+  html.dark .arow .an { background:rgba(106,169,233,.10);}
+  .arow .av { flex:1; padding:6px 10px;}
+  .arow.changed .av { animation: flashv .9s ease; }
+  @keyframes flashv { 0% { background:rgba(217,119,6,.30);} 100% { background:transparent;} }
+  .tip {
+    border-top:1px dashed var(--border);
+    padding: 9px 16px 13px; font-size:12.5px; color:var(--text-sub); line-height:1.65;
+  }
+  .tip code { font-family:Consolas,monospace; background:rgba(74,144,217,.10); color:var(--line); padding:0 4px; border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🥤 售货机模拟器
+    <small>每个按钮 = 调用一个方法；右侧透视 = 直接查看属性。这就是 <code style="font-family:Consolas">对象.方法()</code> 的全部含义</small>
+  </div>
+
+  <div class="stage">
+    <div class="machine-wrap">
+      <div class="machine">
+        <div class="slots" id="slots"></div>
+        <div class="display" id="display">欢迎使用！<br>请先投币，再选商品。</div>
+        <div class="panel">
+          <button class="coin" id="btnCoin">🪙 投币 1 元</button>
+          <button id="btnRefill" class="ghost">🔧 补货</button>
+          <span class="credit" id="credit">余额 ¥0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-pane">
+      <div>
+        <div class="pane-label">📜 方法调用日志（你按的每个按钮）</div>
+        <div class="method-log" id="mlog"></div>
+      </div>
+      <div>
+        <div class="pane-label">🔍 属性透视（机器内部的数据）</div>
+        <div class="attrs" id="attrs"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    💡 对应关系：<code>投币()</code>/<code>选商品()</code> 是<b>方法</b>（带括号、会干活）；<code>库存</code>/<code>钱箱</code> 是<b>属性</b>（直接读的数据）。注意方法内部的 if 判断如何保护数据——想买没投够钱的东西？机器直接拒绝。这叫<b>封装</b>。
+  </div>
+</div>
+
+<script>
+(function () {
+  const ITEMS = [
+    { key:"可乐", emoji:"🥤", price:3 },
+    { key:"奶茶", emoji:"🧋", price:5 },
+    { key:"矿泉水", emoji:"💧", price:2 },
+  ];
+  const START_STOCK = [3, 2, 4];
+
+  const slotsEl = document.getElementById("slots");
+  const displayEl = document.getElementById("display");
+  const creditEl = document.getElementById("credit");
+  const mlogEl = document.getElementById("mlog");
+  const attrsEl = document.getElementById("attrs");
+  const btnCoin = document.getElementById("btnCoin");
+  const btnRefill = document.getElementById("btnRefill");
+
+  // 「对象」的属性（模拟 self.xxx）
+  let credit = 0;
+  let stock = [];
+  let money_box = 0;
+
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function log(html) {
+    const ln = document.createElement("span");
+    ln.className = "mline";
+    ln.innerHTML = "&gt;&gt; " + html;
+    mlogEl.appendChild(ln);
+    mlogEl.scrollTop = mlogEl.scrollHeight;
+  }
+
+  function renderSlots() {
+    slotsEl.innerHTML = "";
+    ITEMS.forEach((it, i) => {
+      const d = document.createElement("div");
+      const out = stock[i] <= 0;
+      d.className = "slot";
+      if (out) d.disabled = true;
+      d.innerHTML =
+        '<div class="emoji">' + it.emoji + "</div>" +
+        '<div class="price">¥' + it.price + "</div>" +
+        '<div class="stock">' + (out ? "已售罄" : "库存 " + stock[i]) + "</div>";
+      if (out) {
+        d.style.opacity = ".45";
+        d.style.cursor = "not-allowed";
+      } else {
+        d.addEventListener("click", () => buy(i));
+      }
+      slotsEl.appendChild(d);
+    });
+    creditEl.textContent = "余额 ¥" + credit;
+  }
+
+  let lastChanged = [];
+  function renderAttrs() {
+    attrsEl.innerHTML = "";
+    const rows = [
+      ["credit(余额)", credit],
+      ["stock(库存)", "[" + stock.join(", ") + "]"],
+      ["money_box(钱箱)", money_box],
+    ];
+    rows.forEach(([n, v]) => {
+      const r = document.createElement("div");
+      const changed = lastChanged.includes(n.split("(")[0]);
+      r.className = "arow" + (changed ? " changed" : "");
+      r.innerHTML = '<div class="an">' + n + '</div><div class="av">' + esc(String(v)) + "</div>";
+      attrsEl.appendChild(r);
+    });
+    lastChanged = [];
+  }
+
+  // ---- 方法们 ----
+  function insertCoin() {
+    insert_coin();
+  }
+  function insert_coin() {
+    credit += 1;
+    log('insert_coin() <span class="ok">✓ 余额 +1</span>');
+    lastChanged = ["credit"];
+    renderSlots(); renderAttrs();
+    displayEl.innerHTML = "叮！余额 ¥" + credit + "<br>请选择商品。";
+  }
+
+  function buy(i) {
+    const it = ITEMS[i];
+    log('buy("' + it.key + '") —— 方法开始执行…');
+    if (stock[i] <= 0) {
+      log('&nbsp;&nbsp;<span class="no">✗ if 库存 &lt;= 0: 拒绝（「已售罄」分支）</span>');
+      displayEl.innerHTML = "❌ 已售罄<br>试试别的，或点「补货」。";
+      return;
+    }
+    if (credit < it.price) {
+      log('&nbsp;&nbsp;<span class="no">✗ if 余额 &lt; 价格: 拒绝（差 ¥' + (it.price - credit) + '）</span>');
+      displayEl.innerHTML = "❌ 余额不足<br>还差 ¥" + (it.price - credit) + "，先投币。";
+      return;
+    }
+    credit -= it.price;
+    stock[i] -= 1;
+    money_box += it.price;
+    lastChanged = ["credit", "stock", "money_box"];
+    log('&nbsp;&nbsp;<span class="ok">✓ 两道 if 都通过 → 扣款、出货</span>');
+    displayEl.innerHTML = "🎉 掉出 " + it.emoji + " " + it.key + "！<br>" +
+      "找零提示：余额剩 ¥" + credit + "。";
+    renderSlots(); renderAttrs();
+  }
+
+  function refill() {
+    stock = stock.map((s) => s + 2);
+    lastChanged = ["stock"];
+    log("refill() <span class=\"ok\">✓ 每个商品 +2</span>");
+    renderSlots(); renderAttrs();
+    displayEl.innerHTML = "🔧 补货完成！<br>同一个类可以随时喊它的方法维护自己。";
+  }
+
+  btnCoin.addEventListener("click", insertCoin);
+  btnRefill.addEventListener("click", refill);
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  stock = START_STOCK.slice();
+  renderSlots();
+  renderAttrs();
+})();
+</script>
+</body>
+</html>

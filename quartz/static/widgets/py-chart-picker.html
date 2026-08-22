@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图表类型选择器</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:740px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .tabs { display:flex; gap:7px; flex-wrap:wrap; padding:2px 16px 12px;}
+  .tab {
+    padding:7px 13px; border-radius:99px; cursor:pointer; user-select:none;
+    border:1.5px solid var(--border); color:var(--text-sub); font-size:12.5px;
+    transition:all .15s ease;
+  }
+  .tab.active { border-color:var(--line); color:var(--line); font-weight:700; background:rgba(74,144,217,.08);}
+  html.dark .tab.active { background:rgba(106,169,233,.13);}
+  .chart-wrap { padding: 0 16px; display:flex; justify-content:center;}
+  canvas { width:100%; max-width:600px; }
+  .caption {
+    margin: 8px 16px 0; padding: 9px 12px; border-radius:8px;
+    background: rgba(26,107,84,.07); font-size:12.8px; line-height:1.65;
+  }
+  html.dark .caption { background:rgba(78,201,160,.09);}
+  .caption b { color: var(--cat); }
+  .quiz {
+    margin: 8px 16px 14px; padding: 9px 12px; border-radius:8px;
+    border:1.5px dashed var(--dog); font-size:12.8px; line-height:1.6; color:var(--text-sub);
+  }
+  .quiz b {color: var(--dog);}
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">📊 图表类型选择器
+    <small>同一份「学生成绩」数据，五种讲法。切换时先猜：这张图会突出什么、隐藏什么？</small>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="chart-wrap"><canvas id="cv"></canvas></div>
+  <div class="caption" id="cap"></div>
+  <div class="quiz">🤔 想一想：如果老板只问一句「<b>及格和不及格的各占多少</b>」，五种图里哪种最直接？为什么柱状图从 0 开始很重要？（切到「⚠️ 坏图示范」找答案）</div>
+</div>
+
+<script>
+(function () {
+  const NAMES = [
+    ["line", "📈 折线图"],
+    ["bar", "📊 柱状图"],
+    ["hist", "📶 直方图"],
+    ["scatter", "🔵 散点图"],
+    ["pie", "🍰 饼图"],
+    ["bad", "⚠️ 坏图示范"],
+  ];
+
+  // 数据：8 名学生成绩 + 城市
+  const students = ["小明","小红","小刚","小美","小强","小丽","小军","小芳"];
+  const scores   = [88, 45, 92, 60, 58, 75, 83, 49];
+  const ages     = [16, 17, 16, 18, 17, 16, 18, 17];
+
+  function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  const cv = document.getElementById("cv");
+  const ctx = cv.getContext("2d");
+  const capEl = document.getElementById("cap");
+  const tabsEl = document.getElementById("tabs");
+
+  let mode = "line";
+
+  NAMES.forEach(([key, label]) => {
+    const t = document.createElement("div");
+    t.className = "tab";
+    t.textContent = label;
+    t.dataset.key = key;
+    t.addEventListener("click", () => { mode = key; setActive(); draw(); });
+    tabsEl.appendChild(t);
+  });
+  function setActive() {
+    tabsEl.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.key === mode));
+  }
+
+  const CAPS = {
+    line: "<b>折线图 plt.plot()</b> —— 强调<b>顺序与趋势</b>。这里按学号排，其实意义不大（学生之间没有先后关系）——<b>用错图型：类别数据画成线会误导人读出「趋势」。</b>",
+    bar:  "<b>柱状图 df.plot.bar()</b> —— 类别<b>数量对比</b>的正确姿势。每人一根柱子、谁高谁低一目了然。注意纵轴从 <b>0</b> 开始——这是诚实图表的铁律。",
+    hist: "<b>直方图 df[\"成绩\"].hist(bins=6)</b> —— 不看个人看<b>整体分布</b>：分数集中在哪个区间、有没有双峰。机器学习里检查数据分布几乎都用它。",
+    scatter:"<b>散点图 df.plot.scatter(x=年龄, y=成绩)</b> —— 两变量的<b>相关关系</b>。这批点乱成一团 → 年龄和成绩没什么关系。<b>「看不出关系」也是有效信息。</b>",
+    pie:  "<b>饼图 plt.pie()</b> —— 只关心<b>占比</b>时的最短路径：及格 62.5% vs 不及格 37.5%。缺点是扇形多了没法看——超过 5 块就该换柱状图。",
+    bad:  "<b>坏图：纵轴不从 0 开始的柱状图</b> —— 同样的数据，把 y 轴起点改成 40，小刚(92)看起来是小红(45)的「五倍多」，实际只有两倍。<b>媒体和汇报里最常见的骗图术，看到截断坐标轴先警惕。</b>",
+  };
+
+  function setupCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.getBoundingClientRect().width || 600;
+    cv.width = w * dpr; cv.height = 340 * dpr;
+    cv.style.height = "340px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function frame(yMin, yMax, padL, padB) {
+    const W = cv.getBoundingClientRect().width || 600, H = 340;
+    ctx.clearRect(0, 0, W, H);
+    // 轴
+    ctx.strokeStyle = css("--border"); ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, 20); ctx.lineTo(padL, H - padB); ctx.lineTo(W - 24, H - padB);
+    ctx.stroke();
+    return [W, H];
+  }
+
+  function axisLabels(xl, yl) {
+    ctx.fillStyle = css("--text-sub");
+    ctx.font = "11.5px 'Noto Sans SC', sans-serif";
+    ctx.textAlign = "center";
+    const W = cv.getBoundingClientRect().width || 600, H = 340;
+    if (xl) ctx.fillText(xl, W / 2, H - 4);
+    if (yl) { ctx.save(); ctx.translate(12, H / 2); ctx.rotate(-Math.PI/2); ctx.fillText(yl, 0, 0); ctx.restore(); }
+  }
+
+  function draw() {
+    setupCanvas();
+    capEl.innerHTML = CAPS[mode];
+    const W = cv.getBoundingClientRect().width || 600, H = 340;
+
+    if (mode === "pie") { drawPie(W, H); return; }
+
+    if (mode === "line") {
+      const [ , ] = frame(0, 100, 46, 34);
+      const x0 = 56, y0 = H - 34, plotW = W - 84, plotH = (H - 54);
+      ctx.beginPath();
+      scores.forEach((s, i) => {
+        const px = x0 + (i / (scores.length - 1)) * plotW;
+        const py = y0 - (s / 100) * plotH;
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      });
+      ctx.strokeStyle = css("--line"); ctx.lineWidth = 2.5; ctx.stroke();
+      scores.forEach((s, i) => {
+        const px = x0 + (i / (scores.length-1)) * plotW, py = y0 - s/100*plotH;
+        ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI*2);
+        ctx.fillStyle = css("--dog"); ctx.fill();
+      });
+      axisLabels("学生（按学号排列）", "成绩");
+      return;
+    }
+
+    if (mode === "bar" || mode === "bad") {
+      const yStart = mode === "bad" ? 40 : 0;
+      frame(yStart, 100, 46, 34);
+      const x0 = 56, y0 = H - 34, plotW = W - 84, plotH = H - 54;
+      const bw = plotW / scores.length * 0.62;
+      scores.forEach((s, i) => {
+        const cx = x0 + (i + 0.5) * (plotW / scores.length);
+        const frac = (s - yStart) / (100 - yStart);
+        const bh = frac * plotH;
+        ctx.fillStyle = css("--line");
+        ctx.fillRect(cx - bw/2, y0 - bh, bw, bh);
+        // 分数标签
+        ctx.fillStyle = css("--text-sub"); ctx.font = "10px 'Noto Sans SC',sans-serif"; ctx.textAlign="center";
+        ctx.fillText(String(s), cx, y0 - bh - 4);
+      });
+      // y 轴刻度
+      ctx.fillStyle = css("--text-sub"); ctx.font="10.5px Consolas,monospace";
+      for (let v = yStart; v <= 100; v += 20) {
+        const py = y0 - ((v - yStart)/(100-yStart))*plotH;
+        ctx.textAlign="right"; ctx.fillText(String(v), x0 - 6, py + 3.5);
+        ctx.strokeStyle = css("--border"); ctx.globalAlpha=.4;
+        ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x0+plotW, py); ctx.stroke();
+        ctx.globalAlpha=1;
+      }
+      axisLabels("学生", "成绩" + (mode==="bad" ? "（起点 40！）" : ""));
+      return;
+    }
+
+    if (mode === "hist") {
+      frame(0, 4, 46, 34);
+      const bins = [[40,50],[50,60],[60,70],[70,80],[80,90],[90,100]];
+      const counts = bins.map(() => 0);
+      scores.forEach((s) => { counts[Math.min(5, Math.floor((s - 40) / 10))]++; });
+      const x0 = 56, y0 = H - 34, plotW = W - 84, plotH = H - 54;
+      const maxC = Math.max(...counts);
+      const bw = plotW / bins.length * 0.85;
+      bins.forEach((b, i) => {
+        const cx = x0 + (i + 0.5) * (plotW / bins.length);
+        const bh = counts[i] / maxC * plotH;
+        ctx.fillStyle = css("--cat");
+        ctx.fillRect(cx - bw/2, y0 - bh, bw, bh);
+        ctx.fillStyle = css("--text-sub"); ctx.font="10px 'Noto Sans SC',sans-serif"; ctx.textAlign="center";
+        ctx.fillText(counts[i] ? String(counts[i]) : "", cx, y0 - bh - 4);
+        ctx.font="10px 'Noto Sans SC',sans-serif";
+        ctx.fillText(b[0]+"–"+b[1], cx, y0 + 12);
+      });
+      ctx.fillStyle = css("--text-sub"); ctx.font="10.5px Consolas,monospace"; ctx.textAlign="right";
+      for (let v = 0; v <= maxC; v++) {
+        const py = y0 - v/maxC*plotH;
+        ctx.fillText(String(v), x0 - 6, py + 3.5);
+      }
+      axisLabels("成绩区间", "人数");
+      return;
+    }
+
+    if (mode === "scatter") {
+      frame(40, 100, 46, 34);
+      const x0 = 56, y0 = H - 34, plotW = W - 96, plotH = H - 54;
+      const ageMin = 15.5, ageMax = 18.5;
+      ages.forEach((a, i) => {
+        const px = x0 + (a - ageMin) / (ageMax - ageMin) * plotW;
+        const py = y0 - (scores[i] - 40) / 60 * plotH;
+        ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI*2);
+        ctx.fillStyle = css("--dog")+"cc"; ctx.fill();
+        ctx.lineWidth = 1.5; ctx.strokeStyle = css("--canvas-bg"); ctx.stroke();
+      });
+      ctx.fillStyle = css("--text-sub"); ctx.font="10.5px Consolas,monospace"; ctx.textAlign="right";
+      for (let v = 40; v <= 100; v += 20) {
+        const py = y0 - (v-40)/60*plotH;
+        ctx.fillText(String(v), x0 - 6, py + 3.5);
+      }
+      for (let a = 16; a <= 18; a++) {
+        const px = x0 + (a-ageMin)/(ageMax-ageMin)*plotW;
+        ctx.textAlign="center"; ctx.font="10.5px Consolas,monospace";
+        ctx.fillText(String(a), px, y0 + 12);
+      }
+      axisLabels("年龄", "成绩");
+      return;
+    }
+  }
+
+  function drawPie(W, H) {
+    ctx.clearRect(0, 0, W, H);
+    const pass = scores.filter((s) => s >= 60).length;
+    const fail = scores.length - pass;
+    const total = pass + fail;
+    const cx = W/2 - 40, cy = H/2 - 6, R = Math.min(H - 80, 120);
+    let a0 = -Math.PI/2;
+    const parts = [
+      { n: pass, c: css("--cat"), label: "及格 " + pass + " 人" },
+      { n: fail, c: css("--dog"), label: "不及格 " + fail + " 人" },
+    ];
+    parts.forEach((p) => {
+      const frac = p.n / total;
+      const a1 = a0 + frac * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, R, a0, a1);
+      ctx.closePath();
+      ctx.fillStyle = p.c; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = css("--canvas-bg"); ctx.stroke();
+      // 百分比
+      const mid = (a0 + a1) / 2;
+      ctx.fillStyle = "#fff"; ctx.font = "bold 13px 'Noto Sans SC',sans-serif"; ctx.textAlign="center";
+      ctx.fillText((frac*100).toFixed(1) + "%", cx + Math.cos(mid)*R*0.6, cy + Math.sin(mid)*R*0.6 + 4);
+      a0 = a1;
+    });
+    // 图例
+    ctx.font = "12.5px 'Noto Sans SC',sans-serif"; ctx.textAlign="left";
+    let ly = cy - 18;
+    parts.forEach((p) => {
+      ctx.fillStyle = p.c; ctx.fillRect(cx + R + 30, ly - 9, 13, 13);
+      ctx.fillStyle = css("--text"); ctx.fillText(p.label, cx + R + 48, ly + 3);
+      ly += 24;
+    });
+  }
+
+  window.addEventListener("resize", draw);
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+      draw();
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+      draw();
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  setActive();
+  draw();
+})();
+</script>
+</body>
+</html>

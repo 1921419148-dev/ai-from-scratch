@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>函数机器装配台</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:740px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:4px 16px 12px;}
+  select {
+    flex:1; min-width:200px; padding:8px 10px; border-radius:8px;
+    border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13.5px;
+  }
+  button {
+    padding:8px 16px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--line); color:#fff; font-size:13.5px; font-weight:600;
+  }
+  button.ghost { border:1px solid var(--border); background:transparent; color:var(--text-sub); font-weight:400; }
+  /* 机器流水线 */
+  .pipeline {
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    padding: 14px 16px 6px; flex-wrap:nowrap;
+  }
+  @media (max-width: 560px) { .pipeline { transform: scale(.92); } }
+  .io-box {
+    min-width: 96px; max-width:130px; text-align:center;
+    border:2px solid var(--dog); border-radius:10px; overflow:hidden;
+    background: rgba(217,119,6,.05);
+  }
+  .io-box.out { border-color: var(--cat); background: rgba(26,107,84,.06); }
+  .io-label {
+    font-size:11px; padding:3px 6px; font-weight:700; letter-spacing:.5px;
+    color:#fff; background:var(--dog);
+  }
+  .io-box.out .io-label { background: var(--cat); }
+  .io-value {
+    padding:10px 8px; font-family:Consolas,monospace; font-size:19px; font-weight:800;
+    color: var(--dog);
+  }
+  .io-box.out .io-value { color: var(--cat); }
+  .machine {
+    flex:none; width:120px; height:96px;
+    border-radius:14px; position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; user-select:none;
+    transition: transform .15s ease;
+  }
+  .machine:hover { transform: translateY(-2px); }
+  .machine-body {
+    width:100%; height:100%;
+    border-radius:14px;
+    background:
+      radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--line) 22%, transparent), transparent 55%),
+      linear-gradient(180deg, color-mix(in srgb, var(--line) 16%, var(--canvas-bg)), color-mix(in srgb, var(--line) 7%, var(--canvas-bg)));
+    border:2.5px solid var(--line);
+    box-shadow: inset 0 -6px 0 color-mix(in srgb, var(--line) 28%, transparent);
+  }
+  .machine-name {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    font-family: Consolas, monospace; font-weight:700; font-size:13.5px; color: var(--line);
+    text-align:center; line-height:1.35; pointer-events:none;
+  }
+  .machine.gear-on .machine-body { animation: shake .45s ease; }
+  @keyframes shake {
+    0%,100% { transform: rotate(0); } 25% { transform: rotate(-2.2deg);} 75% { transform: rotate(2.2deg);}
+  }
+  .pipe-arrow { font-size:22px; color:var(--text-sub); flex:none;}
+  .param-row {
+    display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap;
+    padding: 8px 16px 4px; font-size:13px;
+  }
+  .param-row label { color: var(--text-sub); font-family:Consolas,monospace; font-weight:700;}
+  input[type=range] { accent-color: var(--dog); vertical-align:middle; }
+  .pval { font-variant-numeric:tabular-nums; font-weight:700; color:var(--dog); min-width:40px; text-align:right;}
+  /* 内部代码 */
+  .inner {
+    margin: 8px 16px 0;
+    border-top:1px dashed var(--border);
+    padding-top:10px;
+    display:none;
+  }
+  .inner.show { display:block; }
+  .inner h4 { font-size:13px; color:var(--cat); margin-bottom:6px;}
+  pre.inner-code {
+    font-family: Consolas, monospace; font-size:12.5px; line-height:1.7;
+    background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    padding:10px 12px; white-space:pre-wrap; word-break:break-word;
+  }
+  .call-log {
+    margin: 10px 16px 14px; padding: 9px 12px;
+    border-radius:8px; background:rgba(74,144,217,.07);
+    font-size:12.5px; line-height:1.65; color:var(--text-sub);
+  }
+  html.dark .call-log { background:rgba(106,169,233,.09); }
+  .call-log code { font-family:Consolas,monospace; color:var(--line); }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">⚙️ 函数机器装配台
+    <small>拖动输入滑块 → 机器开动 → 出料口给出返回值。点机器本体看（或猜！）它的内部代码</small>
+  </div>
+
+  <div class="controls">
+    <select id="pick"></select>
+    <button id="btnPeek">🔍 看/藏内部</button>
+    <button id="btnBlackbox" class="ghost">🕶 黑箱挑战</button>
+  </div>
+
+  <div class="pipeline">
+    <div class="io-box" id="inBox">
+      <div class="io-label">输入 参数</div>
+      <div class="io-value" id="inVal">—</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="machine" id="machine" title="点我看内部">
+      <div class="machine-body"></div>
+      <div class="machine-name" id="machineName"></div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="io-box out">
+      <div class="io-label">输出 返回值</div>
+      <div class="io-value" id="outVal">?</div>
+    </div>
+  </div>
+
+  <div class="param-row" id="paramRow"></div>
+
+  <div class="inner" id="inner">
+    <h4>🔍 机器内部（函数体）</h4>
+    <pre class="inner-code" id="innerCode"></pre>
+  </div>
+
+  <div class="call-log" id="callLog">👆 拖动滑块就是一次函数调用。同一输入永远得到同一输出——这叫「确定性」，科学计算的命根子。</div>
+</div>
+
+<script>
+(function () {
+  const MACHINES = [
+    {
+      name: "average",
+      sig: "def average(nums):",
+      desc: "求平均：sum 除以 len——P4 统计逻辑的正式封装版",
+      params: [{ k:"a", min:0, max:100, step:1, v:80 }, { k:"b", min:0, max:100, step:1, v:90 }],
+      fn: (a, b) => (a + b) / 2,
+      code: "def average(nums):\n    return sum(nums) / len(nums)\n\n# 这里演示用两个数简化：\n# (a + b) / 2 就是它们的平均值",
+      fmtOut: (v) => v.toFixed(1),
+    },
+    {
+      name: "celsius_to_f",
+      sig: "def c2f(c):",
+      desc: "温度换算：摄氏 → 华氏。一个参数、一个公式、一个出口",
+      params: [{ k:"c", min:-20, max:40, step:1, v:25 }],
+      fn: (c) => c * 9 / 5 + 32,
+      code: "def celsius_to_f(c):\n    return c * 9 / 5 + 32\n\n# 先乘后加：运算优先级和数学一样",
+      fmtOut: (v) => v.toFixed(1),
+    },
+    {
+      name: "is_passing",
+      sig: "def is_passing(score):",
+      desc: "布尔值机器：判断及格与否，返回 True / False",
+      params: [{ k:"score", min:0, max:100, step:1, v:60 }],
+      fn: (s) => s >= 60,
+      code: "def is_passing(score):\n    return score >= 60\n\n# 比较表达式本身就是布尔值\n# 直接 return 它，连 if 都省了",
+      fmtOut: (v) => (v ? "True" : "False"),
+    },
+    {
+      name: "sigmoid",
+      sig: "def sigmoid(x):",
+      desc: "AI 明星函数！把任意数挤进 (0,1)——B1 课见过的 σ",
+      params: [{ k:"x", min:-6, max:6, step:0.1, v:0 }],
+      fn: (x) => 1 / (1 + Math.exp(-x)),
+      code: "import math\n\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\n# x 很大 → 接近 1；x 很小 → 接近 0\n# 它把任意数字「挤压」成概率的样子\n# 神经网络的每个神经元都在用它（的亲戚）",
+      fmtOut: (v) => v.toFixed(4),
+    },
+    {
+      name: "mse",
+      sig: "def mse(pred, true):",
+      desc: "均方误差：预测与真实的差距平方——损失函数家族的头号成员",
+      params: [{ k:"pred", min:0, max:100, step:1, v:80 }, { k:"true", min:0, max:100, step:1, v:85 }],
+      fn: (p, t) => (p - t) * (p - t),
+      code: "def mse(pred, true):\n    diff = pred - true        # 差多少\n    return diff ** 2          # 差距平方\n\n# 平方有两个好处：\n# ① 负差不会抵消正差 ② 差得越远罚得越重\n# 训练 = 让这台机器的输出尽量小",
+      fmtOut: (v) => v.toFixed(1),
+    },
+  ];
+
+  const pick = document.getElementById("pick");
+  const machineEl = document.getElementById("machine");
+  const machineName = document.getElementById("machineName");
+  const inVal = document.getElementById("inVal");
+  const outVal = document.getElementById("outVal");
+  const paramRow = document.getElementById("paramRow");
+  const innerEl = document.getElementById("inner");
+  const innerCode = document.getElementById("innerCode");
+  const callLog = document.getElementById("callLog");
+  const btnPeek = document.getElementById("btnPeek");
+  const btnBlackbox = document.getElementById("btnBlackbox");
+
+  MACHINES.forEach((m, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = m.name + "( ) — " + m.desc.split("：")[0];
+    pick.appendChild(o);
+  });
+
+  let blackbox = false;
+
+  function loadMachine() {
+    const m = MACHINES[+pick.value];
+    machineName.textContent = m.name;
+    innerCode.textContent = blackbox
+      ? "🔒 黑箱模式：内部被隐藏。\n只能靠喂输入观察输出来猜它的行为\n——这正是你面对陌生 API 文档时的处境！"
+      : m.sig + "\n" + m.code;
+    buildParams(m);
+    run(m);
+  }
+
+  function buildParams(m) {
+    paramRow.innerHTML = "";
+    m.params.forEach((p) => {
+      const lab = document.createElement("label");
+      lab.textContent = p.k + " =";
+      const rng = document.createElement("input");
+      rng.type = "range"; rng.min = p.min; rng.max = p.max; rng.step = p.step; rng.value = p.v;
+      rng.style.width = "140px";
+      const val = document.createElement("span");
+      val.className = "pval";
+      val.textContent = (+p.v).toFixed(p.step < 1 ? 1 : 0);
+      rng.addEventListener("input", () => {
+        p.v = parseFloat(rng.value);
+        val.textContent = p.v.toFixed(p.step < 1 ? 1 : 0);
+        run(m);
+      });
+      paramRow.appendChild(lab); paramRow.appendChild(rng); paramRow.appendChild(val);
+    });
+  }
+
+  let lastKey = null;
+
+  function run(m) {
+    const args = m.params.map((p) => p.v);
+    inVal.textContent = "(" + args.map((a) => a.toFixed(a % 1 ? 1 : 0)).join(", ") + ")";
+    const out = m.fn.apply(null, args);
+
+    // 只有输入变化时才「开动齿轮」
+    const key = pick.value + ":" + args.join(",");
+    if (key !== lastKey) {
+      machineEl.classList.remove("gear-on");
+      void machineEl.offsetWidth;   // 重置动画
+      machineEl.classList.add("gear-on");
+      lastKey = key;
+
+      callLog.innerHTML =
+        "<code>" + m.name + "(" + args.join(", ") + ")</code> → 返回 <code style='color:var(--cat)'>" +
+        m.fmtOut(out) + "</code>　<span style='opacity:.75'>调用次数越多，你对它行为的直觉越准。</span>";
+    }
+
+    // 输出数字动画
+    animateValue(outVal, out, m.fmtOut);
+  }
+
+  let animId = null;
+  function animateValue(el, target, fmt) {
+    cancelAnimationFrame(animId);
+    if (typeof target !== "number") { el.textContent = fmt(target); return; }
+    const startText = el.dataset.raw ? parseFloat(el.dataset.raw) : 0;
+    if (!isFinite(startText)) { el.textContent = fmt(target); el.dataset.raw = target; return; }
+    const t0 = performance.now();
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / 260);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const cur = startText + (target - startText) * eased;
+      el.textContent = fmt(cur);
+      if (p < 1) animId = requestAnimationFrame(tick);
+      else el.dataset.raw = String(target);
+    }
+    animId = requestAnimationFrame(tick);
+  }
+
+  btnPeek.addEventListener("click", () => {
+    innerEl.classList.toggle("show");
+  });
+  btnBlackbox.addEventListener("click", () => {
+    blackbox = !blackbox;
+    btnBlackbox.textContent = blackbox ? "💡 揭晓答案" : "🕶 黑箱挑战";
+    innerEl.classList.add("show");
+    loadMachine();
+  });
+  machineEl.addEventListener("click", () => innerEl.classList.toggle("show"));
+  pick.addEventListener("change", () => { blackbox = false; btnBlackbox.textContent = "🕶 黑箱挑战"; loadMachine(); });
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  innerEl.classList.add("show");
+  loadMachine();
+})();
+</script>
+</body>
+</html>

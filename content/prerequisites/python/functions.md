@@ -44,11 +44,11 @@ print(msg)                    # 你好, 小明
 
 四样东西各就各位：
 
-| 部件         | 例子             | 类比                     |
-| ------------ | ---------------- | ------------------------ |
-| `def` + 名字 | `def greet`      | 给机器挂个牌子           |
-| **参数 Parameter** | `name`     | 进料口（要什么原料）     |
-| 函数体       | 缩进的两行       | 内部加工流程             |
+| 部件                    | 例子          | 类比                   |
+| ----------------------- | ------------- | ---------------------- |
+| `def` + 名字            | `def greet`   | 给机器挂个牌子         |
+| **参数 Parameter**      | `name`        | 进料口（要什么原料）   |
+| 函数体                  | 缩进的两行    | 内部加工流程           |
 | **返回值 Return value** | `return text` | 出料口（交付什么成品） |
 
 ### 概念 2：return 是唯一的出口
@@ -108,16 +108,16 @@ result = calc()        # result = 198
 
 ## 本章英文小词典
 
-| 英文                  | 中文       | 一句话记忆                                        |
-| --------------------- | ---------- | ------------------------------------------------- |
-| Function / Define     | 函数 / 定义 | def 是 define 的缩写                             |
-| Parameter / Argument  | 形参/实参   | parameter 占位名单，argument 实际递来的东西      |
-| Return value          | 返回值      | 函数交回来的成品                                 |
-| Call / Invoke         | 调用        | 喊函数的名字让它干活                             |
-| Scope                 | 作用域      | 变量的有效范围                                   |
-| Built-in function     | 内置函数    | Python 自带工具（print、len、sum…）              |
-| Library / Module      | 库 / 模块   | 别人打包好的函数仓库（import 来取用）            |
-| Reusable              | 可复用的    | 写一次到处用——函数存在的全部理由                 |
+| 英文                 | 中文        | 一句话记忆                                  |
+| -------------------- | ----------- | ------------------------------------------- |
+| Function / Define    | 函数 / 定义 | def 是 define 的缩写                        |
+| Parameter / Argument | 形参/实参   | parameter 占位名单，argument 实际递来的东西 |
+| Return value         | 返回值      | 函数交回来的成品                            |
+| Call / Invoke        | 调用        | 喊函数的名字让它干活                        |
+| Scope                | 作用域      | 变量的有效范围                              |
+| Built-in function    | 内置函数    | Python 自带工具（print、len、sum…）         |
+| Library / Module     | 库 / 模块   | 别人打包好的函数仓库（import 来取用）       |
+| Reusable             | 可复用的    | 写一次到处用——函数存在的全部理由            |
 
 ## 自测一下
 

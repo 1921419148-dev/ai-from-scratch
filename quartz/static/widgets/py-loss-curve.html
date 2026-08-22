@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>训练曲线实验室</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:740px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:4px 16px 12px;}
+  select {
+    flex:1; min-width:180px; padding:8px 10px; border-radius:8px;
+    border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13.5px;
+  }
+  button {
+    padding:8px 16px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--line); color:#fff; font-size:13.5px; font-weight:600;
+  }
+  button.ghost { border:1px solid var(--border); background:transparent; color:var(--text-sub); font-weight:400;}
+  button.tgl.on { border-color: var(--cat); color: var(--cat); font-weight:700;}
+  canvas { display:block; width:100%; }
+  .legend {
+    display:flex; gap:16px; justify-content:center; padding:8px 0 2px;
+    font-size:12px; color:var(--text-sub);
+  }
+  .chip { display:inline-block; width:18px; height:4px; border-radius:2px; vertical-align:middle; margin-right:5px;}
+  .statusbar {
+    padding: 9px 16px 13px; border-top:1px solid var(--border);
+    font-size:13px; line-height:1.65; color:var(--text-sub); min-height:56px;
+  }
+  .statusbar b { color: var(--text); }
+  .epoch-tag { font-family:Consolas,monospace; color: var(--dog); font-weight:700;}
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">📉 训练曲线实验室
+    <small>选一种训练剧本 → 点「开始训练」→ 盯着曲线生长。以后每次跑模型，你盯的就是这个画面</small>
+  </div>
+
+  <div class="controls">
+    <select id="scenario">
+      <option value="healthy">剧本 A：健康收敛（理想情况）</option>
+      <option value="overfit">剧本 B：过拟合（测试损失先降后升）</option>
+      <option value="oscillate">剧本 C：学习率太大（剧烈震荡）</option>
+    </select>
+    <button class="tgl ghost" id="btnTest">显示测试集曲线</button>
+    <button id="btnGo">▶ 开始训练</button>
+    <button id="btnReset" class="ghost">重置</button>
+  </div>
+
+  <canvas id="cv"></canvas>
+
+  <div class="legend">
+    <span><span class="chip" style="background:var(--cat)"></span>训练集损失 Train Loss</span>
+    <span id="lgTest" style="display:none"><span class="chip" style="background:var(--dog)"></span>测试集损失 Test Loss</span>
+    <span id="epochTag" class="epoch-tag"></span>
+  </div>
+
+  <div class="statusbar" id="status">👆 选好剧本，点「▶ 开始训练」。曲线会一轮一轮长出来——就像真实训练一样。</div>
+</div>
+
+<script>
+(function () {
+  const cv = document.getElementById("cv");
+  const ctx = cv.getContext("2d");
+  const scenarioEl = document.getElementById("scenario");
+  const btnGo = document.getElementById("btnGo");
+  const btnReset = document.getElementById("btnReset");
+  const btnTest = document.getElementById("btnTest");
+  const status = document.getElementById("status");
+  const lgTest = document.getElementById("lgTest");
+  const epochTag = document.getElementById("epochTag");
+
+  let showTest = false;
+  btnTest.classList.add("on");
+
+  function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  // 三种剧本的「真实」损失生成器：确定性伪随机保证可复现
+  let seed = 7;
+  function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+
+  function genCurves(kind) {
+    seed = 7 + kind.length * 131;   // 每种剧本固定序列 → 可复现
+    const train = [], test = [];
+    const N = 30;
+    for (let e = 1; e <= N; e++) {
+      const t = e / N;
+      if (kind === "healthy") {
+        train.push(2.3 * Math.exp(-3.2 * t) + 0.12 + (rnd()-0.5)*0.03);
+        test.push(train[train.length-1] + 0.06 + (rnd()-0.5)*0.05);
+      } else if (kind === "overfit") {
+        train.push(2.3 * Math.exp(-3.6 * t) + 0.08 + (rnd()-0.5)*0.03);
+        // 测试损失先降、在 epoch≈14 触底、随后回升
+        const bottom = 0.62;
+        const drop = Math.min(t / 0.42, 1);                 // 前 40% 一路降
+        const rise = Math.max(0, (t - 0.45) / 0.55);        // 之后一路升
+        test.push(2.35*(1-drop) + bottom*drop + rise*rise*1.15 + (rnd()-0.5)*0.04);
+      } else {
+        // 学习率太大：围绕一个水平线大幅震荡，偶尔跳高
+        const base = 1.15;
+        train.push(base + (rnd()-0.5)*1.25 + (rnd() > 0.93 ? rnd()*0.8 : 0));
+        test.push(base + 0.1 + (rnd()-0.5)*1.35 + (rnd() > 0.95 ? rnd()*0.9 : 0));
+      }
+    }
+    return { train, test };
+  }
+
+  let trainData = [];
+  let testData = [];
+  let shownEpochs = 0;
+  let animating = false;
+  let timer = null;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.getBoundingClientRect().width || 700;
+    cv.width = w * dpr; cv.height = 300 * dpr;
+    cv.style.height = "300px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  const Y_MAX = 2.6;
+
+  function draw() {
+    const W = cv.getBoundingClientRect().width || 700, H = 300;
+    ctx.clearRect(0, 0, W, H);
+    const padL = 44, padR = 16, padT = 16, padB = 30;
+    const x0 = padL, y0 = H - padB, pw = W - padL - padR, ph = y0 - padT;
+    const totalEpochs = trainData.length || 30;
+
+    // 网格与 y 轴刻度
+    ctx.font = "10.5px Consolas,monospace";
+    ctx.fillStyle = css("--text-sub");
+    ctx.strokeStyle = css("--border");
+    ctx.globalAlpha = .45;
+    for (let v = 0; v <= Y_MAX + 1e-9; v += 0.5) {
+      const py = y0 - (v / Y_MAX) * ph;
+      ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x0 + pw, py); ctx.stroke();
+      ctx.textAlign = "right";
+      ctx.fillText(v.toFixed(1), x0 - 5, py + 3.5);
+    }
+    ctx.globalAlpha = 1;
+
+    // 轴
+    ctx.strokeStyle = css("--text-sub"); ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(x0, padT); ctx.lineTo(x0, y0); ctx.lineTo(x0 + pw, y0);
+    ctx.stroke();
+
+    // 轴标签
+    ctx.fillStyle = css("--text-sub"); ctx.font = "11px 'Noto Sans SC',sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("Epoch（第几轮）", x0 + pw / 2, H - 6);
+    ctx.save(); ctx.translate(11, padT + ph/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText("Loss", 0, 0); ctx.restore();
+
+    if (shownEpochs === 0) return;
+
+    const nShow = Math.max(shownEpochs, 2);
+    function plotLine(data, color) {
+      ctx.beginPath();
+      for (let i = 0; i < shownEpochs && i < data.length; i++) {
+        const px = x0 + (i / (totalEpochs - 1)) * pw;
+        const py = y0 - (Math.min(data[i], Y_MAX) / Y_MAX) * ph;
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.strokeStyle = color; ctx.lineWidth = 2.4; ctx.stroke();
+      // 最新点高亮
+      const li = Math.min(shownEpochs - 1, data.length - 1);
+      const px = x0 + (li / (totalEpochs - 1)) * pw;
+      const py = y0 - (Math.min(data[li], Y_MAX) / Y_MAX) * ph;
+      ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI*2);
+      ctx.fillStyle = color; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = css("--canvas-bg"); ctx.stroke();
+    }
+
+    if (showTest) plotLine(testData, css("--dog"));
+    plotLine(trainData, css("--cat"));
+
+    // 过拟合剧本：标注分叉点
+    if (showTest && scenarioEl.value === "overfit" && shownEpochs > 16) {
+      const forkX = x0 + (13 / (totalEpochs - 1)) * pw;
+      ctx.fillStyle = css("--dog"); ctx.font = "bold 11.5px 'Noto Sans SC',sans-serif"; ctx.textAlign = "left";
+      ctx.fillText("⬆ 分叉！开始过拟合", forkX + 6, padT + 26);
+      ctx.strokeStyle = css("--dog"); ctx.setLineDash([4,4]); ctx.globalAlpha=.7;
+      ctx.beginPath(); ctx.moveTo(forkX, padT+34); ctx.lineTo(forkX, y0); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha=1;
+    }
+  }
+
+  function start() {
+    stop();
+    const curves = genCurves(scenarioEl.value);
+    trainData = curves.train;
+    testData = curves.test;
+    shownEpochs = 0;
+    animating = true;
+    btnGo.disabled = true;
+    tick();
+  }
+
+  function tick() {
+    if (!animating) return;
+    shownEpochs++;
+    epochTag.textContent = "Epoch " + shownEpochs + "/" + trainData.length;
+    draw();
+
+    const cur = trainData[shownEpochs-1];
+    const scen = scenarioEl.value;
+
+    if (shownEpochs >= trainData.length) {
+      finish();
+      return;
+    }
+    // 剧本解说
+    if (scen === "oscillate" && shownEpochs === 12) {
+      status.innerHTML = "⚠️ 已经第 <b>12</b> 轮了，损失还在 0.5～2.0 之间乱蹦——<b>学习率太大，每步都冲过谷底</b>。真实训练看到这个形状：立刻停，把学习率砍小 10 倍。";
+    } else if (scen === "healthy" && shownEpochs === 20) {
+      status.innerHTML = "✅ 第 <b>20</b> 轮：曲线已明显走平（<span class='epoch-tag'>" + cur.toFixed(2) + "</span>），继续训练收益不大——<b>可以停了</b>。会看曲线的人在这里省下大半算力。";
+    } else if (scen === "overfit" && showTest && shownEpochs === 22) {
+      status.innerHTML = "🚨 注意看两条线：<b>训练损失还在降，测试损失却在涨</b>——模型在死记硬背训练题。这就是 ML4《过拟合》的主角现场。";
+    } else {
+      status.innerHTML = "训练中… Epoch " + shownEpochs + "，train loss = <b>" + cur.toFixed(3) + "</b>";
+    }
+    timer = setTimeout(tick, 260);
+  }
+
+  function finish() {
+    animating = false;
+    btnGo.disabled = false;
+    const scen = scenarioEl.value;
+    const msgs = {
+      healthy: "🎉 健康收敛：损失平滑下降并走平，训练/测试两条线贴在一起——模型学到了能泛化的规律。这是你最想看到的形状。",
+      overfit: "🏁 训练结束。结论：应该在测试损失的最低点（约第 14 轮）附近就停下——之后每一轮都在变差。<b>早停（Early Stopping）</b>是应对过拟合的第一招。",
+      oscillate:"💥 30 轮跑完，损失依然上蹿下跳毫无收敛迹象——典型的<b>学习率过大</b>。处方：学习率 ÷10 重来。（对照 P7 的 B2 小球实验：一样的病。）",
+    };
+    status.innerHTML = msgs[scen];
+  }
+
+  function stop() {
+    animating = false;
+    if (timer) clearTimeout(timer);
+    btnGo.disabled = false;
+  }
+
+  btnGo.addEventListener("click", start);
+  btnReset.addEventListener("click", () => {
+    stop(); shownEpochs = 0; trainData = []; testData = []; epochTag.textContent = "";
+    draw();
+    status.textContent = "已重置。选个剧本再来一次？";
+  });
+  btnTest.addEventListener("click", () => {
+    showTest = !showTest;
+    btnTest.classList.toggle("on", showTest);
+    lgTest.style.display = showTest ? "" : "none";
+    draw();
+  });
+  scenarioEl.addEventListener("change", () => { stop(); });
+
+  window.addEventListener("resize", resize);
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+      draw();
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+      draw();
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  resize();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据分析全流程实验室</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:780px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .steps { display:flex; gap:6px; padding: 2px 16px 12px; flex-wrap:wrap;}
+  .step-btn {
+    padding:7px 12px; border-radius:99px; cursor:pointer; user-select:none;
+    border:1.5px solid var(--border); color:var(--text-sub); font-size:12.3px;
+    transition:all .15s ease;
+  }
+  .step-btn.active { border-color:var(--line); color:var(--line); font-weight:700; background:rgba(74,144,217,.08);}
+  .step-btn.done { border-color:var(--cat); }
+  .step-btn.locked { opacity:.4; cursor:not-allowed;}
+  /* 双栏 */
+  .panes { display:flex; gap:12px; padding:0 16px 12px; flex-direction:column;}
+  @media (min-width:720px){ .panes{flex-direction:row;} .pane-l{flex:1.05;} .pane-r{flex:1;} }
+  .pane-label { font-size:11.5px; color:var(--text-sub); margin-bottom:5px; font-weight:600;}
+  pre.code {
+    font-family: Consolas, monospace; font-size:11.8px; line-height:1.68;
+    background:var(--bg); border:1px solid var(--border);
+    border-radius:9px; padding:10px 12px; white-space:pre-wrap; word-break:break-word;
+    min-height:200px;
+  }
+  .viz-box {
+    border:1px solid var(--border); border-radius:9px; overflow:hidden;
+    min-height:200px; display:flex; flex-direction:column;
+  }
+  canvas#chart { width:100%; display:block; }
+  .out-text {
+    font-family:Consolas,monospace; font-size:12px; line-height:1.7;
+    padding:10px 12px; white-space:pre-wrap;
+  }
+  /* 参数区 */
+  .params {
+    display:none; gap:18px; align-items:center; flex-wrap:wrap;
+    padding: 8px 16px; border-top:1px dashed var(--border);
+  }
+  .params.show { display:flex; }
+  .param { display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-sub);}
+  input[type=range] { width:130px; accent-color:var(--dog);}
+  .pval { font-family:Consolas,monospace; font-weight:700; color:var(--dog); min-width:34px; text-align:right;}
+  button.regen {
+    padding:6px 14px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--dog); color:#fff; font-size:12.3px; font-weight:600;
+  }
+  .concl {
+    border-top:1px solid var(--border);
+    padding:10px 16px 14px; font-size:13px; line-height:1.65; color:var(--text-sub);
+    min-height:52px;
+  }
+  .concl b { color:var(--cat); }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🔬 数据分析全流程实验室
+    <small>100 名学生的学习数据。按 ①→⑤ 点——每一步都是真实项目里真实的一步</small>
+  </div>
+
+  <div class="steps" id="steps"></div>
+
+  <div class="panes">
+    <div class="pane-l">
+      <div class="pane-label">📝 这一步的代码</div>
+      <pre class="code" id="codePane"></pre>
+    </div>
+    <div class="pane-r">
+      <div class="pane-label">📺 输出 / 图表</div>
+      <div class="viz-box" id="vizBox">
+        <canvas id="chart"></canvas>
+        <pre class="out-text" id="outText" style="display:none"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="params" id="params">
+    <div class="param">真实效应（每小时值几分）：
+      <input type="range" id="pEffect" min="-4" max="8" step="0.2" value="4.2">
+      <span class="pval" id="vEffect">4.2</span>
+    </div>
+    <div class="param">噪声强度 σ：
+      <input type="range" id="pNoise" min="0" max="15" step="0.5" value="6">
+      <span class="pval" id="vNoise">6.0</span>
+    </div>
+    <button class="regen" id="btnRegen">🔄 用新参数重新生成数据</button>
+  </div>
+
+  <div class="concl" id="concl">👆 从第 ① 步开始。到第 ③ 步后，下方会解锁「上帝视角」滑块——你可以亲手改写数据的底层规律。</div>
+</div>
+
+<script>
+(function () {
+  // ---------- 数据生成（与课程代码完全一致，seed=42 可复现） ----------
+  function mulberry(seedArr) {
+    let s = seedArr >>> 0;
+    return function () {
+      s = (s + 0x6D2B79F5) >>> 0;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  // Box-Muller 正态
+  function gaussFactory(rnd) {
+    let spare = null;
+    return function () {
+      if (spare !== null) { const v = spare; spare = null; return v; }
+      let u = 0, v = 0;
+      while (u === 0) u = rnd();
+      while (v === 0) v = rnd();
+      const mag = Math.sqrt(-2 * Math.log(u));
+      spare = mag * Math.sin(2 * Math.PI * v);
+      return mag * Math.cos(2 * Math.PI * v);
+    };
+  }
+
+  let DATA = [];          // {hours, att, score}
+  let TRUE_EFFECT = 4.2;
+  let NOISE = 6;
+
+  function generate(effect, noise) {
+    const rnd = mulberry(42);
+    const gauss = gaussFactory(rnd);
+    DATA = [];
+    for (let i = 0; i < 100; i++) {
+      const hours = +(1 + rnd() * 9).toFixed(1);
+      const att = +Math.min(1, Math.max(0.5, 0.85 + gauss() * 0.08)).toFixed(2);
+      let score = 40 + hours * effect + att * 25 + gauss() * noise;
+      score = +Math.max(0, Math.min(100, score)).toFixed(1);
+      DATA.push({ hours, att, score });
+    }
+    computeStats();
+  }
+
+  let R = 0, SLOPE = 0, INTERCEPT = 0;
+  function pearson(xs, ys) {
+    const n = xs.length;
+    const mx = xs.reduce((a,b)=>a+b,0)/n, my = ys.reduce((a,b)=>a+b,0)/n;
+    let sxy=0, sxx=0, syy=0;
+    for (let i=0;i<n;i++){ const dx=xs[i]-mx, dy=ys[i]-my; sxy+=dx*dy; sxx+=dx*dx; syy+=dy*dy; }
+    return sxy/Math.sqrt(sxx*syy);
+  }
+  function linfit(xs, ys) {
+    const n=xs.length, mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+    let num=0, den=0;
+    for(let i=0;i<n;i++){ num+=(xs[i]-mx)*(ys[i]-my); den+=(xs[i]-mx)**2; }
+    const slope=num/den;
+    return [slope, my-slope*mx];
+  }
+  function computeStats() {
+    const xs = DATA.map(d=>d.hours), ys = DATA.map(d=>d.score);
+    R = pearson(xs, ys);
+    [SLOPE, INTERCEPT] = linfit(xs, ys);
+  }
+
+  // ---------- 步骤定义 ----------
+  const STEP_DEFS = [
+    {
+      key:"s1", label:"① 读入+体检", params:false,
+      code:'import pandas as pd\n\ndf = pd.read_csv("students.csv")\nprint(df.describe().round(2))',
+      run(step) { showDescribe(); narrate("体检通过：三列各 100 条无缺失、成绩范围合理。✅ <b>可以放心往下走</b>。"); },
+    },
+    {
+      key:"s2", label:"② 散点图初探", params:false,
+      code:'import matplotlib.pyplot as plt\n\nplt.scatter(df["时长"], df["成绩"], alpha=.6)\nplt.xlabel("每周学习时长")\nplt.ylabel("成绩")\nplt.show()',
+      run(step) { drawScatter(false); narrate("点云从左下往右上爬——肉眼可见的正相关。<b>先看图、再算数</b>是分析的正确顺序：图给你直觉，数给你证据。"); },
+    },
+    {
+      key:"s3", label:"③ 量化关系", params:true,
+      code:'import numpy as np\n\nr = np.corrcoef(df["时长"], df["成绩"])[0, 1]\nslope, intercept = np.polyfit(\n    df["时长"], df["成绩"], 1)\nprint(f"r = {r:.3f}")\nprint(f"成绩 ≈ {intercept:.1f} "\n      f"+ {slope:.2f} × 时长")',
+      run(step) { drawScatter(true); narrate("r ≈ <b>"+R.toFixed(3)+"</b>（相当强的正相关）；斜率 ≈ <b>"+SLOPE.toFixed(2)+" 分/小时</b>。<br>👇 现在试试底部的「上帝视角」滑块：改小噪声 → 散点收紧、r 变大；把真实效应调到 0 → 看「没有关系」长什么样。"); },
+    },
+    {
+      key:"s4", label:"④ 趋势线出图", params:true,
+      code:'xs = np.linspace(df["时长"].min(),\n                 df["时长"].max(), 50)\nplt.scatter(df["时长"], df["成绩"],\n            alpha=.6, label="学生")\nplt.plot(xs, intercept + slope*xs,\n         color="red", linewidth=2,\n         label=f"+{slope:.1f}分/小时")\nplt.legend(); plt.show()',
+      run(step) { drawScatter(true); narrate("红线穿过点云中心——<b>这就是线性回归的图形含义</b>。ML2 课将告诉你这条线是怎么「学」出来的；今天你已经手工拟合了一次。"); },
+    },
+    {
+      key:"s5", label:"⑤ 下结论", params:true,
+      code:'# 结论必须诚实：\nprint(f"""在本数据中，学习时长与成绩\n呈强正相关 (r={r:.2f})。\n在控制其他因素前，\n不宜直接断言因果。""")',
+      run(step) {
+        drawScatter(true);
+        document.getElementById("outText").style.display = "";
+        narrate("<b>最终结论（注意措辞）：</b>在本数据中学习时长与成绩强正相关（r≈"+R.toFixed(2)+"），每周多学 1 小时平均对应约 "+SLOPE.toFixed(1)+" 分的成绩差。<b>但相关 ≠ 因果</b>——可能是「学习动机」这类第三因素同时在推高两者。把不确定性说出来，才是专业的结论。");
+      },
+    },
+  ];
+
+  const stepsEl = document.getElementById("steps");
+  const codePane = document.getElementById("codePane");
+  const chartCv = document.getElementById("chart");
+  const outText = document.getElementById("outText");
+  const vizBox = document.getElementById("vizBox");
+  const conclEl = document.getElementById("concl");
+  const paramsEl = document.getElementById("params");
+
+  let unlocked = 1;   // 已解锁到的步骤（从 1 计）
+
+  STEP_DEFS.forEach((s, i) => {
+    const d = document.createElement("div");
+    d.className = "step-btn";
+    d.textContent = s.label;
+    d.addEventListener("click", () => gotoStep(i));
+    stepsEl.appendChild(d);
+  });
+
+  function gotoStep(i) {
+    if (i >= unlocked) return;
+    const s = STEP_DEFS[i];
+    stepsEl.querySelectorAll(".step-btn").forEach((b, bi) => {
+      b.classList.toggle("active", bi === i);
+      b.classList.toggle("done", bi < i);
+    });
+    codePane.textContent = s.code;
+    paramsEl.classList.toggle("show", s.params);
+    outText.style.display = "none";
+    s.run(i);
+    // 解锁下一步
+    if (i + 1 > unlocked - 1 && i + 1 <= STEP_DEFS.length) {
+      unlocked = Math.max(unlocked, i + 2);
+      updateLocks();
+    }
+  }
+  function updateLocks() {
+    stepsEl.querySelectorAll(".step-btn").forEach((b, bi) => {
+      b.classList.toggle("locked", bi >= unlocked);
+    });
+  }
+
+  function narrate(html) { conclEl.innerHTML = html; }
+
+  // ---------- 图表 ----------
+  function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  function setupCanvas(h) {
+    const dpr = window.devicePixelRatio || 1;
+    const w = chartCv.getBoundingClientRect().width || 340;
+    chartCv.width = w*dpr; chartCv.height = h*dpr;
+    chartCv.style.height = h+"px";
+    chartCv.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function showDescribe() {
+    setupCanvas(0);
+    const n = DATA.length;
+    const cols = [
+      ["时长", DATA.map(d=>d.hours)],
+      ["出勤率", DATA.map(d=>d.att)],
+      ["成绩", DATA.map(d=>d.score)],
+    ];
+    let txt = "       ";
+    cols.forEach(([nm]) => txt += pad(nm, 9));
+    txt += "\ncount  "; cols.forEach(([,v]) => txt += pad(String(n)+".00", 9));
+    txt += "\nmean   "; cols.forEach(([,v]) => txt += pad(mean(v).toFixed(2), 9));
+    txt += "\nstd    "; cols.forEach(([,v]) => txt += pad(std(v).toFixed(2), 9));
+    txt += "\nmin    "; cols.forEach(([,v]) => txt += pad(Math.min(...v).toFixed(2), 9));
+    txt += "\nmax    "; cols.forEach(([,v]) => txt += pad(Math.max(...v).toFixed(2), 9));
+    outText.style.display = "";
+    outText.style.display = "";   // keep visible
+    vizBox.querySelector("canvas").style.display = "none";
+    outText.textContent = txt;
+
+    function mean(v){ return v.reduce((a,b)=>a+b,0)/v.length; }
+    function std(v){ const m=mean(v); return Math.sqrt(v.reduce((a,x)=>a+(x-m)**2,0)/(v.length-1)); }
+    function pad(s,w){ const vis=[...s].reduce((a,c)=>a+(c.charCodeAt(0)>255?2:1),0); return s+" ".repeat(Math.max(0,w-vis)); }
+  }
+
+  function drawScatter(withLine) {
+    vizBox.querySelector("canvas").style.display = "";
+    outText.style.display = "none";
+    setupCanvas(210);
+    const ctx = chartCv.getContext("2d");
+    const W = chartCv.getBoundingClientRect().width || 340, H = 210;
+    ctx.clearRect(0,0,W,H);
+    const padL=38,padB=26,padT=12,padR=12;
+    const x0=padL,y0=H-padB,pw=W-padL-padR,ph=y0-padT;
+    const xMax=10.5, yMin=Math.min(35, Math.min(...DATA.map(d=>d.score))-5), yMax=105;
+
+    // 网格
+    ctx.strokeStyle = css("--border"); ctx.globalAlpha=.5; ctx.lineWidth=1;
+    ctx.font="9.5px Consolas,monospace"; ctx.fillStyle=css("--text-sub");
+    for(let gx=2;gx<=10;gx+=2){
+      const px=x0+gx/xMax*pw;
+      ctx.beginPath();ctx.moveTo(px,padT);ctx.lineTo(px,y0);ctx.stroke();
+      ctx.textAlign="center"; ctx.fillText(String(gx)+"h", px, y0+11);
+    }
+    for(let gy=50;gy<=100;gy+=25){
+      const py=y0-(gy-yMin)/(yMax-yMin)*ph;
+      ctx.beginPath();ctx.moveTo(x0,py);ctx.lineTo(x0+pw,py);ctx.stroke();
+      ctx.textAlign="right"; ctx.fillText(String(gy), x0-4, py+3);
+    }
+    ctx.globalAlpha=1;
+
+    // 点
+    DATA.forEach(d=>{
+      const px=x0+d.hours/xMax*pw;
+      const py=y0-(d.score-yMin)/(yMax-yMin)*ph;
+      ctx.beginPath();ctx.arc(px,py,3.2,0,Math.PI*2);
+      ctx.fillStyle=css("--line")+"aa";ctx.fill();
+    });
+
+    // 趋势线
+    if (withLine) {
+      ctx.beginPath();
+      const xa=1, xb=10;
+      ctx.moveTo(x0+xa/xMax*pw, y0-(INTERCEPT+SLOPE*xa-yMin)/(yMax-yMin)*ph);
+      ctx.lineTo(x0+xb/xMax*pw, y0-(INTERCEPT+SLOPE*xb-yMin)/(yMax-yMin)*ph);
+      ctx.strokeStyle="#e05252"; ctx.lineWidth=2.2; ctx.stroke();
+      ctx.fillStyle="#e05252"; ctx.font="bold 10px 'Noto Sans SC',sans-serif"; ctx.textAlign="left";
+      ctx.fillText("+"+SLOPE.toFixed(1)+"分/小时", x0+pw-92, padT+12);
+    }
+
+    ctx.fillStyle=css("--text-sub"); ctx.font="10px 'Noto Sans SC',sans-serif"; ctx.textAlign="center";
+    ctx.fillText("每周学习时长 →", x0+pw/2, H-2);
+  }
+
+  // ---------- 参数 ----------
+  const pEffect=document.getElementById("pEffect"), pNoise=document.getElementById("pNoise");
+  const vEffect=document.getElementById("vEffect"), vNoise=document.getElementById("vNoise");
+  pEffect.addEventListener("input",()=>{ vEffect.textContent=(+pEffect.value).toFixed(1); });
+  pNoise.addEventListener("input",()=>{ vNoise.textContent=(+pNoise.value).toFixed(1); });
+  document.getElementById("btnRegen").addEventListener("click",()=>{
+    TRUE_EFFECT=+pEffect.value; NOISE=+pNoise.value;
+    generate(TRUE_EFFECT, NOISE);
+    // 重跑当前激活步骤
+    const activeIdx=[...stepsEl.children].findIndex(b=>b.classList.contains("active"));
+    if(activeIdx>=0){ gotoStep(activeIdx); }
+    narrate("🔄 数据已用新参数重新生成（效应="+TRUE_EFFECT.toFixed(1)+"，噪声σ="+NOISE.toFixed(1)+"）。当前步骤的数字与图已刷新。<br><b>对照一下：</b>r 和斜率离真实值 "+TRUE_EFFECT.toFixed(1)+" 有多远？噪声越大偏得越远——这就是「样本估计 ≠ 真值」的手感。");
+  });
+
+  window.addEventListener("resize", ()=>{
+    const activeIdx=[...stepsEl.children].findIndex(b=>b.classList.contains("active"));
+    if(activeIdx>=0) gotoStep(activeIdx);
+  });
+
+  // 深色模式同步
+  function syncTheme(){
+    try{
+      const attr=window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark",attr==="dark");
+      const activeIdx=[...stepsEl.children].findIndex(b=>b.classList.contains("active"));
+      if(activeIdx>=0) gotoStep(activeIdx);
+    }catch(err){}
+  }
+  window.addEventListener("message",(ev)=>{
+    if(ev.data&&ev.data.type==="theme"){
+      document.documentElement.classList.toggle("dark",ev.data.theme==="dark");
+      syncTheme();
+    }
+  });
+  setTimeout(syncTheme,100);
+
+  generate(TRUE_EFFECT, NOISE);
+  updateLocks();
+  gotoStep(0);
+})();
+</script>
+</body>
+</html>

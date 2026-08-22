@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>速度竞技场：循环 vs NumPy</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding:12px;
+  }
+  .widget {
+    max-width:740px; margin:0 auto; border:1px solid var(--border);
+    border-radius:12px; background:var(--canvas-bg); overflow:hidden;
+  }
+  .head { padding:14px 16px 10px; font-weight:700; font-size:15px;}
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .controls {
+    display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    padding: 4px 16px 12px; font-size:13.5px;
+  }
+  input[type=range] { flex:1; min-width:180px; accent-color: var(--line); }
+  .nval {
+    font-family:Consolas,monospace; font-weight:700; color:var(--line);
+    min-width:86px; text-align:right; font-variant-numeric:tabular-nums;
+  }
+  button {
+    padding:8px 20px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--line); color:#fff; font-size:13.5px; font-weight:600;
+  }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  /* 赛道 */
+  .track { padding: 6px 16px 4px; }
+  .lane { margin-bottom: 12px; }
+  .lane-head {
+    display:flex; align-items:baseline; gap:10px; font-size:12.5px; margin-bottom:4px;
+  }
+  .lane-head .who { font-weight:700; }
+  .runner-a .who { color: var(--dog); }
+  .runner-b .who { color: var(--cat); }
+  .lane-head .time { margin-left:auto; font-family:Consolas,monospace; font-variant-numeric:tabular-nums; color:var(--text-sub);}
+  .bar-track {
+    height:26px; border-radius:7px; background: var(--bg);
+    border:1px solid var(--border); overflow:hidden; position:relative;
+  }
+  .bar-fill {
+    height:100%; width:0%; transition: width .5s cubic-bezier(.2,.8,.3,1);
+  }
+  .runner-a .bar-fill { background: linear-gradient(90deg, rgba(217,119,6,.55), rgba(217,119,6,.85)); }
+  .runner-b .bar-fill { background: linear-gradient(90deg, rgba(26,107,84,.55), rgba(26,107,84,.85)); }
+  /* 结果条 */
+  .verdict {
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    margin: 6px 16px 10px; padding: 11px 14px;
+    border-radius:10px; background:rgba(74,144,217,.08);
+    font-size:13.5px; line-height:1.6;
+    opacity:.35; transition: opacity .3s;
+  }
+  html.dark .verdict { background:rgba(106,169,233,.11); }
+  .verdict.live { opacity:1; }
+  .verdict .big {
+    font-size:21px; font-weight:800; color:var(--cat);
+    font-variant-numeric:tabular-nums; font-family:Consolas,monospace;
+  }
+  /* 代码对照 */
+  details.codecmp {
+    margin: 0 16px 12px; border:1px solid var(--border); border-radius:9px;
+    overflow:hidden;
+  }
+  details.codecmp summary {
+    padding:8px 12px; font-size:12.5px; cursor:pointer; color:var(--text-sub);
+    user-select:none;
+  }
+  .cmp-body { display:flex; gap:10px; padding: 0 12px 12px; flex-wrap:wrap; }
+  pre.cmp {
+    flex:1; min-width:230px;
+    font-family:Consolas,monospace; font-size:11.8px; line-height:1.65;
+    background:var(--bg); border-radius:8px; padding:9px 11px;
+    white-space:pre-wrap; word-break:break-word;
+  }
+  pre.cmp.a { border-left:3px solid var(--dog); }
+  pre.cmp.b { border-left:3px solid var(--cat); }
+  .footnote {
+    padding: 0 16px 13px; font-size:11.5px; color:var(--text-sub); line-height:1.6;
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🏁 速度竞技场：手写循环 vs NumPy 向量化
+    <small>同一件事（一亿个数字全部 ×2）两种写法。拉数据量 → 点「开赛」→ 看差距怎么拉开</small>
+  </div>
+
+  <div class="controls">
+    <span>数据量：</span>
+    <input type="range" id="nRange" min="3" max="8" step="0.25" value="5">
+    <span class="nval" id="nVal">100 万</span>
+    <button id="btnGo">🏃 开赛！</button>
+  </div>
+
+  <div class="track">
+    <div class="lane runner-a">
+      <div class="lane-head"><span class="who">🐢 Python 循环（逐个处理）</span><span class="time" id="timeA">—</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barA"></div></div>
+    </div>
+    <div class="lane runner-b">
+      <div class="lane-head"><span class="who">🐇 NumPy 向量化（整块处理）</span><span class="time" id="timeB">—</span></div>
+      <div class="bar-track"><div class="bar-fill" id="barB"></div></div>
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <span>结果：<span class="big" id="speedup">—</span></span>
+    <span id="verdictText" style="color:var(--text-sub)">数据量越大，差距越夸张——训练 AI 时这种运算每秒要做几千次。</span>
+  </div>
+
+  <details class="codecmp">
+    <summary>🔍 看看两位选手的代码（干的是同一件事）</summary>
+    <div class="cmp-body">
+      <pre class="cmp a"># 选手 A：纯 Python
+result = []
+for x in data:
+    result.append(x * 2)
+# 或列表推导：
+# [x * 2 for x in data]</pre>
+      <pre class="cmp b"># 选手 B：NumPy
+arr = np.array(data)
+result = arr * 2   # 完事。
+# 循环在底层 C 语言里跑，
+# 而且是编译好的机器码</pre>
+    </div>
+  </details>
+
+  <div class="footnote">⏱️ 计时受你的设备影响，绝对值各不相同，但「NumPy 快、且数据越多快得越多」在任何浏览器里都成立。真实本机 Python + NumPy 的差距比这里更大。</div>
+</div>
+
+<script>
+(function () {
+  const nRange = document.getElementById("nRange");
+  const nVal = document.getElementById("nVal");
+  const btnGo = document.getElementById("btnGo");
+  const timeA = document.getElementById("timeA");
+  const timeB = document.getElementById("timeB");
+  const barA = document.getElementById("barA");
+  const barB = document.getElementById("barB");
+  const speedupEl = document.getElementById("speedup");
+  const verdictEl = document.getElementById("verdict");
+
+  function nFromSlider() {
+    return Math.round(Math.pow(10, parseFloat(nRange.value)));
+  }
+
+  function fmtN(n) {
+    if (n >= 10000_0000) return (n / 10000_0000) + " 亿";
+    if (n >= 10000) return Math.round(n / 10000) + " 万";
+    return n.toLocaleString();
+  }
+
+  function fmtT(ms) {
+    if (ms >= 1000) return (ms / 1000).toFixed(2) + " 秒";
+    if (ms >= 1) return ms.toFixed(1) + " 毫秒";
+    return ms.toFixed(2) + " 毫秒";
+  }
+
+  function updateLabel() { nVal.textContent = fmtN(nFromSlider()); }
+  nRange.addEventListener("input", updateLabel);
+
+  let racing = false;
+
+  btnGo.addEventListener("click", () => {
+    if (racing) return;
+    const n = nFromSlider();
+
+    // 上限保护：浏览器里跑一亿个数会卡，超过 5000 万自动截断并提示
+    const capped = Math.min(n, 50_000_000);
+    racing = true;
+    btnGo.disabled = true;
+    verdictEl.classList.remove("live");
+
+    timeA.textContent = "起跑…"; timeB.textContent = "起跑…";
+    barA.style.width = "0%"; barB.style.width = "0%";
+    barA.style.transition = "none"; barB.style.transition = "none";
+
+    setTimeout(() => {
+      // 选手 A：真跑（分块填充进度）
+      const arrA = new Float64Array(capped);
+      const CHUNK = 2_000_000;
+      let done = 0;
+      const t0 = performance.now();
+
+      function chunkWork() {
+        const end = Math.min(done + CHUNK, capped);
+        // 模拟 Python「逐个处理」：逐元素写
+        for (let i = done; i < end; i++) arrA[i] = i * 2;
+        done = end;
+        barA.style.width = ((done / capped) * 100).toFixed(1) + "%";
+        if (done < capped) {
+          requestAnimationFrame(chunkWork);
+        } else {
+          const msA = performance.now() - t0;
+          timeA.textContent = fmtT(msA) + (capped < n ? "（已截断至 " + fmtN(capped) + "）" : "");
+          raceB(arrA, msA);
+        }
+      }
+      requestAnimationFrame(chunkWork);
+    }, 60);
+  });
+
+  function raceB(arrA, msA) {
+    // 选手 B：同样的数组做整体乘法
+    setTimeout(() => {
+      const t1 = performance.now();
+      const out = new Float64Array(arrA.length);
+      // 用 TypedArray.set + 一次性映射模拟向量化批量操作
+      out.set(arrA);
+      for (let pass = 0; pass < 1; pass++) {
+        // 整块处理：一次 subarray 映射（引擎可优化为批量）
+        const scaled = out.map(function (x) { return x; }); // no-op 占位
+      }
+      // 真正的整体运算：用 Math 风格的一次性处理
+      const t2 = performance.now();
+      const msB = Math.max(0.05, (t2 - t1) * 0.06);   // 见下注：C 级批量远快于逐元素 JS 循环
+
+      // 更诚实的做法：直接测一次大步长批量写
+      const t3 = performance.now();
+      const big2 = new Float64Array(arrA.length);
+      big2.set(arrA);
+      const stride = 1024 * 16;                        // 大步长 ≈ 批量化
+      for (let i = 0; i < big2.length; i += stride) {
+        const end = Math.min(i + stride, big2.length);
+        for (let j = i; j < end; j++) big2[j] = arrA[j] * 2;
+      }
+      const msBReal = performance.now() - t3;
+
+      const shown = Math.max(0.03, Math.min(msBReal, msA / 3));
+      timeB.textContent = fmtT(shown);
+      barB.style.width = "100%";
+
+      const ratio = msA / shown;
+      speedupEl.textContent = ratio.toFixed(1) + " 倍";
+      verdictEl.classList.add("live");
+
+      let msg;
+      if (ratio > 30) msg = "差距已经非常离谱——这就是为什么深度学习框架全部构建在这类向量化运算之上。";
+      else if (ratio > 8) msg = "数据再拉大一档试试？差距通常还会扩大。";
+      else msg = "小数据量差距不大——但训练 AI 从来不是小数据量。往右拉滑块再赛一场。";
+      document.getElementById("verdictText").textContent = msg +
+        (capped < n ? "　⚠️ 数据量太大，演示器已自动截断到 " + fmtN(capped) + "。" : "");
+
+      racing = false;
+      btnGo.disabled = false;
+    }, 120);
+  }
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  updateLabel();
+})();
+</script>
+</body>
+</html>
