@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学习率调节器：小球下山实验</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+  }
+  .widget {
+    max-width: 720px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--canvas-bg);
+    overflow: hidden;
+  }
+  canvas { display: block; width: 100%; }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .lr-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 240px; }
+  input[type="range"] { flex: 1; accent-color: var(--line); }
+  .lr-val {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: var(--line);
+    min-width: 52px;
+    text-align: right;
+  }
+  button {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--line);
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button.ghost {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-sub);
+    font-weight: 400;
+  }
+  .statusbar {
+    padding: 9px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.55;
+    min-height: 40px;
+  }
+  .statusbar b { color: var(--text); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <canvas id="hill"></canvas>
+  <div class="controls">
+    <span>学习率 Learning Rate：</span>
+    <div class="lr-wrap">
+      <input type="range" id="lrSlider" min="-3" max="1.4" step="0.01" value="-1">
+      <span class="lr-val" id="lrVal">0.100</span>
+    </div>
+    <button id="btnGo">▶ 放下小球</button>
+    <button id="btnReset" class="ghost">重置</button>
+  </div>
+  <div class="statusbar" id="status">👆 拖动滑块改变步长，然后放下小球。目标：滚到山谷最低点（损失最小的地方）。</div>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById("hill");
+  const ctx = canvas.getContext("2d");
+  const slider = document.getElementById("lrSlider");
+  const lrVal = document.getElementById("lrVal");
+  const btnGo = document.getElementById("btnGo");
+  const btnReset = document.getElementById("btnReset");
+  const status = document.getElementById("status");
+
+  // 山谷曲线：y = f(x)，x∈[0,1]。两个谷，左边更浅——制造「局部最小」话题
+  function f(x) {
+    return 0.55*Math.cos((x - 0.28) * Math.PI * 2.2) + 0.30*Math.sin(x*9.5) * 0.35 + (x - 0.5)*(x - 0.5)*0.6;
+  }
+
+  let ballX = null;       // 小球当前位置
+  let trail = [];         // 足迹
+  let animating = false;
+  let rafId = null;
+  let steps = 0;
+
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  function lr() { return Math.pow(10, parseFloat(slider.value)); }
+
+  slider.addEventListener("input", () => {
+    lrVal.textContent = lr().toFixed(3);
+    stop();
+    status.textContent = "学习率已改为 " + lr().toFixed(3) + "。再点「放下小球」试试新步长。";
+  });
+  lrVal.textContent = lr().toFixed(3);
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.getBoundingClientRect().width;
+    canvas.width = w * dpr;
+    canvas.height = w * 0.42 * dpr;
+    canvas.style.height = (w * 0.42) + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function toPix(x, y) {
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    return [x * w, h * 0.92 - y * h * 0.62];
+  }
+
+  function draw() {
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    ctx.clearRect(0, 0, w, h);
+
+    // 曲线
+    ctx.beginPath();
+    for (let px = 0; px <= w; px += 2) {
+      const x = px / w;
+      const [sx, sy] = toPix(x, f(x));
+      if (px === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = css("--line") || "#4a90d9";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // 足迹
+    ctx.fillStyle = css("--dog") || "#d97706";
+    for (const tx of trail) {
+      const [sx, sy] = toPix(tx, f(tx));
+      ctx.beginPath(); ctx.arc(sx, sy, 3, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // 小球
+    if (ballX !== null) {
+      const [sx, sy] = toPix(ballX, f(ballX));
+      ctx.beginPath(); ctx.arc(sx, sy, 9, 0, Math.PI * 2);
+      ctx.fillStyle = css("--cat") || "#1a6b54";
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = css("--canvas-bg");
+      ctx.stroke();
+    }
+  }
+
+  function step() {
+    if (!animating) return;
+    const L = lr();
+    // 数值导数：斜率 ≈ (f(x+ε)-f(x-ε)) / 2ε
+    const eps = 1e-4;
+    const slope = (f(Math.min(1, ballX + eps)) - f(Math.max(0, ballX - eps))) /
+                  ((Math.min(1, ballX + eps)) - (Math.max(0, ballX - eps)));
+    ballX = ballX - L * slope;          // ← 这一行就是梯度下降！
+    steps++;
+    trail.push(ballX);
+
+    const out = ballX < 0.005 || ballX > 0.995;
+    status.innerHTML = "第 <b>" + steps + "</b> 步：x = " + ballX.toFixed(3) +
+      "，坡度 = " + slope.toFixed(3);
+
+    if (out) {
+      animating = false;
+      status.innerHTML = "💥 第 <b>" + steps + "</b> 步直接冲出了山界！" +
+        "步子太大，每一步都越过谷底、越走越远 —— 这叫<b>发散</b>。" +
+        "把学习率调小（比如 0.05）再试一次。";
+      ballX = null; draw();
+      return;
+    }
+    if (Math.abs(L * slope) < 0.0012 && steps > 5) {
+      animating = false;
+      status.innerHTML = "🎉 第 <b>" + steps + "</b> 步停住了：这里坡度≈0，小球认为到了谷底（损失最小点）。" +
+        "足迹就是「参数被调整的过程」。换个起点或换学习率，看看会不会停在另一个谷？";
+      draw();
+      return;
+    }
+    rafId = requestAnimationFrame(step);
+  }
+
+  function start() {
+    stop();
+    ballX = 0.06 + Math.random() * 0.12;
+    trail = [ballX];
+    steps = 0;
+    animating = true;
+    step();
+  }
+  function stop() {
+    animating = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+  btnGo.addEventListener("click", start);
+  btnReset.addEventListener("click", () => {
+    stop(); ballX = null; trail = []; steps = 0;
+    status.textContent = "已重置。拖动滑块改学习率，再放下小球。";
+    draw();
+  });
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+      draw();
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+      draw();
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  window.addEventListener("resize", resize);
+  resize();
+})();
+</script>
+</body>
+</html>
