@@ -23,6 +23,18 @@ source: https://www.3blue1brown.com/lessons/gradient-descent
 
 > 核实于 2026-08-22。这一集是全系列与本站关联最深的一集——它就是 [[prerequisites/math/gradient-descent|M7 梯度下降]]的视频版。
 
+## ⏱ 按图索骥：跳到想看的段落
+
+| 导读章节               | B 站（无需翻墙）                                                   | YouTube 原版                                                   |
+| ---------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------- |
+| 开场：随机网络 ≈ 瞎猜  | [P2 · 0:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=2&t=0s)  | [0:00](https://www.youtube.com/watch?v=IHZwWFHWa-w&t=0s)       |
+| 概念 1：损失函数       | [约 2:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=2&t=150s)  | [约 2:20](https://www.youtube.com/watch?v=IHZwWFHWa-w&t=140s)  |
+| 概念 2：13000 维空间   | [约 4:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=2&t=270s)  | [约 4:10](https://www.youtube.com/watch?v=IHZwWFHWa-w&t=250s)  |
+| 概念 3：学习率与下山   | [约 8:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=2&t=510s)  | [约 8:00](https://www.youtube.com/watch?v=IHZwWFHWa-w&t=480s)  |
+| 概念 4：真正的梯度下降 | [约 12:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=2&t=720s) | [约 11:30](https://www.youtube.com/watch?v=IHZwWFHWa-w&t=690s) |
+
+> 时间点基于原版章节结构估算，配音版可能有 ±30 秒偏移——发现明显对不上欢迎反馈修正。
+
 ## 🗺 先拿地图
 
 ```mermaid

@@ -23,6 +23,16 @@ source: https://www.3blue1brown.com/lessons/backpropagation-calculus
 
 > 核实于 2026-08-22。本集默认你熟悉导数；如果「导数」这个词已经模糊，先去补 [[prerequisites/math/index|M6 · 导数：变化的速度]] 再回来，10 分钟能看懂的视频不该靠硬背。
 
+## ⏱ 按图索骥：跳到想看的段落
+
+| 导读章节               | B 站（无需翻墙）                                                  | YouTube 原版                                                  |
+| ---------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------- |
+| 开场：直觉的回忆       | [P4 · 0:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=4&t=0s) | [0:00](https://www.youtube.com/watch?v=tIeHLnjs5U8&t=0s)      |
+| 概念 1：最后一层的梯度 | [约 1:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=4&t=90s)  | [约 1:20](https://www.youtube.com/watch?v=tIeHLnjs5U8&t=80s)  |
+| 概念 2：链式法则往回传 | [约 4:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=4&t=240s) | [约 3:40](https://www.youtube.com/watch?v=tIeHLnjs5U8&t=220s) |
+
+> 时间点基于原版章节结构估算，配音版可能有 ±30 秒偏移——发现明显对不上欢迎反馈修正。
+
 ## 🗺 先拿地图
 
 第 3 集说「锅按权重比例往回分摊」，这一集证明这句话在数学上就是**链式法则**：

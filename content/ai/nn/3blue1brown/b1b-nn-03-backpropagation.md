@@ -23,6 +23,17 @@ source: https://www.3blue1brown.com/lessons/backpropagation
 
 > 核实于 2026-08-22。\*YouTube 上标题编号为 Chapter 3，官网因多一节纯网页互动课而列为 Chapter 4——见[目录页说明](ai/nn/3blue1brown/index)。本集是「直觉篇」，配套的数学推导在第 4 集和官网文字版。
 
+## ⏱ 按图索骥：跳到想看的段落
+
+| 导读章节                 | B 站（无需翻墙）                                                  | YouTube 原版                                                  |
+| ------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------- |
+| 开场：网络答错了         | [P3 · 0:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=3&t=0s) | [0:00](https://www.youtube.com/watch?v=Ilg3gGewQ5U&t=0s)      |
+| 概念 1：想要的输出变化   | [约 1:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=3&t=90s)  | [约 1:20](https://www.youtube.com/watch?v=Ilg3gGewQ5U&t=80s)  |
+| 概念 2：责任按权重分摊   | [约 3:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=3&t=210s) | [约 3:10](https://www.youtube.com/watch?v=Ilg3gGewQ5U&t=190s) |
+| 概念 4：直觉篇 vs 数学篇 | [约 9:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=3&t=570s) | [约 9:00](https://www.youtube.com/watch?v=Ilg3gGewQ5U&t=540s) |
+
+> 时间点基于原版章节结构估算，配音版可能有 ±30 秒偏移——发现明显对不上欢迎反馈修正。
+
 ## 🗺 先拿地图
 
 第 2 集说过：训练 = 沿负梯度微调参数。但梯度有 1.3 万个分量——**每个权重、每个偏置各一个**。谁来算？

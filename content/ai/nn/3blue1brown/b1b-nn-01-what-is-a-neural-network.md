@@ -23,6 +23,20 @@ source: https://www.3blue1brown.com/lessons/neural-networks
 
 > 以上信息核实于 2026-08-22。官网这一集还有配套的纯网页互动课 _Analyzing our neural network_，看完视频强烈建议去玩一下。
 
+## ⏱ 按图索骥：跳到想看的段落
+
+导读每个部分对应视频的哪一段？点直达（B 站为中文配音版分P，时间点为该主题开始处，供参考）：
+
+| 导读章节                     | B 站（无需翻墙）                                                   | YouTube 原版                                                  |
+| ---------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------- |
+| 开场：手写数字为什么难       | [P1 · 0:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=1&t=0s)  | [0:00](https://www.youtube.com/watch?v=aircAruvnKk&t=0s)      |
+| 概念 1：神经元与激活值       | [约 1:40](https://www.bilibili.com/video/BV1BzNLzzExg?p=1&t=100s)  | [约 1:35](https://www.youtube.com/watch?v=aircAruvnKk&t=95s)  |
+| 概念 2：权重与加权和         | [约 4:30](https://www.bilibili.com/video/BV1BzNLzzExg?p=1&t=270s)  | [约 4:20](https://www.youtube.com/watch?v=aircAruvnKk&t=260s) |
+| 概念 3：hopefully 与部件学习 | [约 8:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=1&t=480s)  | [约 7:50](https://www.youtube.com/watch?v=aircAruvnKk&t=470s) |
+| Sigmoid 挤压函数             | [约 10:00](https://www.bilibili.com/video/BV1BzNLzzExg?p=1&t=600s) | [约 9:30](https://www.youtube.com/watch?v=aircAruvnKk&t=570s) |
+
+> 时间点基于原版章节结构估算，配音版可能有 ±30 秒偏移——如果发现明显对不上，欢迎反馈修正。
+
 ## 🗺 先拿地图：这一集到底在讲什么
 
 视频很长，但骨架只有四步：
