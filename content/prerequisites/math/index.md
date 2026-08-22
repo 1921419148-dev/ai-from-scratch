@@ -21,6 +21,19 @@ description: 从加减乘除补到微积分——AI 需要的全部数学，零�
 | M9  | 概率：不确定性的度量                                                 | 分类、生成模型         | 🚧   |
 | M10 | 统计初步：从样本猜整体                                               | 评估指标的理解         | 🚧   |
 
+## 🎬 实验板块：3Blue1Brown 伴学指南
+
+看视频之前读导读、看完视频玩演示——把「视觉化天花板」真正看懂：
+
+| #   | 课程                                                                 | 状态 |
+| --- | -------------------------------------------------------------------- | ---- |
+| B1  | [[prerequisites/math/3blue1brown/b1b-nn-01-what-is-a-neural-network\|但什么是神经网络？]] | ✅ |
+| B2  | [[prerequisites/math/3blue1brown/b1b-nn-02-gradient-descent\|梯度下降，网络如何学习]]      | ✅ |
+| B3  | [[prerequisites/math/3blue1brown/b1b-nn-03-backpropagation\|反向传播在做什么？]]           | ✅ |
+| B4  | [[prerequisites/math/3blue1brown/b1b-nn-04-backprop-calculus\|反向传播的微积分]]           | ✅ |
+
+→ 完整目录见 [[prerequisites/math/3blue1brown/index|3Blue1Brown 伴学指南]]
+
 > [!tip] 数学恐惧症患者专用建议
 >
 > - 不必按顺序全学！学到 **M7（梯度下降）** 就可以跳去机器学习，边用边回来补

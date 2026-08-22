@@ -53,6 +53,22 @@ description: 全站术语中英对照速查表
 | Transformer                  | Transformer（变换器，通常不翻译） |
 | Pre-training / Fine-tuning   | 预训练 / 微调                     |
 
+## 3B1B 伴学指南新增（神经网络系列）
+
+| 英文                         | 中文                                        |
+| ---------------------------- | ------------------------------------------- |
+| Activation / Activation Value| 激活 / 激活值（神经元的输出数字）           |
+| Cost Function                | 代价函数（对全部样本平均后的损失）          |
+| Hidden Layer                 | 隐藏层                                      |
+| Sigmoid                      | Sigmoid 函数（S 形挤压函数，通常不翻译）    |
+| Gradient                     | 梯度（各方向偏导数组成的向量）              |
+| Stochastic Gradient Descent  | SGD 随机梯度下降                            |
+| Mini-batch                   | 小批量（每次抽一小撮样本估梯度）            |
+| Chain Rule                   | 链式法则                                    |
+| Vanishing Gradient           | 梯度消失                                    |
+| ReLU (Rectified Linear Unit) | ReLU 激活函数                               |
+| MNIST                        | 手写数字数据集（机器学习的「Hello World」） |
+
 ## 大模型时代
 
 | 英文                           | 缩写 | 中文                     |
