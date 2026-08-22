@@ -17,13 +17,13 @@ npx tsc --noEmit         # 类型检查
 
 本仓库由 5 个并行 Agent 共同维护，角色与前缀见宪章第四十五章：
 
-| 角色              | 分支命名空间   | 负责目录                                                                 | 任务前缀 |
-| ----------------- | -------------- | ------------------------------------------------------------------------ | -------- |
-| 数学 Writer       | `ai/math/*`    | `content/prerequisites/math/`                                            | MATH     |
-| 英语 Writer       | `ai/english/*` | `content/prerequisites/english/`                                         | ENG      |
+| 角色              | 分支命名空间   | 负责目录                                             | 任务前缀 |
+| ----------------- | -------------- | ---------------------------------------------------- | -------- |
+| 数学 Writer       | `ai/math/*`    | `content/prerequisites/math/`                        | MATH     |
+| 英语 Writer       | `ai/english/*` | `content/prerequisites/english/`                     | ENG      |
 | AI 课程 Writer    | `ai/aic/*`     | `content/ai/ getting-started/ prerequisites/python/` | AIC      |
-| 青年大学习 Writer | `ai/qnx/*`     | `content/qingnian/`                                                      | QNX      |
-| 审查 Reviewer     | `ai/review/*`  | 只写 `logs/`，不改内容                                                   | REV      |
+| 青年大学习 Writer | `ai/qnx/*`     | `content/qingnian/`                                  | QNX      |
+| 审查 Reviewer     | `ai/review/*`  | 只写 `logs/`，不改内容                               | REV      |
 
 **流程铁律**（宪章第四、八、四十一章）：
 

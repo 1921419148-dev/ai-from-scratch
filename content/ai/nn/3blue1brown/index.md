@@ -25,11 +25,11 @@ flowchart LR
 
 以 YouTube 官方「深度学习 Neural networks」系列经典 4 集为序：
 
-| #   | 伴学页                                                                                | 对应视频（官方英文标题）                                 | 联动课程                                             | 状态 |
-| --- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------- | ---- |
-| B1  | [[ai/nn/3blue1brown/b1b-nn-01-what-is-a-neural-network\|什么是神经网络]] | But what is a neural network? \| Deep learning chapter 1 | M7 · [[ai/dl/index\|DL1]]                               | ✅   |
+| #   | 伴学页                                                                   | 对应视频（官方英文标题）                                 | 联动课程                                             | 状态 |
+| --- | ------------------------------------------------------------------------ | -------------------------------------------------------- | ---------------------------------------------------- | ---- |
+| B1  | [[ai/nn/3blue1brown/b1b-nn-01-what-is-a-neural-network\|什么是神经网络]] | But what is a neural network? \| Deep learning chapter 1 | M7 · [[ai/dl/index\|DL1]]                            | ✅   |
 | B2  | [[ai/nn/3blue1brown/b1b-nn-02-gradient-descent\|梯度下降，网络如何学习]] | Gradient descent, how neural networks learn \| Chapter 2 | [[prerequisites/math/gradient-descent\|M7 梯度下降]] | ✅   |
-| B3  | [[ai/nn/3blue1brown/b1b-nn-03-backpropagation\|反向传播在做什么]]        | Backpropagation, intuitively \| Chapter 3                | [[ai/dl/index\|DL2 反向传播]]                           | ✅   |
+| B3  | [[ai/nn/3blue1brown/b1b-nn-03-backpropagation\|反向传播在做什么]]        | Backpropagation, intuitively \| Chapter 3                | [[ai/dl/index\|DL2 反向传播]]                        | ✅   |
 | B4  | [[ai/nn/3blue1brown/b1b-nn-04-backprop-calculus\|反向传播的微积分]]      | Backpropagation calculus \| Chapter 4                    | M6 导数                                              | ✅   |
 
 > [!note] 关于章节编号的一个冷知识

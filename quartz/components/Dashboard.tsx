@@ -143,7 +143,9 @@ const Dashboard: QuartzComponent = ({ allFiles, fileData, cfg }: QuartzComponent
         </div>
       ))}
 
-      <p class="dashboard-note">以上统计由构建时自动生成：课程篇数、讲义字数、最近更新日期均实时反映仓库状态。</p>
+      <p class="dashboard-note">
+        以上统计由构建时自动生成：课程篇数、讲义字数、最近更新日期均实时反映仓库状态。
+      </p>
     </div>
   )
 }
