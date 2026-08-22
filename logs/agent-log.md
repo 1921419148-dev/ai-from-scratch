@@ -7,6 +7,19 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## ENG-RES-001 — 2026-08-22
+- **Agent**: ENG Writer（英语 Agent）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - `content/appendix/resources.md` 新增「🔤 英语学习资源」分栏：12 项资源按官方机构 / 教学名师 / 社区平台 / 中文讲解四组排列，每项附官网链接、特点、适合人群
+  - `content/prerequisites/english/index.md` 底部新增资源库入口链接
+  - 资源清单（用户指定）：BBC Learning English、British Council LearnEnglish、Cambridge English、Rachel's English、English with Lucy、Oxford Online English、engVid、Speak English with Vanessa、VOA Learning English、TED Talks、英语兔、陶然
+- **事实核查说明**: 各官网 URL 基于模型内置知识；本机网络受限，仅 ted.com 与 britishcouncil.org 根域可达（403 为反爬），其余域名无法实时访问复核。URL 均为各机构广为人知的主域/已知路径，建议 REV 审查时逐条点开验证。
+- **自检**: 第二十二章清单通过——改动仅限 resources.md + english/index.md 两文件；build 通过（28 文件）；构建产物中 10 个外链与内部双链均正确渲染
+- **协作备注**: 提交 2373511 因共享工作区带入了 AIC-INFRA-003 目录重构的暂存变更（git mv 重命名等），该重构随后由 3480e77 独立提交收尾——两 commit 合并查看方为完整状态
+- **审查**: 待 REV 审查（建议 REV-ENG-RES-001）
+- **状态**: 完成（待人工审核合并）
+
 ## AIC-INFRA-002 — 2026-08-22
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
