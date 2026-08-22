@@ -125,6 +125,8 @@ flowchart LR
 
 **[[qingnian/index|青年大学习]]**：按学期整理每期主题要点与题目答案。属于 L2 级内容——答案全部标注出处，无法确认的明确标「待验证」。
 
+**[[qingnian/ac-wiki/index|Ac-Wiki 镜像]]**：开源项目 [Ac-Wiki](https://github.com/Ac-Wiki/Ac-Wiki) 的本地完整镜像（CC BY 4.0）——校园生活、学术资源、通识技能、考研真题等 70 余篇大学生实用知识，与主题团课整理互补。
+
 ## 附录
 
 - [[appendix/glossary|术语表]] —— 全部术语中英对照速查
