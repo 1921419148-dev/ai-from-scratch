@@ -1,6 +1,7 @@
 ---
 title: 数学基础
 description: 从加减乘除补到微积分——AI 需要的全部数学，零基础友好版
+last_verified: 2026-08-22
 ---
 
 > [!abstract] 本板块解决
@@ -26,5 +27,7 @@ description: 从加减乘除补到微积分——AI 需要的全部数学，零�
 > - 不必按顺序全学！学到 **M7（梯度下降）** 就可以跳去机器学习，边用边回来补
 > - 每课都有生活化类比 + 交互演示，公式恐惧症有救
 > - 卡住了就休息，「暂时不懂」是学习的一部分，不是失败
+
+→ 配套资源与 24 周自学计划见 [[prerequisites/math/resources-and-plan|数学学习资源与 24 周计划]]（Khan / Paul's Notes / 3Blue1Brown / 武忠祥等 22 个资源评估）。
 
 → 相关：[[roadmap|🗺 路线图]] · [[prerequisites/python/index|🐍 Python 目录]] · 已学完导数？去 [[ai/nn/3blue1brown/index|🎬 3Blue1Brown 神经网络伴学指南]]（已移至「人工智能 → 神经网络」板块）
