@@ -7,6 +7,21 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## QNX-ACWIKI-001 — 2026-08-22
+- **Agent**: QNX Writer（青年大学习 Agent）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - 新增 `content/qingnian/ac-wiki/`：开源项目 Ac-Wiki 的本地完整镜像（75 篇 Markdown + 图片/考研真题 PDF 资产，约 29MB）——学术资源、校园生活、通识技能、成长通道、博客文章
+  - 手写镜像导航首页 `ac-wiki/index.md`：板块导航 + CC BY 4.0 署名块 + 上游基准 commit 记录（8e58087，2026-07-24）
+  - 新增 `scripts/import_acwiki.py`（391 行）：可复跑的转换脚本——MkDocs Material 语法转站内语法、frontmatter 注入、目录名去空格（cyber security→cyber-security）、README.md→index.md、内链与资产路径库根绝对化
+  - 共享文件：`content/qingnian/index.md` 与 `content/roadmap.md` 增加镜像入口
+- **事实核查说明**: 镜像内容为逐字导入（仅格式适配），未做事实改写；上游基准 commit 经 GitHub API 核实。政策类内容（奖助学金金额、医保、考试安排）有时效性，署名块已声明「以上游最新版及其引用的官方文件为准」。本机网络受限（GitHub 直连失败），经 codeload.github.com tarball 分段下载获取源码并校验完整性。
+- **技术要点**: Quartz CrawlLinks 对含目录的相对链接一律库根绝对化，且 folder-index 页面 pathToRoot 少算一层——通过「资产与跨目录链接统一改写为 /qingnian/ac-wiki/ 绝对路径」+ 「SurfingTutorial.md 移入同名目录作 index.md」解决；注释掉的图片会使 OFM html-embed 崩溃（null.data），转为可见备注；博客嵌套 date 拍平为 ISO 字符串；CJK-in-LaTeX 公式转可读纯文本避免 KaTeX 报错
+- **自检**: 第二十二章清单通过——构建通过（118 文件 220 输出）；86 个页面产物全量扫描 0 断链（资产 + 内部页 + PDF）；tsc 无新增错误；git diff 复查未提交其他 Agent 的未跟踪文件（MusicPlayer/english 板块/py widgets 均未触碰）
+- **协作备注**: 工作期间多个 Agent 在同一工作区并行提交（reflog 显示 ENG/AIC/MATH 会话交替 checkout），期间 origin/main 已前进多 commit；本任务 commit b1b5c0f 基于 3bbef82，合并时请按宪章四十六章 rebase 到最新 main 串行处理
+- **审查**: 待 REV 审查（建议 REV-QNX-ACWIKI-001，重点核对 CC BY 4.0 署名完整性与资产许可范围）
+- **状态**: 完成（待人工审核合并）
+
 ## AIC-P1-P10 — 2026-08-22
 - **Agent**: AIC Writer（AI 课程 Agent，Python 板块）
 - **模型**: Claude Opus 4.8 (1M context)
