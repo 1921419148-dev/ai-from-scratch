@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>链式法则单步演算器</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+  }
+  .widget {
+    max-width: 700px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--canvas-bg);
+    overflow: hidden;
+  }
+  .scene {
+    padding: 14px 16px 6px;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .scene b { color: var(--dog); }
+  .chain {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; flex-wrap: wrap;
+    padding: 10px 12px;
+  }
+  .nodebox {
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding: 9px 13px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    min-width: 86px;
+    transition: all .2s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .nodebox.active { border-color: var(--dog); background: color-mix(in srgb, var(--dog) 10%, transparent); transform: scale(1.06); }
+  .nodebox.done { border-color: var(--cat); }
+  .sym { font-size: 19px; font-weight: 700; font-family: Georgia, serif; }
+  .desc { font-size: 11.5px; color: var(--text-sub); text-align:center; line-height:1.35;}
+  .link-arrow { font-size: 20px; color: var(--text-sub); }
+  .deriv { font-size: 11px; color: var(--cat); font-family: Georgia, serif; opacity: 0; transition: opacity .3s; max-width:90px; text-align:center;}
+  .deriv.show { opacity: 1; }
+  .controls {
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    padding: 10px 16px; border-top: 1px solid var(--border);
+  }
+  input[type=number] {
+    width: 74px; padding: 6px 8px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    background: transparent; color: var(--text);
+    font-size: 14px; font-variant-numeric: tabular-nums;
+  }
+  button {
+    padding: 7px 18px;
+    border-radius: 8px;
+    border: none;
+    background: var(--line);
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button.ghost { border:1px solid var(--border); background:transparent; color:var(--text-sub); font-weight:400; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .ledger {
+    padding: 10px 18px 14px;
+    border-top: 1px solid var(--border);
+    font-size: 13.5px;
+    line-height: 1.8;
+    min-height: 96px;
+  }
+  .ledger .step-line { opacity: 0; transform: translateY(6px); transition: all .35s ease; }
+  .ledger .step-line.show { opacity: 1; transform: none; }
+  .frac { font-family: Georgia, serif; color: var(--cat); font-weight:700; }
+  .final { font-weight: 800; font-family: Georgia, serif; font-size: 17px; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="scene" id="sceneText"></div>
+  <div class="chain" id="chain"></div>
+  <div class="controls">
+    <span>输入值 a：</span>
+    <input type="number" id="inputA" value="1.0" step="0.1">
+    <span style="flex:1"></span>
+    <button id="btnStep">▶ 下一步</button>
+    <button id="btnAuto">⏩ 自动演算</button>
+    <button id="btnReset" class="ghost">重置</button>
+  </div>
+  <div class="ledger" id="ledger"></div>
+</div>
+
+<script>
+(function () {
+  // 链：a → u = w·a (w=-3) → n = u + b (b=1) → σ(n) = C
+  const W = -3, B = 1;
+  const stepsDef = [
+    { key:'du_du', label:'∂C/∂n 起点', deriv:'∂C/∂n = 1<br>(误差信号本身)' },
+    { key:'dn_du', label:'σ 对 n 求导', deriv:'∂C/∂u = ∂C/∂n × σ′(n)<br>= 1 × σ(n)(1−σ(n))' },
+    { key:'du_da', label:'u 对 a 求导', deriv:'∂C/∂a = ∂C/∂u × ∂u/∂a<br>= … × (−3)' },
+  ];
+  const sceneEl = document.getElementById('sceneText');
+  const chainEl = document.getElementById('chain');
+  const ledgerEl = document.getElementById('ledger');
+  const btnStep = document.getElementById('btnStep');
+  const btnAuto = document.getElementById('btnAuto');
+  const btnReset = document.getElementById('btnReset');
+  const inputA = document.getElementById('inputA');
+
+  let stepIdx = 0;
+
+  function sig(x){ return 1/(1+Math.exp(-x)); }
+
+  function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function buildChain() {
+    chainEl.innerHTML = '';
+    const nodes = [
+      { sym:'a', desc:'输入激活值' },
+      { sym:`u = ${W}·a`, desc:'加权（权重 −3）' },
+      { sym:'n = u + 1', desc:'+ 偏置 1' },
+      { sym:'C = σ(n)', desc:'过 Sigmoid' },
+    ];
+    nodes.forEach((nd, i) => {
+      if (i > 0) {
+        const ar = document.createElement('div');
+        ar.className = 'link-arrow'; ar.textContent = '→';
+        chainEl.appendChild(ar);
+      }
+      const box = document.createElement('div');
+      box.className = 'nodebox'; box.id = 'nb'+i;
+      box.innerHTML = `<div class="sym">${nd.sym}</div><div class="desc">${nd.desc}</div>` +
+        `<div class="deriv" id="dv${i}"></div>`;
+      chainEl.appendChild(box);
+    });
+  }
+
+  function renderScene(a) {
+    const u = W*a, n = u+B, c = sig(n), sp = c*(1-c);
+    sceneEl.innerHTML =
+      `场景：一条最简单的「链」。输入 <b>a</b> 经过乘权重、加偏置、Sigmoid 三道工序变成损失 C。<br>` +
+      `当前数值：a = ${fmt(a)} → u = ${fmt(u)} → n = ${fmt(n)} → C(输出) = ${fmt(c)}。<br>` +
+      `目标：如果 C 错了，<b>a 该为它负多少责任？</b>——也就是求 ∂C/∂a。`;
+  }
+
+  function fmt(x){ return (Math.abs(x) < 1e-9 ? '0' : x.toFixed(3)).replace(/\.?0+$/,'') || '0'; }
+
+  function stepLines(a) {
+    const u = W*a, n = u+B, c = sig(n), sp = c*(1-c);
+    return [
+      `<div class="step-line"><b>第 0 步 · 站在出口：</b><br>` +
+        `误差信号从 C 出发。约定 ∂C/∂C = 1（自己对自己的敏感度当然是 1）。` +
+        `此刻手里握着的「待传信号」是 <span class="frac">1</span>。</div>`,
+      `<div class="step-line"><b>第 1 步 · 穿过 Sigmoid：</b><br>` +
+        `σ′(n) = σ(n)(1−σ(n)) = ${fmt(c)}×${fmt(1-c)} = <span class="frac">${fmt(sp)}</span>。` +
+        `把信号乘上这个局部导数：<span class="frac">1 × ${fmt(sp)} = ${fmt(sp)}</span>。` +
+        `（注意：σ′ 最大只有 0.25——信号每过一层都会变小！）</div>`,
+      `<div class="step-line"><b>第 2 步 · 穿过「加偏置」：</b><br>` +
+        `n = u + 1 对 u 的导数是 1（加法不放大不缩小）。` +
+        `信号不变：<span class="frac">${fmt(sp)}</span>。顺便：偏置的梯度也是它——∂C/∂b = <span class="frac">${fmt(sp)}</span>，白捡一个！</div>`,
+      `<div class="step-line"><b>第 3 步 · 穿过「乘权重」：</b><br>` +
+        `u = −3·a 对 a 的导数是 −3。最终：<br>` +
+        `<span class="final">∂C/∂a = ${fmt(sp)} × (−3) = ${fmt(sp*W)}</span><br>` +
+        `解读：a 若增大一点点，C 会以 ${Math.abs(sp*W).toFixed(3)} 的速率变化（负号 = 反方向）。这就是 a 在本次误差中「背的锅」。</div>`,
+    ];
+  }
+
+  let lines = [];
+
+  function doStep() {
+    if (stepIdx >= stepsDef.length + 1) return;
+    if (stepIdx === 0) {
+      lines = stepLines(parseFloat(inputA.value) || 1);
+      ledgerEl.innerHTML = '';
+      lines.forEach((l) => {
+        const d = document.createElement('div'); d.innerHTML = l;
+        ledgerEl.appendChild(d);
+      });
+    }
+    // 高亮节点
+    const nbMap = [ ['nb3','dv3',0], ['nb2','dv2',1], ['nb1','dv1',2], ['nb0','dv0',3] ];
+    const cur = nbMap[stepIdx];
+    if (cur) {
+      const nb = document.getElementById(cur[0]);
+      if (nb) { nb.classList.add('done'); }
+      const dv = document.getElementById(cur[1]);
+      if (dv && stepIdx >= 1 && stepIdx <= 3) {
+        dv.innerHTML = stepsDef[stepIdx-1].deriv;
+        dv.classList.add('show');
+        nb.classList.add('active');
+        setTimeout(() => nb && nb.classList.remove('active'), 900);
+      }
+    }
+    const lineEls = ledgerEl.querySelectorAll('.step-line');
+    if (lineEls[stepIdx]) lineEls[stepIdx].classList.add('show');
+    stepIdx++;
+    btnStep.textContent = stepIdx >= 4 ? '✅ 完成' : '▶ 下一步';
+    if (stepIdx >= 4) btnStep.disabled = true;
+  }
+
+  function reset() {
+    stepIdx = 0;
+    buildChain();
+    ledgerEl.innerHTML = '';
+    renderScene(parseFloat(inputA.value) || 1);
+    btnStep.disabled = false;
+    btnStep.textContent = '▶ 下一步';
+  }
+
+  btnStep.addEventListener('click', doStep);
+  btnAuto.addEventListener('click', () => {
+    reset();
+    let k = 0;
+    const t = setInterval(() => {
+      doStep();
+      if (++k >= 4) clearInterval(t);
+    }, 750);
+  });
+  btnReset.addEventListener('click', reset);
+  inputA.addEventListener('change', () => {
+    const v = Math.max(-3, Math.min(3, parseFloat(inputA.value) || 1));
+    inputA.value = v;
+    reset();
+  });
+
+  // 深色模式
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute('saved-theme');
+      document.documentElement.classList.toggle('dark', attr === 'dark');
+    } catch (err) {}
+  }
+  window.addEventListener('message', (ev) => {
+    if (ev.data && ev.data.type === 'theme') {
+      document.documentElement.classList.toggle('dark', ev.data.theme === 'dark');
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  reset();
+})();
+</script>
+</body>
+</html>
