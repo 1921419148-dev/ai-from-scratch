@@ -23,4 +23,4 @@ description: ChatGPT、文生图背后的原理与应用——这个时代最热
 
 深度学习 DL9（Transformer）+ NLP NLP7（GPT 家族）。
 
-→ 相关：[[nlp/index|← NLP]] · [[rl/index|强化学习 →]]
+→ 相关：[[ai/nlp/index|← NLP]] · [[ai/rl/index|强化学习 →]]

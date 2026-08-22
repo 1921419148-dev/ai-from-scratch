@@ -26,4 +26,4 @@ description: 让机器从数据中学会「找规律」——AI 的核心方法�
 - 数学：至少到 [[prerequisites/math/index|M6 导数]]
 - Python：至少到 [[prerequisites/python/index|P5 函数]]
 
-→ 相关：[[getting-started/what-is-ai|第1章回顾]] · [[dl/index|下一站：深度学习 →]]
+→ 相关：[[getting-started/what-is-ai|第1章回顾]] · [[ai/dl/index|下一站：深度学习 →]]

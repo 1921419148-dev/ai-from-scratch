@@ -21,7 +21,7 @@ source: https://www.3blue1brown.com/lessons/backpropagation
 | 首次发布 | 2017-11-03                                                                                                                 |
 | 观看地址 | [YouTube](https://www.youtube.com/watch?v=Ilg3gGewQ5U) · [官网课程页](https://www.3blue1brown.com/lessons/backpropagation) |
 
-> 核实于 2026-08-22。\*YouTube 上标题编号为 Chapter 3，官网因多一节纯网页互动课而列为 Chapter 4——见[目录页说明](prerequisites/math/3blue1brown/index)。本集是「直觉篇」，配套的数学推导在第 4 集和官网文字版。
+> 核实于 2026-08-22。\*YouTube 上标题编号为 Chapter 3，官网因多一节纯网页互动课而列为 Chapter 4——见[目录页说明](ai/nn/3blue1brown/index)。本集是「直觉篇」，配套的数学推导在第 4 集和官网文字版。
 
 ## 🗺 先拿地图
 
@@ -118,8 +118,8 @@ flowchart RL
 
 ## 🧭 下一步
 
-- 想看这套直觉如何变成公式？→ [[prerequisites/math/3blue1brown/b1b-nn-04-backprop-calculus|B4 · 反向传播的微积分]]
-- 本站课程联动：[[dl/index|DL2 · 反向传播：网络如何自我纠错]]
+- 想看这套直觉如何变成公式？→ [[ai/nn/3blue1brown/b1b-nn-04-backprop-calculus|B4 · 反向传播的微积分]]
+- 本站课程联动：[[ai/dl/indexDL2 · 反向传播：网络如何自我纠错]]
 - 官网互动课：[What is backpropagation really doing?](https://www.3blue1brown.com/lessons/backpropagation)
 
-→ 返回 [[prerequisites/math/3blue1brown/index|🎬 伴学指南目录]]
+→ 返回 [[ai/nn/3blue1brown/index|🎬 伴学指南目录]]

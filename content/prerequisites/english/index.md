@@ -21,4 +21,4 @@ description: 顺手把 AI 英语也拿下——术语、词根词缀、读文档
 > [!tip] 本站自带英语学习设计
 > 你会发现每课都有「本章英文小词典」，术语第一次出现都标注英文原文。**不用专门背单词**——跟着课程走，术语自然就认识了。
 
-→ 相关：[[roadmap|🗺 路线图]] · [[appendix/glossary|📖 总术语表]]
+→ 相关：[[roadmap|🗺 路线图]] · [[appendix/glossary|📖 总术语表]] · [[appendix/resources|🔗 英语学习资源库]]（BBC / VOA / 英语兔等本课素材来源）

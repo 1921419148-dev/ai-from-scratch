@@ -96,7 +96,7 @@ AI 论文摘要几乎是填空题，通常按这个套路写：
 
 | 论文                                                    | 长度  | 为什么适合入门                                            |
 | ------------------------------------------------------- | ----- | --------------------------------------------------------- |
-| _Attention Is All You Need_（Transformer 开山作，2017） | 15 页 | 本站 [[dl/index\|DL 板块]] 多课的原点；结构标准、图表精美 |
+| _Attention Is All You Need_（Transformer 开山作，2017） | 15 页 | 本站 [[ai/dl/index\|DL 板块]] 多课的原点；结构标准、图表精美 |
 | _A Mathematical Theory of Communication_ 太老太深 ✗     | —     | 别被「经典」绑架，香农信息论不适合首读                    |
 | 你正在学的课程的原始论文                                | 不定  | 带着课程里的理解去对照，事半功倍                          |
 
@@ -164,6 +164,6 @@ AI 论文摘要几乎是填空题，通常按这个套路写：
 
 - 实战：打开 [Attention Is All You Need 的 arXiv 页面](https://arxiv.org/abs/1706.03762)，用五句定位法拆摘要（英文原版练胆量，配合本课词典足够了）
 - 回头复习 [[prerequisites/english/how-to-read-docs|E3 · 读文档策略]]——三轮法就是三遍阅读法在论文上的加强版
-- 学完 DL 板块的 [[dl/index|注意力机制]] 后再重读 Transformer 论文，你会惊讶自己能看懂多少
+- 学完 DL 板块的 [[ai/dl/index|注意力机制]] 后再重读 Transformer 论文，你会惊讶自己能看懂多少
 
 → 返回 [[prerequisites/english/index|🔤 AI 英语目录]]

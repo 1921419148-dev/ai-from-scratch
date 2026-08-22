@@ -114,8 +114,8 @@ MNIST 例子里约 1.3 万个参数 → 损失地形是 13002 维的空间（参
 
 ## 🧭 下一步
 
-- 看第 3 集：[[prerequisites/math/3blue1brown/b1b-nn-03-backpropagation|B3 · 反向传播在做什么]]——梯度是怎么被高效算出来的
+- 看第 3 集：[[ai/nn/3blue1brown/b1b-nn-03-backpropagation|B3 · 反向传播在做什么]]——梯度是怎么被高效算出来的
 - 本站原创推导（强烈推荐配合观看）：[[prerequisites/math/gradient-descent|M7 · 梯度下降]]
 - 官网互动课：[Gradient descent](https://www.3blue1brown.com/lessons/gradient-descent)
 
-→ 返回 [[prerequisites/math/3blue1brown/index|🎬 伴学指南目录]]
+→ 返回 [[ai/nn/3blue1brown/index|🎬 伴学指南目录]]

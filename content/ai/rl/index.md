@@ -21,4 +21,4 @@ description: 在试错中学会决策——从游戏 AI 到大模型对齐
 
 深度学习 DL4（全连接网络实战）+ 概率基础（数学 M9）。
 
-→ 相关：[[dl/index|← 深度学习]] · [[genai/index|GenAI →]]
+→ 相关：[[ai/dl/index|← 深度学习]] · [[ai/genai/index|GenAI →]]

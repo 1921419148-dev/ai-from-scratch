@@ -115,8 +115,8 @@ $$a^{(l)}_2 = \sigma\left( w_{2,0}\,a^{(l-1)}_0 + w_{2,1}\,a^{(l-1)}_1 + \cdots 
 
 ## 🧭 下一步
 
-- 看第 2 集：[[prerequisites/math/3blue1brown/b1b-nn-02-gradient-descent|B2 · 梯度下降，网络如何学习]]——那些旋钮到底怎么调
+- 看第 2 集：[[ai/nn/3blue1brown/b1b-nn-02-gradient-descent|B2 · 梯度下降，网络如何学习]]——那些旋钮到底怎么调
 - 补数学地基：[[prerequisites/math/gradient-descent|M7 · 梯度下降（本站原创）]]
 - 官网互动课（英文，无需视频）：[Analyzing our neural network](https://www.3blue1brown.com/lessons/neural-network-analysis)
 
-→ 返回 [[prerequisites/math/3blue1brown/index|🎬 伴学指南目录]]
+→ 返回 [[ai/nn/3blue1brown/index|🎬 伴学指南目录]]

@@ -21,7 +21,7 @@ npx tsc --noEmit         # 类型检查
 | ----------------- | -------------- | ------------------------------------------------------------------------ | -------- |
 | 数学 Writer       | `ai/math/*`    | `content/prerequisites/math/`                                            | MATH     |
 | 英语 Writer       | `ai/english/*` | `content/prerequisites/english/`                                         | ENG      |
-| AI 课程 Writer    | `ai/aic/*`     | `content/ml/ dl/ nlp/ genai/ rl/ getting-started/ prerequisites/python/` | AIC      |
+| AI 课程 Writer    | `ai/aic/*`     | `content/ai/ getting-started/ prerequisites/python/` | AIC      |
 | 青年大学习 Writer | `ai/qnx/*`     | `content/qingnian/`                                                      | QNX      |
 | 审查 Reviewer     | `ai/review/*`  | 只写 `logs/`，不改内容                                                   | REV      |
 
@@ -93,7 +93,7 @@ source: 官方平台名称 + 期数链接
 content/
 ├── getting-started/   入门（第 1 章 what-is-ai.md）
 ├── prerequisites/     数学 math / Python python / 英语 english
-├── ml/ dl/ nlp/ genai/ rl/   五大主题板块
+├── ai/                人工智能大类：ml/ dl/ nlp/ genai/ rl/ + nn/3blue1brown（神经网络伴学）
 ├── qingnian/          青年大学习（按学期分文件夹）
 └── appendix/          glossary 术语表 / formulas 公式卡 / resources 资源
 logs/

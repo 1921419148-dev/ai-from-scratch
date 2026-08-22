@@ -29,4 +29,4 @@ description: 神经网络如何一层层「思考」——这十年 AI 爆发的
 - 数学 M7（梯度下降）、M8（向量与矩阵）
 - Python P7（NumPy）
 
-→ 相关：[[ml/index|← 机器学习]] · [[nlp/index|NLP →]] · [[genai/index|GenAI →]] · [[rl/index|强化学习 →]]
+→ 相关：[[ai/ml/index|← 机器学习]] · [[ai/nlp/index|NLP →]] · [[ai/genai/index|GenAI →]] · [[ai/rl/index|强化学习 →]]

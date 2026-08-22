@@ -146,6 +146,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y)
 ## 下一步
 
 - [[prerequisites/english/paper-reading|E4 · 论文阅读入门]]——升级难度：arXiv 与精读方法
-- 实战演练：挑一个学过的主题（比如 [[dl/index|深度学习目录]] 里标 🚧 的课），去找它的官方 Quickstart 页面用三遍法读一遍
+- 实战演练：挑一个学过的主题（比如 [[ai/dl/index|深度学习目录]] 里标 🚧 的课），去找它的官方 Quickstart 页面用三遍法读一遍
 
 → 返回 [[prerequisites/english/index|🔤 AI 英语目录]]

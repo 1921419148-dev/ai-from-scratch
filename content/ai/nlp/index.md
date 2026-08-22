@@ -23,4 +23,4 @@ description: 让电脑读懂人类的语言——从词向量到 ChatGPT 的技�
 
 深度学习板块至少学到 DL9（Transformer）。
 
-→ 相关：[[dl/index|← 深度学习]] · [[genai/index|GenAI →]]
+→ 相关：[[ai/dl/index|← 深度学习]] · [[ai/genai/index|GenAI →]]
