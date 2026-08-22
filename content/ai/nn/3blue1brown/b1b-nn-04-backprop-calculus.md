@@ -14,12 +14,12 @@ source: https://www.3blue1brown.com/lessons/backpropagation-calculus
 
 ## 🎬 视频信息
 
-| 项目     | 内容                                                                                                                                |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 官方标题 | Backpropagation calculus \| Deep Learning Chapter 4                                                                                 |
-| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                                      |
-| 首次发布 | 2017-11-03                                                                                                                          |
-| 观看地址 | [YouTube](https://www.youtube.com/watch?v=tIeHLnjs5U8) · [官网课程页](https://www.3blue1brown.com/lessons/backpropagation-calculus) |
+| 项目     | 内容                                                                                                                                                                                                                                   |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 官方标题 | Backpropagation calculus \| Deep Learning Chapter 4                                                                                                                                                                                    |
+| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                                                                                                                                         |
+| 首次发布 | 2017-11-03                                                                                                                                                                                                                             |
+| 观看地址 | B 站中文配音：[本集合第 4 集](https://www.bilibili.com/video/BV1BzNLzzExg?p=4)（无需翻墙） · 原版：[YouTube](https://www.youtube.com/watch?v=tIeHLnjs5U8) · [官网课程页](https://www.3blue1brown.com/lessons/backpropagation-calculus) |
 
 > 核实于 2026-08-22。本集默认你熟悉导数；如果「导数」这个词已经模糊，先去补 [[prerequisites/math/index|M6 · 导数：变化的速度]] 再回来，10 分钟能看懂的视频不该靠硬背。
 

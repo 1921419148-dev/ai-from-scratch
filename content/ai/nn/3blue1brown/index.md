@@ -21,6 +21,24 @@ flowchart LR
 > [!tip] 卡住了怎么办？
 > 导读里的「数学在哪里？」部分会把视频用到的数学拆开揉碎，并链接回本站基础课。**看不懂视频不是你的问题，是缺了前置知识**——补上就好。
 
+> [!success] 在哪里看视频？（国内网络友好）
+>
+> **推荐：B 站中文配音版**（无需翻墙，全 4 集一个合集）
+>
+> | 集数                      | B 站分 P                                              |
+> | ------------------------- | ----------------------------------------------------- |
+> | B1 什么是神经网络         | [P1](https://www.bilibili.com/video/BV1BzNLzzExg?p=1) |
+> | B2 梯度下降，网络如何学习 | [P2](https://www.bilibili.com/video/BV1BzNLzzExg?p=2) |
+> | B3 反向传播在做什么       | [P3](https://www.bilibili.com/video/BV1BzNLzzExg?p=3) |
+> | B4 反向传播的微积分       | [P4](https://www.bilibili.com/video/BV1BzNLzzExg?p=4) |
+>
+> UP 主「外影译坊」制作的**中文配音版**（2025 年发布），内容与原版逐集对应。也可以在 B 站搜索「3Blue1Brown 神经网络」找到其他双语字幕版本。
+>
+> **原版入口**（需能访问 YouTube）：
+>
+> - 官网课程页（含可互动图表）：[3blue1brown.com/lessons](https://www.3blue1brown.com/topics/neural-networks)
+> - 每集导读的「视频信息」表格里都有对应的 YouTube 与官网链接
+
 ## 课程列表
 
 以 YouTube 官方「深度学习 Neural networks」系列经典 4 集为序：
@@ -36,6 +54,6 @@ flowchart LR
 > 官网（3blue1brown.com）的系列列表比 YouTube 多一节：一节纯网页互动课 _Analyzing our neural network_（[官网链接](https://www.3blue1brown.com/lessons/neural-network-analysis)，无需看视频也能玩），所以官网章节号比 YouTube 编号大 1。本指南以 YouTube 编号为准。
 
 > [!warning] 版权与出处声明
-> 本板块所有视频版权归原作者 Grant Sanderson 所有，我们只提供原创中文导读与自制交互演示，不包含任何视频画面、字幕或讲稿翻译。每篇导读都附官方链接，请前往原地址观看。事实性信息（标题、发布日期、内容概述）均于 `last_verified` 日期从官网与官方频道核实。
+> 本板块所有视频版权归原作者 Grant Sanderson 所有；B 站中文配音版版权归原作者「外影译坊」所有。本站只提供原创中文导读与自制交互演示，不包含、不存储任何视频画面、字幕或讲稿翻译，也不提供任何视频下载。我们链接的都是公开平台上的既有视频，请通过上述链接前往观看以支持原作者。事实性信息（标题、发布日期、内容概述）均于 `last_verified` 日期从官网与官方频道核实。
 
 → 返回 [[prerequisites/math/index|📐 数学目录]] · 相关：[[roadmap|🗺 路线图]]

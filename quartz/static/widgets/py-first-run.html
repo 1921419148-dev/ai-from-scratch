@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云运行模拟器：人生第一段 Python</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+  }
+  .widget {
+    max-width: 720px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--canvas-bg);
+    overflow: hidden;
+  }
+  .head { padding: 14px 16px 10px; font-weight: 700; font-size: 15px; }
+  .head small { display:block; font-weight:400; color: var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .controls {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 8px 16px 12px;
+    font-size: 13.5px;
+  }
+  select {
+    flex: 1; min-width: 200px;
+    padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+    font-size: 13.5px;
+  }
+  button {
+    padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;
+    background: var(--line); color: #fff; font-size: 13.5px; font-weight: 600;
+  }
+  button.ghost { border: 1px solid var(--border); background: transparent; color: var(--text-sub); font-weight: 400; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  /* 双栏：代码 + 输出 */
+  .panes {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 4px 16px 14px;
+  }
+  @media (min-width: 640px) {
+    .panes { flex-direction: row; }
+    .pane { flex: 1; min-width: 0; }
+  }
+  .pane-label {
+    font-size: 11.5px; color: var(--text-sub); margin-bottom: 5px; font-weight: 600;
+    letter-spacing: .5px;
+  }
+  pre {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px; line-height: 1.65;
+    border-radius: 9px;
+    padding: 12px 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 150px;
+  }
+  pre.code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  pre.out {
+    background: #101418;
+    border: 1px solid var(--border);
+    color: #d6e2c8;
+    position: relative;
+  }
+  html.dark pre.out { background: #0b0e11; }
+  pre.out .caret {
+    display: inline-block; width: 7px; height: 14px;
+    background: #7fd08a; vertical-align: -2px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .explain {
+    border-top: 1px dashed var(--border);
+    padding: 12px 16px 16px;
+    font-size: 13px; line-height: 1.7;
+    display: none;
+  }
+  .explain.show { display: block; }
+  .explain h4 { font-size: 13.5px; color: var(--cat); margin-bottom: 6px; }
+  .explain li { margin-left: 18px; padding: 2px 0; }
+  code.inline {
+    font-family: Consolas, monospace;
+    background: rgba(74,144,217,.10); color: var(--line);
+    padding: 1px 5px; border-radius: 5px; font-size: 12.5px;
+  }
+  .run-tag {
+    font-variant-numeric: tabular-nums;
+    font-size: 12px; color: var(--text-sub);
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🖥️ 云运行模拟器
+    <small>选一段代码 → 点「运行」→ 看它一行行变成结果。这就是编程的全部体感。</small>
+  </div>
+
+  <div class="controls">
+    <select id="pick"></select>
+    <button id="btnRun">▶ 运行</button>
+    <button id="btnExplain" class="ghost">💡 人话解读</button>
+  </div>
+
+  <div class="panes">
+    <div class="pane">
+      <div class="pane-label">📝 代码 hello.py</div>
+      <pre class="code" id="codePane"></pre>
+    </div>
+    <div class="pane">
+      <div class="pane-label">📺 输出 <span class="run-tag" id="runtime"></span></div>
+      <pre class="out" id="outPane"><span style="color:#7a8590">（点「▶ 运行」看结果）</span></pre>
+    </div>
+  </div>
+
+  <div class="explain" id="explain">
+    <h4>🔍 这段代码在干什么？</h4>
+    <ul id="explainList"></ul>
+  </div>
+</div>
+
+<script>
+(function () {
+  // 示例代码库：只用到 P1/P2 的概念（print、字符串、简单算术）
+  const SAMPLES = [
+    {
+      name: "① Hello, AI!（全世界程序员的入门仪式）",
+      code: 'print("Hello, AI!")\nprint("我的人生第一行 Python")\nprint("2026 年 8 月 22 日")',
+      out: ["Hello, AI!", "我的人生第一行 Python", "2026 年 8 月 22 日"],
+      explain: [
+        '<code class="inline">print(...)</code> 是 Python 自带的工具：把括号里的东西显示到屏幕上',
+        '带引号的文字叫<b>字符串</b>——引号告诉 Python「这是一段话，别理解成别的」',
+        '三行代码 = 三次调用 print，所以输出有三行。<b>Python 从上往下一行一行执行</b>',
+      ],
+    },
+    {
+      name: "② 会算数的 print（顺便当计算器用）",
+      code: 'print(1 + 1)\nprint(365 * 24 * 60)   # 一年有多少分钟\nprint("1 + 1 =", 1 + 1)',
+      out: ["2", "525600", "1 + 1 = 2"],
+      explain: [
+        '括号里不带引号时，print 会<b>先算再显示</b>：<code class="inline">1 + 1</code> 先算出 2 再打印',
+        '<code class="inline">#</code> 号开头的是<b>注释</b>——写给人看的说明，Python 直接跳过',
+        '第三行混搭：逗号隔开的两样东西都会打印，文字照原样、算式先求值',
+      ],
+    },
+    {
+      name: "③ 打个招呼（print 连发）",
+      code: 'print("你好，我是你的电脑")\nprint("")\nprint("从今天起")\nprint("我们之间多了一种交流方式：")\nprint("你说 Python，我照办。")',
+      out: ["你好，我是你的电脑", "", "从今天起", "我们之间多了一种交流方式：", "你说 Python，我照办。"],
+      explain: [
+        '<code class="inline">print("")</code> 打印一个空字符串 → 效果是<b>空一行</b>',
+        '注意第二行输出是空的——「什么都不显示」也是一种显示结果',
+        '真实世界里你敲完这些，屏幕出现的内容和你现在看到的一模一样',
+      ],
+    },
+  ];
+
+  const pick = document.getElementById("pick");
+  const codePane = document.getElementById("codePane");
+  const outPane = document.getElementById("outPane");
+  const runtimeEl = document.getElementById("runtime");
+  const btnRun = document.getElementById("btnRun");
+  const btnExplain = document.getElementById("btnExplain");
+  const explainEl = document.getElementById("explain");
+  const explainList = document.getElementById("explainList");
+
+  SAMPLES.forEach((s, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = s.name;
+    pick.appendChild(o);
+  });
+
+  let running = false;
+
+  function loadSample() {
+    const s = SAMPLES[+pick.value];
+    codePane.textContent = s.code;
+    outPane.innerHTML = '<span style="color:#7a8590">（点「▶ 运行」看结果）</span>';
+    runtimeEl.textContent = "";
+    running = false;
+    btnRun.disabled = false;
+  }
+
+  function run() {
+    if (running) return;
+    const s = SAMPLES[+pick.value];
+    running = true;
+    btnRun.disabled = true;
+    outPane.innerHTML = "";
+    runtimeEl.textContent = "";
+
+    const t0 = performance.now();
+    let i = 0;
+
+    function step() {
+      if (i < s.out.length) {
+        // 每行输出间隔 ~420ms，模拟逐行执行
+        const lineSpan = document.createElement("span");
+        lineSpan.textContent = s.out[i];
+        outPane.appendChild(lineSpan);
+        outPane.appendChild(document.createTextNode("\n"));
+        i++;
+        setTimeout(step, 430);
+      } else {
+        const caret = document.createElement("span");
+        caret.className = "caret";
+        outPane.appendChild(caret);
+        runtimeEl.textContent = "· 用时 " + ((performance.now() - t0) / 1000).toFixed(1) + " 秒（真实 Python 只需毫秒级）";
+        btnRun.disabled = false;
+        running = false;
+      }
+    }
+    step();
+  }
+
+  function showExplain() {
+    const s = SAMPLES[+pick.value];
+    if (explainEl.classList.contains("show")) {
+      explainEl.classList.remove("show");
+      return;
+    }
+    explainList.innerHTML = s.explain.map((li) => "<li>" + li + "</li>").join("");
+    explainEl.classList.add("show");
+  }
+
+  btnRun.addEventListener("click", run);
+  btnExplain.addEventListener("click", showExplain);
+  pick.addEventListener("change", () => { loadSample(); explainEl.classList.remove("show"); });
+
+  // 深色模式同步（与站内其他 widget 一致）
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  loadSample();
+})();
+</script>
+</body>
+</html>

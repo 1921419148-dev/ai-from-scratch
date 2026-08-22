@@ -14,12 +14,12 @@ source: https://www.3blue1brown.com/lessons/neural-networks
 
 ## 🎬 视频信息
 
-| 项目     | 内容                                                                                                                                             |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 官方标题 | But what is a neural network? \| Deep learning chapter 1                                                                                         |
-| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                                                   |
-| 首次发布 | 2017-10-05                                                                                                                                       |
-| 观看地址 | [YouTube](https://www.youtube.com/watch?v=aircAruvnKk) · [官网课程页](https://www.3blue1brown.com/lessons/neural-networks)（官网版含可互动图表） |
+| 项目     | 内容                                                                                                                                                                                                                                                |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 官方标题 | But what is a neural network? \| Deep learning chapter 1                                                                                                                                                                                            |
+| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                                                                                                                                                      |
+| 首次发布 | 2017-10-05                                                                                                                                                                                                                                          |
+| 观看地址 | B 站中文配音：[本集合第 1 集](https://www.bilibili.com/video/BV1BzNLzzExg?p=1)（无需翻墙） · 原版：[YouTube](https://www.youtube.com/watch?v=aircAruvnKk) · [官网课程页](https://www.3blue1brown.com/lessons/neural-networks)（官网版含可互动图表） |
 
 > 以上信息核实于 2026-08-22。官网这一集还有配套的纯网页互动课 _Analyzing our neural network_，看完视频强烈建议去玩一下。
 

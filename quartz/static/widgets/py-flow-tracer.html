@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代码单步追踪器</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding: 12px;
+  }
+  .widget {
+    max-width: 760px; margin: 0 auto; border: 1px solid var(--border);
+    border-radius: 12px; background: var(--canvas-bg); overflow: hidden;
+  }
+  .head { padding: 14px 16px 10px; font-weight: 700; font-size: 15px; }
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding: 4px 16px 12px;}
+  select {
+    flex:1; min-width:200px; padding:8px 10px; border-radius:8px;
+    border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13.5px;
+  }
+  button {
+    padding: 8px 16px; border-radius: 8px; border:none; cursor:pointer;
+    background:var(--line); color:#fff; font-size:13.5px; font-weight:600;
+  }
+  button.ghost { border:1px solid var(--border); background:transparent; color:var(--text-sub); font-weight:400; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .panes { display:flex; flex-direction:column; gap:10px; padding: 0 16px 12px; }
+  @media (min-width: 660px) { .panes { flex-direction: row; } }
+  .pane { flex:1.25; min-width:0; }
+  .pane.vars-pane { flex:.85; display:flex; flex-direction:column; gap:8px; }
+  .pane-label { font-size:11.5px; color:var(--text-sub); margin-bottom:5px; font-weight:600; letter-spacing:.5px;}
+  /* 代码区：带行号 */
+  pre.codebox {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12.8px; line-height: 1.75;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 9px; padding: 10px 8px; overflow-x:auto; margin:0;
+  }
+  .cl { display:block; padding: 0 8px; white-space:pre; border-radius:5px; transition: background .15s ease;}
+  .cl.cur { background: rgba(217,119,6,.18); outline: 1.5px solid var(--dog); }
+  .kw { color:#a862c8; font-weight:700; } html.dark .kw { color:#cf94ea; }
+  .st { color:#b06a1e; } html.dark .st { color:#f0a35c; }
+  .nm { color:#3a7bbf; } html.dark .nm { color:#6aa9e9; }
+  .fn { color:#1a6b54; font-weight:600;} html.dark .fn {color:#4ec9a0;}
+  .cm { color:#98938a; font-style:italic; }
+  /* 变量表 */
+  .vars {
+    border:1px solid var(--border); border-radius:9px; overflow:hidden;
+    font-family: Consolas, monospace; font-size:12.5px;
+  }
+  .vrow { display:flex; border-bottom:1px solid var(--border); }
+  .vrow:last-child { border-bottom:none; }
+  .vrow .vn { flex:none; width:42%; padding:6px 10px; color:var(--line); font-weight:700; background:rgba(74,144,217,.07);}
+  html.dark .vrow .vn { background:rgba(106,169,233,.10);}
+  .vrow .vv { flex:1; padding:6px 10px; word-break:break-all;}
+  .vrow.changed .vv { animation: flash .8s ease; }
+  @keyframes flash { 0% { background: rgba(217,119,6,.30);} 100% { background: transparent; } }
+  .no-vars { padding: 12px; text-align:center; color:var(--text-sub); font-size:12px;}
+  /* 输出 */
+  .outbox {
+    border:1px solid var(--border); border-radius:9px;
+    background:#101418; color:#d6e2c8;
+    font-family:Consolas,monospace; font-size:12.5px; line-height:1.65;
+    padding:8px 12px; min-height:74px; max-height:110px; overflow-y:auto; white-space:pre-wrap;
+  }
+  html.dark .outbox { background:#0b0e11; }
+  .narrate {
+    padding: 9px 16px; border-top:1px solid var(--border);
+    font-size:13px; line-height:1.6; color:var(--text-sub); min-height:52px;
+  }
+  .narrate b { color: var(--dog); }
+  .done-tag { color:var(--cat); font-weight:700; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🎬 代码单步追踪器
+    <small>每点一次「下一步」，只执行一行。盯着三样东西：当前高亮行、变量表、输出区</small>
+  </div>
+
+  <div class="controls">
+    <select id="pick"></select>
+    <button id="btnStep">▶ 下一步</button>
+    <button id="btnAuto">⏩ 自动播放</button>
+    <button id="btnReset" class="ghost">重置</button>
+  </div>
+
+  <div class="panes">
+    <div class="pane">
+      <div class="pane-label">📝 代码（高亮 = 即将执行）</div>
+      <pre class="codebox" id="codeBox"></pre>
+      <div class="pane-label" style="margin-top:8px;">📺 输出</div>
+      <div class="outbox" id="outBox"><span style="color:#7a8590">（还没开始）</span></div>
+    </div>
+    <div class="pane vars-pane">
+      <div class="pane-label">📦 变量表（橙色闪动 = 刚变化）</div>
+      <div class="vars" id="varsBox"></div>
+    </div>
+  </div>
+
+  <div class="narrate" id="narrate">👆 点「下一步」开始逐行执行。</div>
+</div>
+
+<script>
+(function () {
+  // 示例：steps = 每一步 { line(行号), narrate(解说), setVars({..}), out(打印文本或null) }
+  const SAMPLES = [
+    {
+      name: "① 找最大值（for + if 经典组合）",
+      code: [
+        'scores = [88, 92, 75]',
+        'best = scores[0]',
+        '',
+        'for s in scores:',
+        '    if s > best:',
+        '        best = s',
+        '',
+        'print("最高分:", best)',
+      ],
+      steps: [
+        { line:0, vars:{scores:"[88, 92, 75]"}, narrate:"创建列表，三个成绩住进一个容器。" },
+        { line:1, vars:{best:88}, narrate:"先假设第 1 个就是最大值——<b>best = 88</b>。这是找最大值的标准起手式。" },
+        { line:3, vars:{"s":88}, narrate:"for 循环启动，第 1 轮：<b>s 取到 88</b>（下标 0）。" },
+        { line:4, vars:{}, narrate:"if 判断：88 > 88 吗？<b>不成立</b> → 跳过缩进的下一行，直接回循环。" },
+        { line:3, vars:{"s":92}, narrate:"第 2 轮：s 取到 92（下标 1）。注意 s 是循环自动赋值的，不用手动写。" },
+        { line:4, vars:{}, narrate:"判断：92 > 88？<b>成立！</b>" },
+        { line:5, vars:{best:92}, narrate:"best 被 92 取代。best 始终保持「到目前为止见过的最大值」。" },
+        { line:3, vars:{"s":75}, narrate:"第 3 轮：s = 75（下标 2）。" },
+        { line:4, vars:{}, narrate:"75 > 92？不成立，跳过。" },
+        { line:7, vars:{}, out:'最高分: 92', narrate:"列表走完，循环自然结束。打印结果——<b>这就是 AI 里「扫描一遍数据找最优」的雏形</b>（梯度下降的简化版思想）。" },
+      ],
+    },
+    {
+      name: "② 及格计数器（循环套条件套累加）",
+      code: [
+        'scores = [88, 40, 75, 59, 92]',
+        'passed = 0',
+        '',
+        'for s in scores:',
+        '    if s >= 60:',
+        '        passed += 1',
+        '',
+        'print(passed)',
+      ],
+      steps: [
+        { line:0, vars:{scores:"[88, 40, 75, 59, 92]"}, narrate:"五个成绩，两个不及格——你能在心里先算出答案吗？" },
+        { line:1, vars:{passed:0}, narrate:"计数器清零。所有「数个数」的程序都这么开头。" },
+        { line:3, vars:{"s":88}, narrate:"第 1 轮：s = 88。" },
+        { line:4, vars:{}, narrate:"88 ≥ 60？成立 → 进 if 内部。" },
+        { line:5, vars:{passed:1}, narrate:"passed 从 0 变 1。<code style='font-family:Consolas'>+= 1</code> 就是「自己加一」的简写。" },
+        { line:3, vars:{"s":40}, narrate:"第 2 轮：s = 40。" },
+        { line:4, vars:{}, narrate:"40 ≥ 60？<b>不成立</b> → 缩进行被跳过，passed 保持不变。" },
+        { line:3, vars:{"s":75}, narrate:"第 3 轮：s = 75。" },
+        { line:4, vars:{}, narrate:"成立。" },
+        { line:5, vars:{passed:2}, narrate:"passed = 2。" },
+        { line:3, vars:{"s":59}, narrate:"第 4 轮：s = 59。差一分！" },
+        { line:4, vars:{}, narrate:"59 ≥ 60？不成立——<b>59 和 60 只差 1，但条件毫不留情</b>。程序没有「差不多」，这正是它可靠的原因。" },
+        { line:3, vars:{"s":92}, narrate:"第 5 轮：s = 92。" },
+        { line:5, vars:{passed:3}, narrate:"成立，passed = 3。" },
+        { line:8, vars:{}, out:"3", narrate:"循环结束，输出 3。<b>数据统计、筛选、打标签，本质都是这个模式。</b>" },
+      ],
+    },
+    {
+      name: "③ 倒计时发射（while 与它的边界）",
+      code: [
+        'count = 3',
+        '',
+        'while count > 0:',
+        '    print(count)',
+        '    count -= 1',
+        '',
+        'print("发射! 🚀")',
+      ],
+      steps: [
+        { line:0, vars:{count:3}, narrate:"count 从 3 开始。" },
+        { line:2, vars:{}, narrate:"检查 while 条件：3 > 0 成立 → 进入循环体。（while 每圈都要重新过这道门）" },
+        { line:3, vars:{}, out:"3", narrate:"打印 3。" },
+        { line:4, vars:{count:2}, narrate:"count 减到 2。<b>这行是安全带</b>——删掉它，条件永远成立，死循环！" },
+        { line:2, vars:{}, narrate:"回到门口再查：2 > 0 成立 → 继续。" },
+        { line:3, vars:{}, out:"2", narrate:"打印 2。" },
+        { line:4, vars:{count:1}, narrate:"count = 1。" },
+        { line:2, vars:{}, narrate:"1 > 0 成立 → 再来一圈。" },
+        { line:3, vars:{}, out:"1", narrate:"打印 1。" },
+        { line:4, vars:{count:0}, narrate:"count = 0。关键时刻到了……" },
+        { line:2, vars:{}, narrate:"检查：0 > 0？<b>不成立！</b>第一次被拒之门外 → 循环结束。while 不是数着次数停，而是<b>条件失效的那一刻停</b>。" },
+        { line:6, vars:{}, out:"发射! 🚀", narrate:"循环外的代码终于轮到了。<b>训练循环同理：损失降到目标以下的那一轮，训练停止。</b>" },
+      ],
+    },
+  ];
+
+  // 简易语法高亮
+  function hl(line) {
+    return esc(line)
+      .replace(/(&quot;.*?&quot;|"[^"]*")/g, '<span class="st">$1</span>')
+      .replace(/\b(for|in|if|elif|else|while)\b/g, '<span class="kw">$1</span>')
+      .replace(/\b(range|print|len)\b/g, '<span class="fn">$1</span>')
+      .replace(/(^|\s)(\d+\.?\d*)/g, '$1<span class="nm">$2</span>')
+      .replace(/(#.*)$/, '<span class="cm">$1</span>');
+  }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  const pick = document.getElementById("pick");
+  const codeBox = document.getElementById("codeBox");
+  const outBox = document.getElementById("outBox");
+  const varsBox = document.getElementById("varsBox");
+  const narrateEl = document.getElementById("narrate");
+  const btnStep = document.getElementById("btnStep");
+  const btnAuto = document.getElementById("btnAuto");
+  const btnReset = document.getElementById("btnReset");
+
+  SAMPLES.forEach((s, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = s.name;
+    pick.appendChild(o);
+  });
+
+  let stepIdx = 0;
+  let curVars = {};
+  let autoTimer = null;
+
+  function renderCode(activeLine) {
+    const s = SAMPLES[+pick.value];
+    codeBox.innerHTML = s.code.map((ln, i) => {
+      const cls = "cl" + (i === activeLine ? " cur" : "");
+      return '<span class="' + cls + '">' + (hl(ln) || "&nbsp;") + "</span>";
+    }).join("");
+  }
+
+  function renderVars(changedKeys) {
+    const keys = Object.keys(curVars);
+    if (keys.length === 0) {
+      varsBox.innerHTML = '<div class="no-vars">还没有任何变量</div>';
+      return;
+    }
+    varsBox.innerHTML = "";
+    keys.forEach((k) => {
+      const r = document.createElement("div");
+      r.className = "vrow" + (changedKeys && changedKeys.includes(k) ? " changed" : "");
+      r.innerHTML = '<div class="vn">' + esc(k) + '</div><div class="vv">' + esc(String(curVars[k])) + "</div>";
+      varsBox.appendChild(r);
+    });
+  }
+
+  function doStep() {
+    stopAuto();
+    const s = SAMPLES[+pick.value];
+    if (stepIdx >= s.steps.length) return;
+    const st = s.steps[stepIdx];
+
+    // 合并变量
+    const changed = [];
+    Object.keys(st.vars).forEach((k) => {
+      if (curVars[k] !== String(st.vars[k])) changed.push(k);
+      curVars[k] = String(st.vars[k]);
+    });
+    renderVars(changed);
+    renderCode(st.line);
+
+    if (st.out != null) {
+      if (outBox.dataset.started !== "1") { outBox.textContent = ""; outBox.dataset.started = "1"; }
+      outBox.textContent += st.out + "\n";
+      outBox.scrollTop = outBox.scrollHeight;
+    }
+    narrateEl.innerHTML = st.narrate;
+
+    stepIdx++;
+    if (stepIdx >= s.steps.length) {
+      btnStep.disabled = true;
+      btnStep.textContent = "✅ 完成";
+      narrateEl.innerHTML += '　<span class="done-tag">— 程序执行完毕。</span>';
+    }
+  }
+
+  function reset() {
+    stopAuto();
+    stepIdx = 0;
+    curVars = {};
+    renderCode(-1);
+    renderVars(null);
+    outBox.innerHTML = '<span style="color:#7a8590">（还没开始）</span>';
+    outBox.dataset.started = "";
+    btnStep.disabled = false;
+    btnStep.textContent = "▶ 下一步";
+    narrateEl.textContent = "👆 点「下一步」开始逐行执行。";
+  }
+
+  function startAuto() {
+    const s = SAMPLES[+pick.value];
+    if (stepIdx >= s.steps.length) return;
+    autoTimer = setInterval(() => {
+      if (stepIdx >= s.steps.length) { stopAuto(); return; }
+      doStep();
+      if (stepIdx >= s.steps.length) stopAuto();
+    }, 1400);
+    btnAuto.textContent = "⏸ 暂停";
+  }
+  function stopAuto() {
+    if (autoTimer) clearInterval(autoTimer);
+    autoTimer = null;
+    btnAuto.textContent = "⏩ 自动播放";
+  }
+
+  btnStep.addEventListener("click", doStep);
+  btnAuto.addEventListener("click", () => { autoTimer ? stopAuto() : startAuto(); });
+  btnReset.addEventListener("click", reset);
+  pick.addEventListener("change", reset);
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  reset();
+})();
+</script>
+</body>
+</html>

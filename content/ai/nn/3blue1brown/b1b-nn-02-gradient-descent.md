@@ -14,12 +14,12 @@ source: https://www.3blue1brown.com/lessons/gradient-descent
 
 ## 🎬 视频信息
 
-| 项目     | 内容                                                                                                                        |
-| -------- | --------------------------------------------------------------------------------------------------------------------------- |
-| 官方标题 | Gradient descent, how neural networks learn \| Deep Learning Chapter 2                                                      |
-| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                              |
-| 首次发布 | 2017-10-16                                                                                                                  |
-| 观看地址 | [YouTube](https://www.youtube.com/watch?v=IHZwWFHWa-w) · [官网课程页](https://www.3blue1brown.com/lessons/gradient-descent) |
+| 项目     | 内容                                                                                                                                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 官方标题 | Gradient descent, how neural networks learn \| Deep Learning Chapter 2                                                                                                                                                         |
+| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                                                                                                                                 |
+| 首次发布 | 2017-10-16                                                                                                                                                                                                                     |
+| 观看地址 | B 站中文配音：[本集合第 2 集](https://www.bilibili.com/video/BV1BzNLzzExg?p=2)（无需翻墙） · 原版：[YouTube](https://www.youtube.com/watch?v=IHZwWFHWa-w) · [官网课程页](https://www.3blue1brown.com/lessons/gradient-descent) |
 
 > 核实于 2026-08-22。这一集是全系列与本站关联最深的一集——它就是 [[prerequisites/math/gradient-descent|M7 梯度下降]]的视频版。
 

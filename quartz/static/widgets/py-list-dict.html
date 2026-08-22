@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>迷你数据集收纳台：列表与字典</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding: 12px;
+  }
+  .widget {
+    max-width: 720px; margin: 0 auto; border: 1px solid var(--border);
+    border-radius: 12px; background: var(--canvas-bg); overflow: hidden;
+  }
+  .head { padding: 14px 16px 10px; font-weight: 700; font-size: 15px; }
+  .head small { display:block; font-weight:400; color:var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .tabs { display:flex; gap:8px; padding: 4px 16px 10px; }
+  .tab {
+    padding: 7px 16px; border-radius: 99px; cursor: pointer;
+    border: 1.5px solid var(--border); background: transparent;
+    color: var(--text-sub); font-size: 13.5px; user-select:none;
+    transition: all .15s ease;
+  }
+  .tab.active { border-color: var(--line); color: var(--line); background: rgba(74,144,217,.08); font-weight:600; }
+  html.dark .tab.active { background: rgba(106,169,233,.13); }
+  .code-line {
+    margin: 0 16px; padding: 8px 12px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    font-family: Consolas, monospace; font-size: 12.5px; line-height:1.6;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  .stage { padding: 14px 16px; min-height: 200px; }
+  /* 列视图 */
+  .cells { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .cell {
+    width: 86px; border-radius: 10px; overflow:hidden; text-align:center;
+    border: 2px solid var(--border); cursor:pointer; user-select:none;
+    transition: all .18s ease; position:relative;
+    animation: pop .25s ease backwards;
+  }
+  @keyframes pop { from { transform: scale(.7); opacity:0;} to { transform:none; opacity:1;} }
+  .cell:hover { transform: translateY(-3px); }
+  .cell .idx {
+    background: rgba(74,144,217,.12); color: var(--line);
+    font-family: Consolas, monospace; font-weight:700; font-size:12.5px;
+    padding: 3px 0;
+  }
+  html.dark .cell .idx { background: rgba(106,169,233,.15); }
+  .cell .val { padding: 10px 4px 8px; font-size: 17px; font-weight:700; }
+  .cell.picked { border-color: var(--cat); box-shadow: 0 3px 12px rgba(26,107,84,.25); }
+  .cell.picked .idx { background: var(--cat); color:#fff; }
+  /* 字典视图 */
+  .dict-rows { max-width: 380px; margin: 0 auto; }
+  .drow {
+    display:flex; align-items:stretch; margin: 7px 0; border-radius: 9px; overflow:hidden;
+    cursor:pointer; user-select:none; border:2px solid var(--border);
+    transition: all .18s ease;
+  }
+  .drow:hover { transform: translateX(4px); }
+  .drow .key {
+    flex:none; width: 110px; text-align:center;
+    background: rgba(217,119,6,.13); color: var(--dog);
+    font-weight:700; font-size:13.5px; padding: 9px 6px;
+  }
+  html.dark .drow .key { background: rgba(245,158,11,.15); }
+  .drow .arrow { flex:none; align-self:center; padding: 0 8px; color: var(--text-sub); }
+  .drow .val {
+    flex:1; text-align:center; padding: 9px 6px;
+    font-family: Consolas, monospace; font-size: 14.5px; font-weight:700; color: var(--cat);
+  }
+  .drow.picked { border-color: var(--cat); }
+  /* 控制按钮 */
+  .ops { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; padding: 2px 16px 12px; }
+  button {
+    padding: 7px 14px; border-radius: 8px; border:none; cursor:pointer;
+    background: var(--line); color:#fff; font-size: 12.5px; font-weight:600;
+  }
+  button.ghost { border:1px solid var(--border); background:transparent; color:var(--text-sub); font-weight:400;}
+  /* 输出条 */
+  .statusbar {
+    padding: 10px 16px; border-top: 1px solid var(--border);
+    font-size: 13px; line-height: 1.6; color: var(--text-sub); min-height: 56px;
+  }
+  .statusbar b { color: var(--text); }
+  .statusbar code {
+    font-family: Consolas, monospace; background: rgba(74,144,217,.10); color: var(--line);
+    padding: 0 5px; border-radius: 5px; font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">🗂️ 迷你数据集收纳台
+    <small>先心算再点击验证——「下标 2 到底是第几个？」踩过一次坑就永远记住了</small>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tabList">📦 列表 fruits = [...]</div>
+    <div class="tab" id="tabDict">🏷️ 字典 profile = {...}</div>
+  </div>
+
+  <div class="code-line" id="codeLine"></div>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="ops" id="ops"></div>
+
+  <div class="statusbar" id="status">👆 点击任意格子之前，先在心里猜答案。列表的编号从 <b>0</b> 开始！</div>
+</div>
+
+<script>
+(function () {
+  const stageEl = document.getElementById("stage");
+  const codeLine = document.getElementById("codeLine");
+  const statusEl = document.getElementById("status");
+  const opsEl = document.getElementById("ops");
+
+  let mode = "list";
+  let fruits = ["苹果", "香蕉", "樱桃", "榴莲", "猕猴桃"];
+  const profile = { "name": "小智", "age": 20, "major": "AI", "passed": true };
+
+  function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  // ---------- 列表模式 ----------
+  function renderList(pickIdx) {
+    codeLine.textContent = 'fruits = ' + JSON.stringify(fruits).replace(/"/g, '"');
+    opsEl.innerHTML = "";
+    addOp("➕ append(\"橙子\")", () => {
+      if (fruits.length >= 7) { setStatus('列表够长啦，先「排序」或重置玩别的。'); return; }
+      fruits.push("橙子");
+      renderList(-1);
+      setStatus('fruits.append("橙子") 执行完毕 → 新元素排在<b>末尾</b>，其他元素的下标没变。');
+    });
+    addOp("↕️ sort() 排序", () => {
+      fruits.sort((a, b) => a.localeCompare(b, "zh"));
+      renderList(-1);
+      setStatus("sort() 后顺序变了！<b>位置变了，下标对应的值也跟着变</b> —— 再点几个验证一下。");
+    });
+    addOp("🔄 重置", resetList);
+
+    stageEl.innerHTML = "";
+    const cells = document.createElement("div");
+    cells.className = "cells";
+    fruits.forEach((f, i) => {
+      const c = document.createElement("div");
+      c.className = "cell" + (i === pickIdx ? " picked" : "");
+      c.style.animationDelay = (i * 60) + "ms";
+      c.innerHTML =
+        '<div class="idx">' + i + '</div>' +
+        '<div class="val">' + esc(f) + "</div>" +
+        '<div style="font-size:11px;color:var(--text-sub);padding-bottom:6px;">[' + i + "]</div>";
+      c.addEventListener("click", () => {
+        renderList(i);
+        setStatus(
+          '<code>fruits[' + i + ']</code> → <b>"' + esc(f) + '"</b>' +
+          (i === 2
+            ? '　✅ 注意：下标 <b>2</b> 是第 <b>3 个</b>元素（从 0 数起）。'
+            : (i === 0 ? "　第 1 个的下标是 0。" : "")),
+        );
+      });
+      cells.appendChild(c);
+    });
+    stageEl.appendChild(cells);
+  }
+
+  function resetList() {
+    fruits = ["苹果", "香蕉", "樱桃", "榴莲", "猕猴桃"];
+    renderList(-1);
+    setStatus("已重置。先猜再点！");
+  }
+
+  function addOp(label, fn) {
+    const b = document.createElement("button");
+    b.innerHTML = label;
+    b.addEventListener("click", fn);
+    opsEl.appendChild(b);
+  }
+
+  // ---------- 字典模式 ----------
+  function renderDict(pickKey) {
+    codeLine.textContent =
+      "profile = { " +
+      Object.keys(profile).map((k) => '"' + k + '": ' + JSON.stringify(profile[k])).join(", ") +
+      " }";
+    opsEl.innerHTML = "";
+    addOp("🔑 len(profile)", () => {
+      setStatus("<code>len(profile)</code> → <b>" + Object.keys(profile).length + "</b> —— 字典的长度是键值对的个数。");
+    });
+
+    stageEl.innerHTML = "";
+    const wrap = document.createElement("div");
+    wrap.className = "dict-rows";
+    Object.keys(profile).forEach((k) => {
+      const r = document.createElement("div");
+      r.className = "drow" + (k === pickKey ? " picked" : "");
+      r.innerHTML =
+        '<div class="key">' + esc(k) + '</div>' +
+        '<div class="arrow">→</div>' +
+        '<div class="val">' + esc(JSON.stringify(profile[k])) + "</div>";
+      r.addEventListener("click", () => {
+        renderDict(k);
+        setStatus(
+          '<code>profile["' + k + '"]</code> → <b>' + esc(JSON.stringify(profile[k])) + "</b>" +
+          '　字典不看位置、只认标签：<b>键（key）决定一切</b>。',
+        );
+      });
+      wrap.appendChild(r);
+    });
+    stageEl.appendChild(wrap);
+  }
+
+  function setStatus(html) { statusEl.innerHTML = html; }
+
+  // ---------- 模式切换 ----------
+  const tabList = document.getElementById("tabList");
+  const tabDict = document.getElementById("tabDict");
+  tabList.addEventListener("click", () => {
+    mode = "list";
+    tabList.classList.add("active"); tabDict.classList.remove("active");
+    renderList(-1);
+    setStatus("列表模式：先心算「某个值在第几格」，再点击验证。编号从 0 开始！");
+  });
+  tabDict.addEventListener("click", () => {
+    mode = "dict";
+    tabDict.classList.add("active"); tabList.classList.remove("active");
+    renderDict(null);
+    setStatus("字典模式：点任意一行，看「键 → 值」怎么被取出。");
+  });
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  renderList(-1);
+})();
+</script>
+</body>
+</html>

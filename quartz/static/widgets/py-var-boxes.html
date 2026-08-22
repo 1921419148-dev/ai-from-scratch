@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>变量盒子观察室</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+  }
+  .widget {
+    max-width: 720px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--canvas-bg);
+    overflow: hidden;
+  }
+  .head { padding: 14px 16px 10px; font-weight: 700; font-size: 15px; }
+  .head small { display:block; font-weight:400; color: var(--text-sub); margin-top:3px; font-size:12.5px;}
+  .console {
+    display: flex; gap: 10px; align-items: center;
+    padding: 10px 16px;
+  }
+  .prompt { font-family: Consolas, monospace; color: var(--cat); font-weight: 700; font-size: 14px; }
+  input.repl {
+    flex: 1;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13.5px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text);
+  }
+  input.repl:focus { outline: none; border-color: var(--line); }
+  button {
+    padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;
+    background: var(--line); color: #fff; font-size: 13.5px; font-weight: 600;
+  }
+  button.ghost { border: 1px solid var(--border); background: transparent; color: var(--text-sub); font-weight: 400; }
+  .boxes {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    padding: 6px 16px 14px; min-height: 130px;
+    align-items: stretch;
+  }
+  .box {
+    min-width: 120px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    animation: pop .3s ease;
+  }
+  @keyframes pop { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+  .box-name {
+    background: rgba(74,144,217,.12); color: var(--line);
+    font-family: Consolas, monospace; font-weight: 700; font-size: 13.5px;
+    padding: 5px 10px;
+  }
+  html.dark .box-name { background: rgba(106,169,233,.14); }
+  .box-value {
+    padding: 10px 10px 4px;
+    font-family: Consolas, monospace; font-size: 17px; font-weight: 700;
+    text-align: center;
+    word-break: break-all;
+  }
+  .box-type {
+    text-align:center; font-size: 11px; color: var(--text-sub);
+    padding-bottom: 8px;
+  }
+  .type-int   .box-value { color: var(--cat); }
+  .type-float .box-value { color: var(--cat); }
+  .type-str   .box-value { color: var(--dog); }
+  .type-bool  .box-value { color: #8b5cf6; }
+  .empty-hint { color: var(--text-sub); font-size: 13px; padding: 20px 0; width: 100%; text-align:center;}
+  /* 输出与历史 */
+  .feed {
+    border-top: 1px solid var(--border);
+    max-height: 150px; overflow-y: auto;
+    font-family: Consolas, monospace; font-size: 12.5px; line-height: 1.7;
+    padding: 8px 16px 10px;
+    background: var(--bg);
+  }
+  .feed .ln { display:block; white-space: pre-wrap; word-break: break-word; }
+  .feed .in { color: var(--text-sub); }
+  .feed .out { color: var(--text); }
+  .feed .err { color: #e05252; }
+  html.dark .feed .err { color: #ff7b7b; }
+  .tips {
+    border-top: 1px dashed var(--border);
+    padding: 10px 16px 14px; font-size: 12.5px; color: var(--text-sub); line-height: 1.7;
+  }
+  code.inline { font-family: Consolas, monospace; background: rgba(74,144,217,.10); color: var(--line); padding: 0 5px; border-radius: 5px; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="head">📦 变量盒子观察室
+    <small>在下面的输入行敲 Python 赋值语句，看变量盒子实时变化。支持：<code class="inline">x = 5</code>、<code class="inline">y = x + 3</code>、<code class="inline">name = "AI"</code>、<code class="inline">flag = True</code>、直接敲 <code class="inline">x</code> 查看它的值</small>
+  </div>
+
+  <div class="console">
+    <span class="prompt">&gt;&gt;&gt;</span>
+    <input class="repl" id="repl" placeholder='试试： x = 5  然后回车' autocomplete="off" spellcheck="false">
+    <button id="btnRun">执行</button>
+    <button id="btnClear" class="ghost">清空</button>
+  </div>
+
+  <div class="boxes" id="boxes"><div class="empty-hint">还没有任何变量——敲一句 <b>x = 5</b> 试试</div></div>
+
+  <div class="feed" id="feed"></div>
+
+  <div class="tips">
+    💡 玩点进阶的：
+    <code class="inline">y = x</code>（复制值）→ 再改 x，看 y 变不变？
+    · <code class="inline">z = z + 1</code>（自己给自己加一）
+    · 敲一个没定义的名字如 <code class="inline">w</code> → 看 NameError 报错
+  </div>
+</div>
+
+<script>
+(function () {
+  const repl = document.getElementById("repl");
+  const boxesEl = document.getElementById("boxes");
+  const feedEl = document.getElementById("feed");
+  const btnRun = document.getElementById("btnRun");
+  const btnClear = document.getElementById("btnClear");
+
+  const vars = Object.create(null);   // name -> { value, type }
+
+  function classify(v) {
+    if (typeof v === "number") {
+      return Number.isInteger(v) ? "int" : "float";
+    }
+    if (typeof v === "string") return "str";
+    if (typeof v === "boolean") return "bool";
+    return "unknown";
+  }
+
+  function typeName(t) {
+    return { int: "int 整数", float: "float 浮点数", str: "str 字符串", bool: "bool 布尔值" }[t] || t;
+  }
+
+  function fmtVal(v) {
+    if (typeof v === "string") return '"' + v + '"';
+    return String(v);
+  }
+
+  function renderBoxes() {
+    const names = Object.keys(vars);
+    if (names.length === 0) {
+      boxesEl.innerHTML = '<div class="empty-hint">还没有任何变量——敲一句 <b>x = 5</b> 试试</div>';
+      return;
+    }
+    // 最后操作的盒子放最前
+    names.sort((a, b) => (vars[b]._touch || 0) - (vars[a]._touch || 0));
+    boxesEl.innerHTML = "";
+    for (const n of names.slice(0, 6)) {
+      const v = vars[n];
+      const d = document.createElement("div");
+      d.className = "box type-" + v.type;
+      d.innerHTML =
+        '<div class="box-name">' + esc(n) + '</div>' +
+        '<div class="box-value">' + esc(fmtVal(v.value)) + '</div>' +
+        '<div class="box-type">' + typeName(v.type) + '</div>';
+      boxesEl.appendChild(d);
+    }
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  let touchCounter = 0;
+
+  function log(kind, text) {
+    const ln = document.createElement("span");
+    ln.className = "ln " + kind;
+    ln.textContent = text;
+    feedEl.appendChild(ln);
+    feedEl.scrollTop = feedEl.scrollHeight;
+  }
+
+  function evaluate(expr) {
+    expr = expr.trim();
+    if (!expr) return;
+
+    log("in", ">>> " + expr);
+
+    // 直接查值
+    if (/^[A-Za-z_][A-Za-z_0-9]*$/.test(expr)) {
+      if (expr in vars) {
+        log("out", fmtVal(vars[expr].value));
+        vars[expr]._touch = ++touchCounter;
+        renderBoxes();
+      } else {
+        log("err", 'NameError: name \'' + expr + "' is not defined —— Python 找不到这个盒子（还没赋值过）");
+      }
+      return;
+    }
+
+    // 赋值：name = 表达式
+    const m = expr.match(/^([A-Za-z_][A-Za-z_0-9]*)\s*=\s*(.+)$/);
+    if (m) {
+      const name = m[1];
+      const rhsRaw = m[2].trim();
+      if (["print", "type", "input", "len"].includes(name)) {
+        log("err", "SyntaxError: 不能用内置函数名当变量名（" + name + " 是 Python 自带的工具）");
+        return;
+      }
+      try {
+        const val = evalExpr(rhsRaw);
+        vars[name] = { value: val, type: classify(val), _touch: ++touchCounter };
+        renderBoxes();
+      } catch (err) {
+        log("err", friendlyError(err.message));
+      }
+      return;
+    }
+
+    // 其他表达式：报「本模拟器只支持赋值和查值」
+    log("err", "🤔 本模拟器只支持两种输入：赋值（x = 5）或查看变量（x）。完整版等你装好真 Python！");
+  }
+
+  // 安全的小表达式求值器：数字 / 字符串 / True False / 变量名 / + - * / ()
+  function evalExpr(src) {
+    const tokens = tokenize(src);
+    let pos = 0;
+    function peek() { return tokens[pos]; }
+    function next() { return tokens[pos++]; }
+
+    function parsePrimary() {
+      const t = next();
+      if (t === undefined) throw new Error("unexpected end of expression");
+      if (t === "(") {
+        const v = parseAdd();
+        if (next() !== ")") throw new Error("missing )");
+        return v;
+      }
+      if (t === "-") return -parsePrimary();
+      if (/^".*"$/.test(t) || /^'.*'$/.test(t)) return t.slice(1, -1);
+      if (t === "True") return true;
+      if (t === "False") return false;
+      if (/^-?\d+\.\d+$/.test(t)) return parseFloat(t);
+      if (/^\d+$/.test(t)) return parseInt(t, 10);
+      if (/^[A-Za-z_][A-Za-z_0-9]*$/.test(t)) {
+        if (!(t in vars)) throw new Error("NameError|" + t);
+        return vars[t].value;
+      }
+      throw new Error("bad token|" + t);
+    }
+    function parseMul() {
+      let v = parsePrimary();
+      while (peek() === "*" || peek() === "/") {
+        const op = next();
+        const r = parsePrimary();
+        if (op === "*") {
+          // 复刻 Python 的字符串重复："ab" * 3
+          v = (typeof v === "string" || typeof r === "string")
+            ? strRepeat(typeof v === "string" ? v : r, typeof v === "number" ? v : r)
+            : v * r;
+        } else {
+          if ((typeof v !== "number") || (typeof r !== "number")) throw new Error("TypeError|字符串只能和字符串相加，不能相除");
+          v = v / r;
+        }
+      }
+      return v;
+    }
+    function parseAdd() {
+      let v = parseMul();
+      while (peek() === "+" || peek() === "-") {
+        const op = next();
+        const r = parseMul();
+        if (op === "+") {
+          if (typeof v === "string" && typeof r === "string") v = v + r;
+          else if (typeof v === "number" && typeof r === "number") v = v + r;
+          else throw new Error("TypeError|数字和文字不能直接相加！（还记得那个坑吗）");
+        } else {
+          if (typeof v !== "number" || typeof r !== "number") throw new Error("TypeError|只有数字能做减法");
+          v = v - r;
+        }
+      }
+      return v;
+    }
+    const result = parseAdd();
+    if (pos < tokens.length) throw new Error("bad token|" + tokens[pos]);
+    return result;
+  }
+
+  function strRepeat(s, n) {
+    if (typeof n !== "number" || !Number.isInteger(n) || n < 0) throw new Error("TypeError|字符串只能乘以整数");
+    if (s.length * n > 200) throw new Error("太长了！模拟器装不下 😅");
+    return s.repeat(n);
+  }
+
+  function tokenize(src) {
+    const out = [];
+    let i = 0;
+    while (i < src.length) {
+      const c = src[i];
+      if (/\s/.test(c)) { i++; continue; }
+      if (c === '"' || c === "'") {
+        const end = src.indexOf(c, i + 1);
+        if (end === -1) throw new Error("SyntaxError|引号没有成对出现（字符串必须两边都有引号）");
+        out.push(src.slice(i, end + 1));
+        i = end + 1;
+      } else if (/[A-Za-z_0-9.]/.test(c)) {
+        let j = i;
+        while (j < src.length && /[A-Za-z_0-9.]/.test(src[j])) j++;
+        out.push(src.slice(i, j));
+        i = j;
+      } else if ("+-*/()".includes(c)) {
+        out.push(c);
+        i++;
+      } else {
+        throw new Error("SyntaxError|这个符号我不认识：" + c);
+      }
+    }
+    return out;
+  }
+
+  function friendlyError(msg) {
+    if (msg.startsWith("NameError|")) {
+      return "NameError: name '" + msg.slice(10) + "' is not defined —— 这个名字还没有被赋值过";
+    }
+    if (msg.includes("|")) return msg.split("|").slice(1).join("|");
+    return msg;
+  }
+
+  btnRun.addEventListener("click", () => { evaluate(repl.value); repl.value = ""; repl.focus(); });
+  repl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { evaluate(repl.value); repl.value = ""; }
+  });
+  btnClear.addEventListener("click", () => {
+    for (const k of Object.keys(vars)) delete vars[k];
+    feedEl.innerHTML = "";
+    renderBoxes();
+    repl.focus();
+  });
+
+  // 深色模式同步
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  setTimeout(() => repl.focus(), 300);
+})();
+</script>
+</body>
+</html>

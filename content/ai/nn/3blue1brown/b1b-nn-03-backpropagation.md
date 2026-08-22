@@ -14,12 +14,12 @@ source: https://www.3blue1brown.com/lessons/backpropagation
 
 ## 🎬 视频信息
 
-| 项目     | 内容                                                                                                                       |
-| -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 官方标题 | Backpropagation, intuitively \| Deep Learning Chapter 3\*                                                                  |
-| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                             |
-| 首次发布 | 2017-11-03                                                                                                                 |
-| 观看地址 | [YouTube](https://www.youtube.com/watch?v=Ilg3gGewQ5U) · [官网课程页](https://www.3blue1brown.com/lessons/backpropagation) |
+| 项目     | 内容                                                                                                                                                                                                                          |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 官方标题 | Backpropagation, intuitively \| Deep Learning Chapter 3\*                                                                                                                                                                     |
+| 主讲     | Grant Sanderson（3Blue1Brown）                                                                                                                                                                                                |
+| 首次发布 | 2017-11-03                                                                                                                                                                                                                    |
+| 观看地址 | B 站中文配音：[本集合第 3 集](https://www.bilibili.com/video/BV1BzNLzzExg?p=3)（无需翻墙） · 原版：[YouTube](https://www.youtube.com/watch?v=Ilg3gGewQ5U) · [官网课程页](https://www.3blue1brown.com/lessons/backpropagation) |
 
 > 核实于 2026-08-22。\*YouTube 上标题编号为 Chapter 3，官网因多一节纯网页互动课而列为 Chapter 4——见[目录页说明](ai/nn/3blue1brown/index)。本集是「直觉篇」，配套的数学推导在第 4 集和官网文字版。
 
