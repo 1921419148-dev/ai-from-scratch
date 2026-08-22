@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>责任分摊模拟器：误差如何反向传播</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --canvas-bg: #ffffff;
+    --border: #e5e2dc;
+    --text: #2b2926;
+    --text-sub: #6b675f;
+    --cat: #1a6b54;
+    --dog: #d97706;
+    --line: #4a90d9;
+  }
+  html.dark {
+    --bg: #17191c;
+    --canvas-bg: #1e2126;
+    --border: #33373d;
+    --text: #eceeef;
+    --text-sub: #9aa0a8;
+    --cat: #4ec9a0;
+    --dog: #f59e0b;
+    --line: #6aa9e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+  }
+  .widget {
+    max-width: 740px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--canvas-bg);
+    overflow: hidden;
+  }
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  input[type="range"] { accent-color: var(--dog); vertical-align: middle; }
+  button {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--line);
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button.ghost {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-sub);
+    font-weight: 400;
+  }
+  canvas { display: block; width: 100%; cursor: pointer; }
+  .statusbar {
+    padding: 9px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.55;
+    min-height: 42px;
+  }
+  .statusbar b { color: var(--text); }
+  .legend { display:flex; gap:14px; font-size:12.5px; color:var(--text-sub); align-items:center; }
+  .chip { width:11px; height:11px; border-radius:50%; display:inline-block; margin-right:4px; vertical-align:-1px;}
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="toolbar">
+    <span>输出层误差大小：</span>
+    <input type="range" id="errSlider" min="5" max="100" value="60">
+    <span id="errVal" style="font-variant-numeric:tabular-nums;font-weight:700;color:var(--dog);">60%</span>
+    <span style="flex:1"></span>
+    <button id="btnProp">⚡ 反向传播！</button>
+    <button id="btnReset" class="ghost">重置</button>
+  </div>
+  <canvas id="net"></canvas>
+  <div class="statusbar" id="status">👆 网络答错了（拖动滑块设定错得多离谱）。点击「反向传播」——看这口「锅」如何沿着连线一层层分摊回去。也可以直接<b>点击任意连线</b>查看它的分摊额。</div>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById("net");
+  const ctx = canvas.getContext("2d");
+  const errSlider = document.getElementById("errSlider");
+  const errVal = document.getElementById("errVal");
+  const btnProp = document.getElementById("btnProp");
+  const btnReset = document.getElementById("btnReset");
+  const status = document.getElementById("status");
+
+  // 3 层小网络：3 - 4 - 2
+  const LAYERS = [3, 4, 2];
+  let nodes = [];   // {x,y,layer,idx}
+  let edges = [];   // {from,to,w (随机权重), share (分摊的锅)}
+  let blame = [];   // 输出层误差
+  let propagated = false;
+  let animT = 0;    // 动画进度 0→1→2→3 (层)
+  let hoverEdge = null;
+
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function layout() {
+    nodes = []; edges = [];
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    for (let l = 0; l < LAYERS.length; l++) {
+      const n = LAYERS[l];
+      for (let i = 0; i < n; i++) {
+        nodes.push({
+          x: w * (0.14 + l * 0.36),
+          y: h * ((i + 1) / (n + 1)),
+          layer: l, idx: i,
+          blame: 0
+        });
+      }
+    }
+    const byLayer = (l) => nodes.filter((nd) => nd.layer === l);
+    // 权重固定伪随机，保证每次打开一致可复现
+    let seed = 42;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (let l = 0; l < LAYERS.length - 1; l++) {
+      for (const a of byLayer(l))
+        for (const b of byLayer(l + 1))
+          edges.push({ from: a, to: b, w: 0.15 + rnd() * 0.85, share: 0 });
+    }
+  }
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.getBoundingClientRect().width;
+    canvas.width = w * dpr;
+    canvas.height = Math.max(260, w * 0.46) * dpr;
+    canvas.style.height = Math.max(260, w * 0.46) + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    layout();
+    draw();
+  }
+
+  function draw() {
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    ctx.clearRect(0, 0, w, h);
+
+    // 连线：粗细=|权重|；红色高亮=分摊到的锅
+    for (let ei = 0; ei < edges.length; ei++) {
+      const e = edges[ei];
+      const active = e.from.blame > 0.001 || e.to.blame > 0.001;
+      const heat = propagated ? e.share : 0;
+
+      ctx.beginPath();
+      ctx.moveTo(e.from.x, e.from.y);
+      ctx.lineTo(e.to.x, e.to.y);
+      ctx.lineWidth = 0.8 + e.w * 3;
+      if (heat > 0.005) {
+        ctx.strokeStyle = "rgba(217,119,6," + Math.min(0.95, 0.25 + heat*2.2) + ")";
+        ctx.shadowColor = "rgba(217,119,6,.8)";
+        ctx.shadowBlur = 8;
+      } else {
+        ctx.strokeStyle = css("--border") || "#ddd";
+        ctx.shadowBlur = 0;
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // 分摊数字
+      if (propagated && heat > 0.02 && animT >= e.to.layer + 1) {
+        ctx.font = "10.5px 'Noto Sans SC', sans-serif";
+        ctx.fillStyle = css("--text-sub") || "#888";
+        ctx.textAlign = "center";
+        ctx.fillText((heat * 100).toFixed(0), (e.from.x + e.to.x)/2, (e.from.y + e.to.y)/2 - 4);
+      }
+    }
+
+    // 节点：颜色深浅表示「背了多少锅」
+    for (const nd of nodes) {
+      const r = nd.layer === LAYERS.length - 1 ? 17 : 13;
+      ctx.beginPath();
+      ctx.arc(nd.x, nd.y, r, 0, Math.PI * 2);
+      if (nd.blame > 0.001) {
+        // 从绿到橙红渐变
+        const t = Math.min(1, nd.blame * 1.6);
+        ctx.fillStyle = `rgb(${Math.round(26+t*191)},${Math.round(107-t*70)},${Math.round(84-t*50)})`;
+      } else {
+        ctx.fillStyle = css("--line") || "#4a90d9";
+      }
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = css("--canvas-bg") || "#fff";
+      ctx.stroke();
+
+      // 数值标注
+      if (propagated && nd.blame > 0.001) {
+        ctx.font = "bold 10.5px sans-serif";
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.fillText((nd.blame * 100).toFixed(0), nd.x, nd.y + 3.5);
+      }
+    }
+
+    // 层标签
+    ctx.font = "12px 'Noto Sans SC', sans-serif";
+    ctx.fillStyle = css("--text-sub") || "#888";
+    ctx.textAlign = "center";
+    const labels = ["输入层", "隐藏层", "输出层"];
+    for (let l = 0; l < LAYERS.length; l++) {
+      const xs = nodes.filter((n) => n.layer === l).map((n) => n.x);
+      ctx.fillText(labels[l] + (l === LAYERS.length - 1 ? "（答案错了！）" : ""), xs[0], 18);
+    }
+  }
+
+  function propagate() {
+    reset(false);
+    const E = parseInt(errSlider.value) / 100;
+    errVal.textContent = errSlider.value + "%";
+    blame = [];
+
+    // 输出层初始误差（简化为均分）
+    const outs = nodes.filter((n) => n.layer === LAYERS.length - 1);
+    outs.forEach((n) => { n.blame = E / outs.length; });
+
+    // 反向逐层分摊：每层的锅按连线权重比例摊给上一层
+    for (let l = LAYERS.length - 1; l >= 1; l--) {
+      const cur = nodes.filter((n) => n.layer === l);
+      const prev = nodes.filter((n) => n.layer === l - 1);
+      prev.forEach((p) => { p._acc = 0; });
+      // 正确算法：对每个当前节点，把它的锅按其入边权重比例分给上游
+      for (const c of cur) {
+        if (c.blame <= 0) continue;
+        const inEdges = edges.filter((e) => e.to === c);
+        const wSum = inEdges.reduce((s, e) => s + e.w, 0);
+        for (const e of inEdges) {
+          const part = c.blame * (e.w / wSum);
+          e.share = part;
+          e.from._acc += part;
+        }
+      }
+      prev.forEach((p) => { p.blame = p._acc; delete p._acc; });
+    }
+
+    propagated = true;
+    animate();
+  }
+
+  function animate() {
+    animT += 0.05;
+    if (animT < LAYERS.length) {
+      draw();
+      requestAnimationFrame(animate);
+    } else {
+      draw();
+      const ins = nodes.filter((n) => n.layer === 0);
+      status.innerHTML = "✅ 分摊完成！每个数字 = 该神经元/连线分到的「责任份额」（总和 = 你设的误差）。" +
+        "注意：<b>权重大的连线背锅多</b>——所以训练时它们被调整得也多。" +
+        "这就是反向传播（Backpropagation）：从错误出发，倒着算出每个参数该怎么改。";
+    }
+  }
+
+  function reset(clearStatus = true) {
+    propagated = false; animT = 0;
+    nodes.forEach((n) => n.blame = 0);
+    edges.forEach((e) => e.share = 0);
+    if (clearStatus) status.textContent = "已重置。再点「反向传播」看一次全过程。";
+    draw();
+  }
+
+  errSlider.addEventListener("input", () => {
+    errVal.textContent = errSlider.value + "%";
+    if (propagated) propagate(); else draw();
+  });
+  btnProp.addEventListener("click", propagate);
+  btnReset.addEventListener("click", () => reset(true));
+
+  canvas.addEventListener("mousemove", (ev) => {
+    if (!propagated) return;
+    const r = canvas.getBoundingClientRect();
+    const mx = ev.clientX - r.left, my = ev.clientY - r.top;
+    let found = null, best = 12;
+    for (const e of edges) {
+      // 点到线段距离
+      const dx = e.to.x - e.from.x, dy = e.to.y - e.from.y;
+      const t = Math.max(0, Math.min(1, ((mx-e.from.x)*dx + (my-e.from.y)*dy) / (dx*dx+dy*dy)));
+      const px = e.from.x + t*dx, py = e.from.y + t*dy;
+      const d = Math.hypot(mx-px, my-py);
+      if (d < best) { best = d; found = e; }
+    }
+    if (found && found.share > 0.001) {
+      status.innerHTML = "🔗 这条连线权重 = " + found.w.toFixed(2) +
+        "，本次分摊到 <b>" + (found.share*100).toFixed(1) + "</b> 的责任 → 训练时它的调整量与此成正比。";
+    }
+  });
+
+  // 深色模式
+  function syncTheme() {
+    try {
+      const attr = window.parent.document.documentElement.getAttribute("saved-theme");
+      document.documentElement.classList.toggle("dark", attr === "dark");
+      draw();
+    } catch (err) {}
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "theme") {
+      document.documentElement.classList.toggle("dark", ev.data.theme === "dark");
+      draw();
+    }
+  });
+  setTimeout(syncTheme, 100);
+
+  window.addEventListener("resize", resize);
+  resize();
+})();
+</script>
+</body>
+</html>
