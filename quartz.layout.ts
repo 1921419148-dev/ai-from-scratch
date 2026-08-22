@@ -5,7 +5,7 @@ import * as Component from "./quartz/components"
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
-  afterBody: [Component.TTSReader()],
+  afterBody: [Component.TTSReader(), Component.MusicPlayer()],
   footer: Component.Footer({
     links: {
       学习路线: "/roadmap",
@@ -18,6 +18,12 @@ export const sharedPageComponents: SharedLayout = {
 // components for pages that display a single page (e.g. a single note)
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
+    // EUTOPIA 奇幻门厅（仅 / 、 /ch 、 /ch/learn 三页渲染）
+    Component.ConditionalRender({
+      component: Component.Portal(),
+      condition: (page) =>
+        ["index", "ch/index", "ch/learn/index"].includes(page.fileData.slug ?? ""),
+    }),
     Component.ConditionalRender({
       component: Component.Breadcrumbs(),
       condition: (page) => page.fileData.slug !== "index",
@@ -25,7 +31,7 @@ export const defaultContentPageLayout: PageLayout = {
     // 首页专属：板块统计仪表盘（构建时计算各板块课程数/字数/最近更新）
     Component.ConditionalRender({
       component: Component.Dashboard(),
-      condition: (page) => page.fileData.slug === "index",
+      condition: (page) => page.fileData.slug === "ch/home",
     }),
     Component.ArticleTitle(),
     Component.ContentMeta(),

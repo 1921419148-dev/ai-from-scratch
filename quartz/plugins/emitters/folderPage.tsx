@@ -14,7 +14,11 @@ import {
   pathToRoot,
   simplifySlug,
 } from "../../util/path"
-import { defaultListPageLayout, sharedPageComponents } from "../../../quartz.layout"
+import {
+  defaultContentPageLayout,
+  defaultListPageLayout,
+  sharedPageComponents,
+} from "../../../quartz.layout"
 import { FolderContent } from "../../components"
 import { write } from "./helpers"
 import { i18n, TRANSLATIONS } from "../../i18n"
@@ -103,7 +107,9 @@ function _getFolders(slug: FullSlug): SimpleSlug[] {
 export const FolderPage: QuartzEmitterPlugin<Partial<FolderPageOptions>> = (userOpts) => {
   const opts: FullPageLayout = {
     ...sharedPageComponents,
-    ...defaultListPageLayout,
+    // 门厅文件夹（/ch、/ch/learn）与普通内容页共用同一布局，保证 Portal 组件插槽可用
+    ...(defaultListPageLayout as typeof defaultContentPageLayout),
+    ...defaultContentPageLayout,
     pageBody: FolderContent({ sort: userOpts?.sort }),
     ...userOpts,
   }

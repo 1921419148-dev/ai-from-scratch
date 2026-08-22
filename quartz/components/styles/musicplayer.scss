@@ -1,0 +1,214 @@
+.music-player {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.2rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+
+  .music-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--lightgray);
+    border-radius: 999px;
+    background: var(--light);
+    color: var(--darkgray);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      background: var(--secondary);
+      color: var(--light);
+      transform: translateY(-2px);
+    }
+  }
+
+  // 播放中音符圆点律动
+  &.playing .music-toggle {
+    .music-note-dot-1,
+    .music-note-dot-2 {
+      animation: music-bounce 1s ease-in-out infinite;
+    }
+    .music-note-dot-2 {
+      animation-delay: 0.3s;
+    }
+  }
+
+  .music-panel {
+    width: 260px;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--lightgray);
+    border-radius: 12px;
+    background: var(--light);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .music-panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .music-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .music-track-no {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--gray);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .music-seek {
+    width: 100%;
+    height: 4px;
+    accent-color: var(--secondary);
+    cursor: pointer;
+    margin: 0.2rem 0;
+  }
+
+  .music-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--gray);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.4rem;
+  }
+
+  .music-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      color: var(--darkgray);
+      cursor: pointer;
+      padding: 0.3rem;
+      border-radius: 8px;
+      transition:
+        background 0.15s ease,
+        color 0.15s ease;
+
+      &:hover {
+        background: var(--lightgray);
+        color: var(--dark);
+      }
+    }
+
+    .music-play {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: var(--secondary);
+      color: var(--light);
+
+      &:hover {
+        background: var(--tertiary);
+        color: var(--light);
+      }
+
+      .music-icon-pause {
+        display: none;
+      }
+    }
+  }
+
+  &.playing .music-play {
+    .music-icon-play {
+      display: none;
+    }
+    .music-icon-pause {
+      display: block !important;
+    }
+  }
+
+  .music-playlist {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--lightgray);
+
+    &[hidden] {
+      display: none;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.32rem 0.4rem;
+      border: none;
+      background: transparent;
+      color: var(--darkgray);
+      font-size: 0.78rem;
+      cursor: pointer;
+      border-radius: 6px;
+      transition:
+        background 0.12s ease,
+        color 0.12s ease;
+
+      &:hover {
+        background: var(--lightgray);
+      }
+
+      &.active {
+        background: var(--secondary);
+        color: var(--light);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .music-credit {
+    margin: 0.55rem 0 0;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--lightgray);
+    font-size: 0.68rem;
+    color: var(--gray);
+  }
+}
+
+@keyframes music-bounce {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media print {
+  .music-player {
+    display: none;
+  }
+}

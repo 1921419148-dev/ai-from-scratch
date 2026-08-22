@@ -24,7 +24,9 @@ import Comments from "./Comments"
 import Flex from "./Flex"
 import ConditionalRender from "./ConditionalRender"
 import TTSReader from "./TTSReader"
+import MusicPlayer from "./MusicPlayer"
 import Dashboard from "./Dashboard"
+import Portal from "./Portal"
 
 export {
   ArticleTitle,
@@ -53,5 +55,7 @@ export {
   Flex,
   ConditionalRender,
   TTSReader,
+  MusicPlayer,
   Dashboard,
+  Portal,
 }

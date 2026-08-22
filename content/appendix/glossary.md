@@ -103,33 +103,33 @@ description: 全站术语中英对照速查表
 
 ## Python 板块新增（编程基础与数据三件套）
 
-| 英文                       | 缩写 | 中文                                     |
-| -------------------------- | ---- | ---------------------------------------- |
-| Interpreter                | —    | 解释器（逐行翻译执行代码的程序）         |
-| Variable                   | —    | 变量（贴了名字的盒子）                   |
-| Integer / Float            | int / float | 整数 / 浮点数（带小数点的数）     |
-| String                     | str  | 字符串（带引号的文字）                   |
-| Boolean                    | bool | 布尔值（True / False）                   |
-| Assignment                 | —    | 赋值（= 是「装进去」不是「等于」）       |
-| List / Index               | —    | 列表 / 下标（下标从 0 开始数）           |
-| Dictionary                 | dict | 字典（键值对容器）                       |
-| Loop / Iteration           | for / while | 循环 / 迭代                       |
-| Indentation                | —    | 缩进（Python 用它表示代码从属关系）      |
-| Function / Parameter       | def  | 函数 / 参数                              |
-| Return value               | —    | 返回值                                   |
-| Class / Object             | —    | 类（图纸）/ 对象（按图纸造出的实例）     |
-| Method / Attribute         | —    | 方法（会做什么）/ 属性（有什么）        |
-| NumPy                      | np   | 数值计算基石库（ndarray 数组对象）       |
-| Array / Shape              | —    | 数组 / 形状（几行几列）                  |
-| Vectorization              | —    | 向量化（用整体运算代替手写循环）         |
-| Broadcasting               | —    | 广播（不同形状数组自动对齐运算）         |
-| Pandas                     | pd   | 表格数据处理库                           |
-| DataFrame / Series         | df   | 数据框（二维表）/ 系列（单列）           |
-| Missing value / NaN        | —    | 缺失值（该有数的位置是空的）             |
-| Matplotlib                 | plt  | 画图库                                   |
-| Histogram                  | hist | 直方图（看分布）                         |
-| Scatter plot               | —    | 散点图（看两变量关系）                   |
-| Correlation coefficient    | r    | 相关系数（−1 到 1，绝对值越大关系越强）  |
-| Causation                  | —    | 因果关系（相关 ≠ 因果！）                |
+| 英文                    | 缩写        | 中文                                    |
+| ----------------------- | ----------- | --------------------------------------- |
+| Interpreter             | —           | 解释器（逐行翻译执行代码的程序）        |
+| Variable                | —           | 变量（贴了名字的盒子）                  |
+| Integer / Float         | int / float | 整数 / 浮点数（带小数点的数）           |
+| String                  | str         | 字符串（带引号的文字）                  |
+| Boolean                 | bool        | 布尔值（True / False）                  |
+| Assignment              | —           | 赋值（= 是「装进去」不是「等于」）      |
+| List / Index            | —           | 列表 / 下标（下标从 0 开始数）          |
+| Dictionary              | dict        | 字典（键值对容器）                      |
+| Loop / Iteration        | for / while | 循环 / 迭代                             |
+| Indentation             | —           | 缩进（Python 用它表示代码从属关系）     |
+| Function / Parameter    | def         | 函数 / 参数                             |
+| Return value            | —           | 返回值                                  |
+| Class / Object          | —           | 类（图纸）/ 对象（按图纸造出的实例）    |
+| Method / Attribute      | —           | 方法（会做什么）/ 属性（有什么）        |
+| NumPy                   | np          | 数值计算基石库（ndarray 数组对象）      |
+| Array / Shape           | —           | 数组 / 形状（几行几列）                 |
+| Vectorization           | —           | 向量化（用整体运算代替手写循环）        |
+| Broadcasting            | —           | 广播（不同形状数组自动对齐运算）        |
+| Pandas                  | pd          | 表格数据处理库                          |
+| DataFrame / Series      | df          | 数据框（二维表）/ 系列（单列）          |
+| Missing value / NaN     | —           | 缺失值（该有数的位置是空的）            |
+| Matplotlib              | plt         | 画图库                                  |
+| Histogram               | hist        | 直方图（看分布）                        |
+| Scatter plot            | —           | 散点图（看两变量关系）                  |
+| Correlation coefficient | r           | 相关系数（−1 到 1，绝对值越大关系越强） |
+| Causation               | —           | 因果关系（相关 ≠ 因果！）               |
 
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]

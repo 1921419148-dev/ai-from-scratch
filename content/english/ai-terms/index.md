@@ -8,11 +8,11 @@ description: 高频 AI 术语的词源、易混辨析与真实语境用法
 
 ## 规划中的课程
 
-| #   | 课程                     | 内容                                             | 状态 |
-| --- | ------------------------ | ------------------------------------------------ | ---- |
-| T1  | 易混词对辨析（一）       | model / module · parameter / hyperparameter     | 🚧   |
-| T2  | 易混词对辨析（二）       | train / training / trainer · inference / predict | 🚧   |
-| T3  | 有词源的术语             | token、embed、fine-tune 背后的故事               | 🚧   |
-| T4  | 论文英语 vs 新闻英语     | 同一概念的两副面孔：utilize vs use               | 🚧   |
+| #   | 课程                 | 内容                                             | 状态 |
+| --- | -------------------- | ------------------------------------------------ | ---- |
+| T1  | 易混词对辨析（一）   | model / module · parameter / hyperparameter      | 🚧   |
+| T2  | 易混词对辨析（二）   | train / training / trainer · inference / predict | 🚧   |
+| T3  | 有词源的术语         | token、embed、fine-tune 背后的故事               | 🚧   |
+| T4  | 论文英语 vs 新闻英语 | 同一概念的两副面孔：utilize vs use               | 🚧   |
 
 → 返回 [[english/index|🔤 英语进阶目录]]
