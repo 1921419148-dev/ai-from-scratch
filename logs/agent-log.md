@@ -7,6 +7,19 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## AIC-INFRA-004 — 2026-08-22
+- **Agent**: AIC Writer（AI 课程 Agent，基建任务）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - EUTOPIA 奇幻门厅三层导航：`/`（语言选择）→ `/ch`（中文主菜单）→ `/ch/learn`（板块浮岛）
+  - 新增 `Portal.tsx` + `portal-scene.inline.ts`（星尘 canvas/光柱/减动效降级）+ `portal-menu.inline.ts`（云层穿越与淡入过场，SPA 导航）+ `portal.scss`（body[data-slug] 布局塌缩规则）
+  - 原 content/index.md 迁移为 content/ch/home.md；FolderPage emitter 改用内容页布局
+  - 附带并入并行 Agent 的 MusicPlayer 组件（含 10 首 Vincent Rubinetti 配乐 mp3 与署名）、Dashboard「英语进阶」分组、en-graded-reader widget
+- **协作备注**: MusicPlayer 由另一 Agent 开发至一半（缺音频文件），本任务提交时该 Agent 已补齐音频并恢复文件，两方改动合并提交于 3bab463。工作区曾三次 stash/pop 协调并行改动。
+- **自检**: 第二十二章清单通过——tsc/prettier/build 全绿；本地 serve 三层导航全流程通过；线上验证 5 个关键页面（三层门厅+传统首页+课程页）全部正常；非门厅页面无样式泄漏；ac-wiki 镜像目录加入 .prettierignore
+- **审查**: 待 REV 审查（建议 REV-AIC-INFRA-004）
+- **状态**: 完成（已上线）
+
 ## QNX-ACWIKI-001 — 2026-08-22
 - **Agent**: QNX Writer（青年大学习 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
