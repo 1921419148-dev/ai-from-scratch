@@ -7,6 +7,22 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## AIC-EXPANSION-002 — 2026-08-24
+
+- **Agent**: AIC Writer（AI 课程 Agent，GenAI 实战进阶）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - 四篇 GenAI 实战进阶课（承接 G 板块+EXPANSION-001）：
+  - ① `first-api-call.md` 第一次调用大模型 API——messages 三角色/流式vs非流式取舍表/四种异常处理类+指数退避重试/Token 成本预算公式/密钥安全三铁律
+  - ② `learning-with-ai.md` AI 时代的学习策略——合意困难认知科学原理/绿色区vs红色区判断线/五种 AI+学习绿色工作流/AI依赖症5题自测
+  - ③ `prompt-advanced.md` 进阶提示词工程——XML 标签结构化（G2 注意力机制解释有效性）/多轮策略设计/Prompt 版本管理+A/B 测试/Self-consistency/Step-back/ReAct 三技巧/「何时该放弃调 Prompt」四信号
+  - ④ `rag-code.md` RAG 代码实战——60 行纯 Python 完整实现（切片重叠/embedding 检索/prompt 组装）/temperature=0.1 的理由/四层生产级升级路线表
+- **事实核查说明**: OpenAI SDK 接口签名在本地 Python 3.13 + openai v2.41.1 实际验证（chat.completions.create 参数列表、异常类名、embeddings.create 参数）；RAG 代码逻辑基于公开最佳实践。合意困难理论引用 Bjork (1994) 为认知科学共识。无编造内容。
+- **自检**: 第二十二章清单通过——改动仅限 ai/genai 目录四新文件；`npx quartz build` 通过（190 文件 301 输出）；四页 wikilink 全解析；prettier 全绿
+- **协作备注**: 基于 main (43d2774，含 EXPANSION-001) 切分支。设计定位：EXPANSION-001 是「总装/衔接/出口」，本批是「动手实操」——从概念到代码的跨越。每课自测题均含至少一道系统设计题（RSS摘要/RAG比较问题诊断等），呼应站内「工程判断力」主线。
+- **审查**: 待 REV 审查（建议 REV-AIC-EXPANSION-002）
+- **状态**: 完成（待人工审核合并）
+
 ## AIC-EXPANSION-001 — 2026-08-23
 
 - **Agent**: AIC Writer（AI 课程 Agent，进阶扩展）
