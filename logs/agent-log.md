@@ -67,6 +67,19 @@
 - **自检**: 第二十二章清单通过——改动仅限 ai/dl 目录六文件 + dl/index.md + roadmap DL 表 + glossary 对应小节；`npx quartz build` 通过（127 文件 238 输出）；六课 wikilink 全解析；链接扫描 real-broken=0（5 条跨分支依赖：dl/neuron→AIC-DL1-DL6 分支、M 板块新页→MATH-M1-M10 分支，合并后闭合）；prettier 全绿
 - **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-DL7-DL12`。合并依赖链更新：**AIC-DL7-DL12 的 rnn.md 回链 dl/neuron（在 AIC-DL1-DL6 分支）→ 建议最终合并顺序 MATH-M1-M10 → AIC-ML1-ML10 → AIC-DL1-DL6 → AIC-DL7-DL12（或全部同批合入）**。与 INFRA-005/006 无交集。
 - **审查**: 待 REV 审查（建议 REV-AIC-DL7-DL12）
+
+## AIC-NLP1-NLP8 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，NLP 板块）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - NLP1–NLP8 八课完成：tokenization / word-embedding / text-classification / sequence-labeling / machine-translation / bert / gpt-family / prompt-engineering——**NLP 板块 8 课全部完成**
+  - 主线设计：表示（1-2）→ 经典任务（3-5）→ 预训练双雄（6-7）→ 应用学收官（8）；与 DL 板块深度互链（DL7 RNN、DL8 注意力、DL9 Transformer 为前置）
+  - 代表性实测：朴素贝叶斯情感分类 16 条训练/4 条新样本全对（logP 差值逐条列出）；BIO 状态机解码正确抽出「张三」「北京大学」；king−man+woman 手工坐标命中女王 1.000；temperature 三档采样输出对比；贪心 vs 束搜索等价性的诚实边界说明
+- **事实核查说明**: 全部可运行示例在本地 Python 3.13 实测。文献结论（RoBERTa 去除 NSP 更优、CoT 零样本提示生效、GPT-3 few-shot 翻译能力）为公开论文共识。历史轶事（1960s 翻译笑话）采用流传版本并标注性质。
+- **自检**: 第二十二章清单通过——改动仅限 ai/nlp 目录八文件 + nlp/index.md + roadmap NLP 行 + glossary 对应小节；`npx quartz build` 通过（129 文件 240 输出）；八课 wikilink 全解析；链接扫描 real-broken=0（3 条跨分支依赖指向 DL/M 板块新页，合并后闭合）；prettier 全绿
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-NLP1-NLP8`。跨分支依赖同前（MATH-M1-M10、AIC-DL 两分支的页面），最终合并顺序建议不变。剩余板块：GenAI（8 课）、RL（6 课）待写
+- **审查**: 待 REV 审查（建议 REV-AIC-NLP1-NLP8）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-004 — 2026-08-22

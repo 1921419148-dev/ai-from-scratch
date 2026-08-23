@@ -268,4 +268,29 @@ description: 全站术语中英对照速查表
 | Warmup / Cosine annealing   | —     | 预热 / 余弦退火调度                  |
 | Gradient accumulation       | —     | 梯度累积                             |
 
+## 自然语言处理板块新增（NLP1–NLP8）
+
+| 英文                      | 缩写 | 中文                                 |
+| ------------------------- | ---- | ------------------------------------ |
+| Tokenization / BPE        | —    | 分词 / 字节对编码（子词切分）        |
+| Bag of Words (BoW)        | BoW  | 词袋模型（只数频次不认顺序）         |
+| Word embedding            | —    | 词嵌入（语义住进几何空间）           |
+| Distributional hypothesis | —    | 分布式假设（观其伴而知其义）         |
+| Skip-gram / CBOW          | —    | Word2Vec 的两种训练把戏              |
+| Naive Bayes               | NB   | 朴素贝叶斯（文本分类经典）           |
+| Laplace smoothing         | —    | 拉普拉斯平滑（加 1 防零概率）        |
+| BIO scheme                | —    | 实体标注体系（B 开头 I 继续 O 无关） |
+| Named Entity Recognition  | NER  | 命名实体识别                         |
+| CRF                       | —    | 条件随机场（标签合法性约束层）       |
+| Encoder-decoder / Seq2Seq | —    | 编码器-解码器（seq2seq 通用骨架）    |
+| Beam search               | —    | 束搜索（保留 k 条候选的解码策略）    |
+| Masked Language Model     | MLM  | 掩码语言模型（BERT 的完形填空）      |
+| [CLS] token               | —    | 分类哨兵位                           |
+| Autoregressive generation | —    | 自回归生成（逐字吐出，输出喂回输入） |
+| Temperature / Top-p       | —    | 温度 / 核采样（随机性调节旋钮）      |
+| In-context learning       | ICL  | 上下文学习（提示词里教学不改参数）   |
+| Chain-of-Thought (CoT)    | CoT  | 思维链（展示中间推理步骤）           |
+| Prompt engineering        | —    | 提示词工程                           |
+| Hallucination             | —    | 幻觉（一本正经地编造）               |
+
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]
