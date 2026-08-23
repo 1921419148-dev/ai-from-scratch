@@ -7,7 +7,23 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
-## AIC-INFRA-004 — 2026-08-22
+## AIC-ML1-ML10 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，机器学习板块）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - ML1–ML10 十课正文全部完成：what-is-machine-learning / linear-regression / logistic-regression / overfitting / decision-trees / svm / clustering / feature-engineering / model-evaluation / house-price-project
+  - 三范式（ML1）、回归+分类双基础（ML2/ML3）、泛化核心（ML4）、四大算法流派（ML5 决策树/ML6 SVM/ML7 聚类）、工程两翼（ML8 特征工程/ML9 模型评估）、毕业总装项目（ML10 房价预测六步流水线）
+  - 全课遵循站内模板；每课「三问框架」（模型/目标/优化）与 M 板块知识回链贯穿
+  - 共享文件：ml/index.md 十课状态 🚧→✅ + 数学弹药检查提示；roadmap.md ML 表转 ✅；glossary.md 新增「机器学习板块新增」45 条
+- **事实核查说明**: 全部 Python 示例在本地 Python 3.13.14 + NumPy 2.4.2 / Pandas 3.0.0 实测，正文数字均为真实运行输出。代表性验证：线性回归闭式解与归一化梯度下降殊途同归（w=0.8189/b=49.0180）；多项式过拟合实验全组 train/test MSE；SVM 对偶求解支持向量 6 取 2；K-Means 复原三高斯团中心；AUC 手算梯形法则 0.680；房价项目 theta=[16.08,0.728,3.091,-0.41] 对照真值 [20,0.7,3,-0.5]。无外部引用、无网络依赖内容。
+- **自检**: 第二十二章清单通过——改动仅限 ai/ml 目录 + ml/index + roadmap ML 表 + glossary 对应小节；`npx quartz build` 通过（131 文件 242 输出）；十课 HTML 全部生成、wikilink 全部解析、站内链接 0 断链（5 条指向 MATH-M1-M10 分支数学新页的链接在单独构建时悬空，属跨分支依赖非错误，合并后闭合）；prettier 全绿
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-ML1-ML10`。⚠️ 与 MATH-M1-M10 存在依赖：本板块多课回链 M3/M4/M6/M8/M10 数学新页，**建议合并顺序：MATH-M1-M10 先于或同批与本分支合并**，否则线上这五条回链暂时 404。与 AIC-INFRA-005/006 无文件交集。
+- **审查**: 待 REV 审查（建议 REV-AIC-ML1-ML10）
+- **状态**: 完成（待人工审核合并）
+
+## AIC-INFRA-006 — 2026-08-23
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -21,6 +37,7 @@
 - **状态**: 完成（已上线）
 
 ## QNX-ACWIKI-001 — 2026-08-22
+
 - **Agent**: QNX Writer（青年大学习 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -36,6 +53,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-P1-P10 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，Python 板块）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -43,12 +61,13 @@
   - 新增 11 个交互 widget：py-first-run、py-var-boxes、py-list-dict、py-flow-tracer、py-func-machine、py-vending、py-numpy-arena、py-pandas-desk、py-chart-picker、py-loss-curve（P9 双演示）、py-capstone
   - 更新共享文件：`content/roadmap.md`（P1–P10 状态 → ✅，按 hunk 级暂存避开并行任务的 ac-wiki 条目）、`content/appendix/glossary.md`（新增 Python 术语 26 条）、板块 `index.md` 重排为基础篇/进阶篇
 - **事实核查**: 全部课程代码示例在本地 Python 3.13.14 + NumPy 2.4.2 / Pandas 3.0.0 / Matplotlib 3.10.8 实测；正文引用的统计数字（r=0.828、斜率 3.71、describe 输出、speedup ≈1/20 等）均为真实运行结果；NumPy 加速比初稿写「50~100 倍」，实测 10M 元素约 18–23 倍后已修正为「约 1/20」
-- **自检**: 第二十二章清单通过——任务范围内完成（python 目录 + py-* widget + 两个共享文件的对应小节）；11 个 widget JS 语法检查通过且均含主题同步；YAML frontmatter 全部通过解析（修复 capstone 标题含半角冒号问题）；双链目标全部存在；prettier 全绿；`npx quartz build` 通过（118 文件 221 输出）、`npx tsc --noEmit` 通过；git diff 已复查
+- **自检**: 第二十二章清单通过——任务范围内完成（python 目录 + py-\* widget + 两个共享文件的对应小节）；11 个 widget JS 语法检查通过且均含主题同步；YAML frontmatter 全部通过解析（修复 capstone 标题含半角冒号问题）；双链目标全部存在；prettier 全绿；`npx quartz build` 通过（118 文件 221 输出）、`npx tsc --noEmit` 通过；git diff 已复查
 - **协作备注**: 会话期间多个 Agent 在同一工作分支并行提交（ENG/MATH/QNX/AIC-NN）；本任务 commit 只含自己的 20 个文件；roadmap.md 中 QNX Agent 未提交的 ac-wiki 行保留在工作区未动
 - **审查**: 待 REV 审查（建议 REV-AIC-P1-P10）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-NN-003 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，NN 板块维护）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -60,12 +79,14 @@
 - **状态**: 完成（已上线）
 
 ## MATH-RES-001（修正 1） — 2026-08-22
+
 - **Agent**: MATH Writer（数学 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **修正内容**: 用户复核原文后指出计数口径不一致——标题写「22 个」但正文实为 23 项（用户清单 22 + 苏德矿）。已勘误：标题/摘要统一改为「23 个」，「其余 15 个」改「16 个」，并补 `last_verified`。提交 e9c630a。
 - **状态**: 完成（待人工审核合并）
 
 ## MATH-RES-001 — 2026-08-22
+
 - **Agent**: MATH Writer（数学 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -79,6 +100,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## ENG-RES-001 — 2026-08-22
+
 - **Agent**: ENG Writer（英语 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -92,6 +114,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-002 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -105,6 +128,7 @@
 - **状态**: 完成（已合并至 main 并上线验证）
 
 ## ENG-E1-E4 — 2026-08-22
+
 - **Agent**: ENG Writer（英语 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -118,6 +142,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## MATH-B1B-PILOT — 2026-08-22
+
 - **Agent**: MATH Writer（数学 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
