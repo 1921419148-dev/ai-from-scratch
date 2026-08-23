@@ -106,12 +106,12 @@ flowchart LR
 | DL4  | 全连接网络实战               | 🚧   |
 | DL5  | 卷积神经网络 CNN：看图的眼睛 | 🚧   |
 | DL6  | 图像分类项目实战             | 🚧   |
-| DL7  | 循环神经网络 RNN：处理序列   | 🚧   |
-| DL8  | 注意力机制 Attention         | 🚧   |
-| DL9  | Transformer：一切的基石      | 🚧   |
-| DL10 | 迁移学习与预训练模型         | 🚧   |
-| DL11 | 大模型的诞生：Scaling Laws   | 🚧   |
-| DL12 | 深度学习调参经验谈           | 🚧   |
+| DL7  | 循环神经网络 RNN：处理序列   | ✅   |
+| DL8  | 注意力机制 Attention         | ✅   |
+| DL9  | Transformer：一切的基石      | ✅   |
+| DL10 | 迁移学习与预训练模型         | ✅   |
+| DL11 | 大模型的诞生：Scaling Laws   | ✅   |
+| DL12 | 深度学习调参经验谈           | ✅   |
 
 ### 三大方向
 

@@ -54,6 +54,19 @@
 - **自检**: 第二十二章清单通过——改动仅限 ai/dl 目录六文件 + dl/index.md 状态表；`npx quartz build` 通过（127 文件 238 输出）；六课 wikilink 全解析、站内链接 0 断链（初版 image-classification 曾误链未写的 DL7，已改为文字预告并复验 ALL PASS）；prettier 全绿
 - **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-DL1-DL6`；与 MATH-M1-ML10 各分支无文件交集（dl/index.md 仅本分支改动）。DL7–DL12（RNN/Attention/Transformer/迁移学习/Scaling Laws/调参）待下一任务 AIC-DL7-DL12
 - **审查**: 待 REV 审查（建议 REV-AIC-DL1-DL6，重点：PyTorch 代码语义正确性）
+
+## AIC-DL7-DL12 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，深度学习板块下半）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - DL7–DL12 六课完成：rnn / attention / transformer / transfer-learning / scaling-laws / tuning——**深度学习板块 12 课全部完成**
+  - 主线设计：RNN 记忆→注意力直达→Transformer 总装→迁移学习经济学→Scaling Laws 行业格局→调参手册收官；DL12 末尾给出 NLP/GenAI/RL 三方向分流指引
+  - 代表性实测：字符级 RNN abc 循环 acc=100%；注意力权重行和=1 与因果掩码归零手算；GPT-3 参数估算公式复算 174B≈175B；幂律曲线 10 倍降 16%；Adam 峡谷面碾压 SGD（0 vs 1.84）；学习率扫描全表；冻结 2 维 vs 从零 50 维（10 种子均值±标准差）
+- **事实核查说明**: 全部可运行示例在本地 Python 3.13 + NumPy 实测。文献数字（Kaplan α≈0.076、Chinchilla D≈20N、GPT-3 175B/300B tokens/FLOPs 3.2e23、LoRA 2021）为公开资料经本地公式复算吻合；涌现争议按斯坦福 2023 质疑论文两面呈现。无网络依赖内容。
+- **自检**: 第二十二章清单通过——改动仅限 ai/dl 目录六文件 + dl/index.md + roadmap DL 表 + glossary 对应小节；`npx quartz build` 通过（127 文件 238 输出）；六课 wikilink 全解析；链接扫描 real-broken=0（5 条跨分支依赖：dl/neuron→AIC-DL1-DL6 分支、M 板块新页→MATH-M1-M10 分支，合并后闭合）；prettier 全绿
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-DL7-DL12`。合并依赖链更新：**AIC-DL7-DL12 的 rnn.md 回链 dl/neuron（在 AIC-DL1-DL6 分支）→ 建议最终合并顺序 MATH-M1-M10 → AIC-ML1-ML10 → AIC-DL1-DL6 → AIC-DL7-DL12（或全部同批合入）**。与 INFRA-005/006 无交集。
+- **审查**: 待 REV 审查（建议 REV-AIC-DL7-DL12）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-004 — 2026-08-22

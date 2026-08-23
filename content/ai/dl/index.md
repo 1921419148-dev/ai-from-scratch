@@ -16,12 +16,24 @@ description: 神经网络如何一层层「思考」——这十年 AI 爆发的
 | DL4  | [[ai/dl/fcn-practice\|全连接网络实战]]                | 月牙数据分类全流程     | ✅   |
 | DL5  | [[ai/dl/cnn\|卷积神经网络 CNN：看图的眼睛]]           | 权重共享与局部感受野   | ✅   |
 | DL6  | [[ai/dl/image-classification\|图像分类项目实战]]      | 从零训练一个图像分类器 | ✅   |
+<<<<<<< HEAD
 | DL7  | 循环神经网络 RNN：处理序列                            | 文本、语音、时序数据   | 🚧   |
 | DL8  | 注意力机制 Attention                                  | 「挑重点看」的革命     | 🚧   |
 | DL9  | Transformer：一切的基石                               | GPT 与 BERT 的共同祖先 | 🚧   |
 | DL10 | 迁移学习与预训练模型                                  | 站在巨人的肩膀上       | 🚧   |
 | DL11 | 大模型的诞生：Scaling Laws                            | 为什么越大越聪明       | 🚧   |
 | DL12 | 深度学习调参经验谈                                    | 学习率、批大小、正则化 | 🚧   |
+=======
+| DL7  | [[ai/dl/rnn\|循环神经网络 RNN：处理序列]]             | 文本、语音、时序数据   | ✅   |
+| DL8  | [[ai/dl/attention\|注意力机制 Attention]]             | 「挑重点看」的革命     | ✅   |
+| DL9  | [[ai/dl/transformer\|Transformer：一切的基石]]        | GPT 与 BERT 的共同祖先 | ✅   |
+| DL10 | [[ai/dl/transfer-learning\|迁移学习与预训练模型]]     | 站在巨人的肩膀上       | ✅   |
+| DL11 | [[ai/dl/scaling-laws\|大模型的诞生：Scaling Laws]]    | 为什么越大越聪明       | ✅   |
+| DL12 | [[ai/dl/tuning\|深度学习调参经验谈]]                  | 学习率、批大小、正则化 | ✅   |
+
+> [!success] 板块毕业标准
+> 能向朋友讲清三件事即可毕业：① 反向传播在传什么；② Transformer 里每个部件的职责；③ 训练出 nan 时先查哪里。
+>>>>>>> ai/aic/AIC-DL7-DL12
 
 ## 前置要求
 

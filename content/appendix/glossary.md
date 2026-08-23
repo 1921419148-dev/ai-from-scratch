@@ -232,4 +232,40 @@ description: 全站术语中英对照速查表
 | Exploratory data analysis   | EDA   | 探索性数据分析                           |
 | Ensemble learning           | —     | 集成学习（多模型组合）                   |
 
+## 深度学习板块新增（DL1–DL12）
+
+| 英文                        | 缩写  | 中文                                 |
+| --------------------------- | ----- | ------------------------------------ |
+| Perceptron                  | —     | 感知机（最早的神经元模型）           |
+| Activation function         | —     | 激活函数（ReLU/sigmoid/tanh 三兄弟） |
+| Hidden layer                | —     | 隐藏层                               |
+| Feature hierarchy           | —     | 特征层级（边缘→部件→整体）           |
+| Backpropagation             | BP    | 反向传播（链式法则的高效实现）       |
+| Numerical gradient check    | —     | 数值梯度检查（差商当裁判）           |
+| Tensor / Autograd           | —     | 张量 / 自动求导（PyTorch 核心）      |
+| Computational graph         | —     | 计算图                               |
+| Vanishing gradient          | —     | 梯度消失（连乘变小）                 |
+| Saddle point                | —     | 鞍点                                 |
+| Convolution kernel / Filter | —     | 卷积核 / 滤波器                      |
+| Weight sharing              | —     | 权重共享                             |
+| Max pooling                 | —     | 最大池化                             |
+| Translation invariance      | —     | 平移不变性                           |
+| Hidden state                | —     | 隐藏状态（RNN 的工作记忆）           |
+| Truncated BPTT              | —     | 截断式随时间反向传播                 |
+| LSTM / GRU                  | —     | 长短期记忆网络 / 门控循环单元        |
+| Query / Key / Value         | Q/K/V | 查询 / 键 / 值（注意力三件套）       |
+| Self-attention              | —     | 自注意力                             |
+| Causal mask                 | —     | 因果掩码（GPT 不许偷看未来）         |
+| Positional encoding         | PE    | 位置编码                             |
+| Residual connection         | —     | 残差连接（给梯度留高速公路）         |
+| Feed-forward network (FFN)  | FFN   | 前馈网络（Transformer 的知识仓库）   |
+| Token / Embedding           | —     | 词元 / 嵌入                          |
+| Fine-tuning / LoRA          | —     | 微调 / 低秩适配微调                  |
+| In-context learning         | ICL   | 上下文学习（不改参数的 few-shot）    |
+| Scaling laws                | —     | 缩放定律（性能幂律提升）             |
+| Compute-optimal             | —     | 算力最优（Chinchilla 定则 D≈20N）    |
+| Emergence                   | —     | 涌现（能力跨阈值突然出现，存争议）   |
+| Warmup / Cosine annealing   | —     | 预热 / 余弦退火调度                  |
+| Gradient accumulation       | —     | 梯度累积                             |
+
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]
