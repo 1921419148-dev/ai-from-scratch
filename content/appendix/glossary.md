@@ -318,4 +318,31 @@ description: 全站术语中英对照速查表
 | Deepfake                       | —    | 深度伪造                                  |
 | Bias amplification             | —    | 偏见放大                                  |
 
+## 强化学习板块新增（RL1–RL6）
+
+| 英文                       | 缩写 | 中文                              |
+| -------------------------- | ---- | --------------------------------- |
+| Agent / Environment        | —    | 智能体 / 环境                     |
+| Policy (π)                 | —    | 策略（状态→动作的规则）           |
+| Value function             | V(s) | 价值函数（未来累计奖励预估）      |
+| Exploration / Exploitation | —    | 探索 / 利用困境                   |
+| Reward hacking             | —    | 奖励作弊（钻代理指标的空子）      |
+| Markov Decision Process    | MDP  | 马尔可夫决策过程                  |
+| Markov property            | —    | 马尔可夫性（未来只依赖现在）      |
+| Discount factor (γ)        | γ    | 折扣因子                          |
+| Bellman equation           | —    | 贝尔曼方程（一步+未来的递归价值） |
+| Q-function / Q-table       | —    | Q 函数 / Q 表（状态×动作评分表）  |
+| TD learning                | TD   | 时序差分学习                      |
+| Off-policy / On-policy     | —    | 异策略 / 同策略                   |
+| Experience replay          | —    | 经验回放                          |
+| REINFORCE                  | —    | 最朴素的策略梯度算法              |
+| Actor-Critic               | A2C  | 演员-评论家双网络架构             |
+| Advantage function         | —    | 优势函数（比预期好多少）          |
+| Monte Carlo Tree Search    | MCTS | 蒙特卡洛树搜索                    |
+| Self-play                  | —    | 自我对弈                          |
+| AlphaZero                  | —    | 零知识自我对弈的通用版 AlphaGo    |
+| RLHF                       | —    | 基于人类反馈的强化学习            |
+| Reward Model               | RM   | 奖励模型（人类偏好的有损压缩）    |
+| Over-refusal               | —    | 过度拒答（对齐的副作用）          |
+
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]

@@ -119,7 +119,7 @@ flowchart LR
 
 **生成式 AI GenAI**（[[ai/genai/index|目录]]）：[[ai/genai/what-is-generative-ai|什么是生成式 AI]] → [[ai/genai/language-model-principles|语言模型原理]] → [[ai/genai/rag|RAG]] → [[ai/genai/agent|AI Agent]] → [[ai/genai/diffusion|扩散模型]] → [[ai/genai/multimodal|多模态]] → [[ai/genai/fine-tuning-deployment|微调与部署]] → [[ai/genai/safety-ethics|安全与伦理]]（共 8 课，全部 ✅）
 
-**强化学习 RL**（[[ai/rl/index|目录]]）：什么是强化学习 → 马尔可夫决策过程 → Q-Learning → 策略梯度 → AlphaGo 的故事 → RLHF 与大模型对齐（共 6 课）
+**强化学习 RL**（[[ai/rl/index|目录]]）：[[ai/rl/what-is-rl|什么是强化学习]] → [[ai/rl/mdp|马尔可夫决策过程]] → [[ai/rl/q-learning|Q-Learning]] → [[ai/rl/policy-gradient|策略梯度]] → [[ai/rl/alphago|AlphaGo 的故事]] → [[ai/rl/rlhf|RLHF 与大模型对齐]]（共 6 课，全部 ✅）
 
 ## 附属板块：青年大学习
 

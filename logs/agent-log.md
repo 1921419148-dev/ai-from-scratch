@@ -93,6 +93,19 @@
 - **自检**: 第二十二章清单通过——改动仅限 ai/genai 目录八文件 + genai/index.md + roadmap GenAI 行 + glossary 对应小节；`npx quartz build` 通过（129 文件 240 输出）；八课 wikilink 全解析；链接扫描 real-broken=0（9 条跨分支依赖指向 DL/NLP/M 板块，合并后闭合）；G1 表格管道符渲染已专项验证无破损；prettier 全绿
 - **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-GenAI1-8`。跨分支依赖同前。**仅剩 RL 板块（6 课）未写**，完成后 AIC 全部课程任务收官。
 - **审查**: 待 REV 审查（建议 REV-AIC-GenAI1-8）
+
+## AIC-RL1-6 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，强化学习板块）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - RL1–RL6 六课完成：what-is-rl / mdp / q-learning / policy-gradient / alphago / rlhf——**强化学习板块完成，全站路线图课程全部竣工**
+  - 主线设计：范式直觉（RL1）→ 数学框架（RL2）→ 两派算法（RL3 表格/RL4 梯度）→ 巅峰叙事（RL5 AlphaGo）→ 前沿应用（RL6 RLHF 全站总装）
+  - 代表性实测：悬崖行走 Q-Learning（500 轮，回报 -31.22→-17.20，最优路径绕崖验证）；REINFORCE 走廊（P(向右)收敛 0.9999）；γ 折现表（20 步后 0.1216）；多臂老虎机 ε-greedy（4591/5000 押中最优臂，承 ML1）
+- **事实核查说明**: 全部可运行示例本地 Python 实测。AlphaGo 战绩（4:1 李世石、Master 60 连胜、AlphaZero 100:0）、第 37 手细节、柯洁赛后言论均为公开报道；InstructGPT 三步流程、RoBERTa 去 NSP、DPO 为公开论文共识。第 37 手「人类棋谱万分之一出现率」为 DeepMind 论文数据。
+- **自检**: 第二十二章清单通过——改动仅限 ai/rl 目录六文件 + rl/index.md + roadmap RL 行 + glossary 对应小节；`npx quartz build` 通过（127 文件 238 输出）；六课 wikilink 全解析；链接扫描 real-broken=0（3 条跨分支依赖指向 M/DL 板块，合并后闭合）；prettier 全绿
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-RL1-6`。**至此 AIC 全部课程任务收官**：全站累计新增课程 54 篇正文（M10+ML10+DL12+NLP8+GenAI8+RL6），分布于 6 个待合并分支。合并顺序建议：MATH-M1-M10 → AIC-ML1-ML10 → AIC-DL1-DL6 → AIC-DL7-DL12 → AIC-NLP1-NLP8 → AIC-GenAI1-8 → AIC-RL1-6（或全部同批合入 main 后统一构建验证）。
+- **审查**: 待 REV 审查（建议 REV-AIC-RL1-6）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-004 — 2026-08-22
