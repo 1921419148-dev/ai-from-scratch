@@ -182,4 +182,54 @@ description: 全站术语中英对照速查表
 | Confusion matrix            | —       | 混淆矩阵（TP/FP/FN/TN 四格表）             |
 | Precision / Recall          | —       | 精确率（报警准不准）/ 召回率（抓得全不全） |
 
+## 机器学习板块新增（ML1–ML10）
+
+| 英文                        | 缩写  | 中文                                     |
+| --------------------------- | ----- | ---------------------------------------- |
+| Supervised learning         | —     | 监督学习（有标签的学习）                 |
+| Unsupervised learning       | —     | 无监督学习（无标签自己找结构）           |
+| Reinforcement learning      | RL    | 强化学习（试错+奖惩）                    |
+| Regression / Classification | —     | 回归（预测数值）/ 分类（预测类别）       |
+| Weight / Bias               | w / b | 权重 / 偏置（模型的旋钮）                |
+| Prediction (ŷ)              | —     | 预测值（戴帽子的 y）                     |
+| Least squares               | OLS   | 最小二乘（线性回归闭式解）               |
+| Feature scaling             | —     | 特征缩放（救距离类模型的命）             |
+| Sigmoid                     | σ     | S 形函数（分数压成概率）                 |
+| Decision boundary           | —     | 决策边界（正负类的分界线）               |
+| Threshold                   | —     | 阈值（概率超过多少才判正类）             |
+| Cross-entropy loss          | CE    | 交叉熵损失（重罚自信的错误）             |
+| Overfitting / Underfitting  | —     | 过拟合（背题）/ 欠拟合（没学会）         |
+| Generalization              | —     | 泛化（新数据上的表现，终极 KPI）         |
+| Validation set              | —     | 验证集（调参专用，区别于测试集）         |
+| Regularization / L2         | —     | 正则化 / 权重衰减（给复杂度收税）        |
+| Early stopping              | —     | 早停（验证损失回升就刹车）               |
+| Bias-variance tradeoff      | —     | 偏差-方差权衡                            |
+| Decision tree               | DT    | 决策树（是非题流程图）                   |
+| Entropy / Information gain  | —     | 熵 / 信息增益（决定先问哪个问题）        |
+| Random forest               | RF    | 随机森林（随机化小树投票）               |
+| Bootstrap / Bagging         | —     | 自助抽样 / 并行集成                      |
+| Boosting                    | —     | 串行集成（XGBoost 家族）                 |
+| Margin                      | —     | 间隔（SVM 的最宽缓冲带）                 |
+| Support vector              | SV    | 支持向量（决定边界的哨兵样本）           |
+| Kernel trick                | —     | 核技巧（不真升维的魔法）                 |
+| Clustering / K-Means        | —     | 聚类 / K 均值算法                        |
+| Centroid                    | —     | 质心（簇的平均位置）                     |
+| Elbow method                | —     | 肘部法则（选簇数 K）                     |
+| Silhouette score            | —     | 轮廓系数（簇内紧簇间远程度）             |
+| Feature engineering         | —     | 特征工程                                 |
+| Missing value imputation    | —     | 缺失值填充                               |
+| One-Hot encoding            | —     | 独热编码（无序类别的正确打开方式）       |
+| Binning                     | —     | 分箱（连续值切段）                       |
+| Interaction feature         | —     | 交互特征（特征乘积组合）                 |
+| Baseline                    | —     | 基线（傻瓜模型的成绩下限）               |
+| Precision / Recall          | P / R | 精确率（报警准不准）/ 召回率（抓得全吗） |
+| F1 score                    | F1    | 精确率与召回率的调和平均                 |
+| K-fold cross validation     | CV    | K 折交叉验证（轮流当考官）               |
+| ROC curve / AUC             | AUC   | ROC 曲线 / 曲线下面积（排序能力）        |
+| Data leakage                | —     | 数据泄露（评估虚高的头号元凶）           |
+| RMSE                        | —     | 均方根误差（MSE 开根号回原单位）         |
+| Noise floor                 | —     | 噪声底（数据固有随机性的误差下限）       |
+| Exploratory data analysis   | EDA   | 探索性数据分析                           |
+| Ensemble learning           | —     | 集成学习（多模型组合）                   |
+
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]

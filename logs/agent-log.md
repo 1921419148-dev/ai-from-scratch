@@ -25,6 +25,23 @@
 
 ## AIC-INFRA-005 — 2026-08-23
 
+## AIC-ML1-ML10 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，机器学习板块）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - ML1–ML10 十课正文全部完成：what-is-machine-learning / linear-regression / logistic-regression / overfitting / decision-trees / svm / clustering / feature-engineering / model-evaluation / house-price-project
+  - 三范式（ML1）、回归+分类双基础（ML2/ML3）、泛化核心（ML4）、四大算法流派（ML5 决策树/ML6 SVM/ML7 聚类）、工程两翼（ML8 特征工程/ML9 模型评估）、毕业总装项目（ML10 房价预测六步流水线）
+  - 全课遵循站内模板；每课「三问框架」（模型/目标/优化）与 M 板块知识回链贯穿
+  - 共享文件：ml/index.md 十课状态 🚧→✅ + 数学弹药检查提示；roadmap.md ML 表转 ✅；glossary.md 新增「机器学习板块新增」45 条
+- **事实核查说明**: 全部 Python 示例在本地 Python 3.13.14 + NumPy 2.4.2 / Pandas 3.0.0 实测，正文数字均为真实运行输出。代表性验证：线性回归闭式解与归一化梯度下降殊途同归（w=0.8189/b=49.0180）；多项式过拟合实验全组 train/test MSE；SVM 对偶求解支持向量 6 取 2；K-Means 复原三高斯团中心；AUC 手算梯形法则 0.680；房价项目 theta=[16.08,0.728,3.091,-0.41] 对照真值 [20,0.7,3,-0.5]。无外部引用、无网络依赖内容。
+- **自检**: 第二十二章清单通过——改动仅限 ai/ml 目录 + ml/index + roadmap ML 表 + glossary 对应小节；`npx quartz build` 通过（131 文件 242 输出）；十课 HTML 全部生成、wikilink 全部解析、站内链接 0 断链（5 条指向 MATH-M1-M10 分支数学新页的链接在单独构建时悬空，属跨分支依赖非错误，合并后闭合）；prettier 全绿
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-ML1-ML10`。⚠️ 与 MATH-M1-M10 存在依赖：本板块多课回链 M3/M4/M6/M8/M10 数学新页，**建议合并顺序：MATH-M1-M10 先于或同批与本分支合并**，否则线上这五条回链暂时 404。与 AIC-INFRA-005/006 无文件交集。
+- **审查**: 待 REV 审查（建议 REV-AIC-ML1-ML10）
+- **状态**: 完成（待人工审核合并）
+
+## AIC-INFRA-006 — 2026-08-23
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
