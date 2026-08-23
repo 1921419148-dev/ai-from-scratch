@@ -7,7 +7,22 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## AIC-FORMULA-001 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，附录基建）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - `content/appendix/formulas.md` 从施工占位骨架扩写为正式版公式速查卡（约 310 行）
+  - 八章结构：基础运算 / 微积分 / 线代 / 概率统计 / ML 核心 / DL 核心（含注意力★与参数估算）/ RL 核心（含 Q-Learning 更新★与 RLHF 目标函数）/ 速算工具箱表
+  - 每条公式三件套：公式 → 人话翻译 → 📍出处双链（精确到课程的具体概念节）；关键条目附「实测参考」数字与各课正文严格一致
+- **事实核查说明**: 全部实测参考数字取自各课程编写时的本地 Python 运行结果（w=0.8189/b=49.0180、贝叶斯 16.7%、掩码归零、GPT-3 复算 174B、悬崖行走 -31.22→-17.20 等），未引入新的未经验证内容。RLHF 目标函数标注「概念版」（简化呈现 KL 约束思想，非精确论文形式）。
+- **自检**: 第二十二章清单通过——改动仅限 formulas.md 单文件；`npx quartz build` 通过；wikilink 全解析、关键回链抽查通过。⚠️ 本页密集回链各板块新课程页，**强依赖全部课程分支先行合并**——建议作为合并链条的最后一环合入 main。
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-FORMULA-001`。合并顺序建议在 RL1-6 之后（或与全部课程分支同批合入）。
+- **审查**: 待 REV 审查（建议 REV-AIC-FORMULA-001，重点：公式转写是否与正文一致）
+- **状态**: 完成（待人工审核合并）
+
 ## AIC-INFRA-004 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -21,6 +36,7 @@
 - **状态**: 完成（已上线）
 
 ## QNX-ACWIKI-001 — 2026-08-22
+
 - **Agent**: QNX Writer（青年大学习 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -36,6 +52,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-P1-P10 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，Python 板块）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -43,12 +60,13 @@
   - 新增 11 个交互 widget：py-first-run、py-var-boxes、py-list-dict、py-flow-tracer、py-func-machine、py-vending、py-numpy-arena、py-pandas-desk、py-chart-picker、py-loss-curve（P9 双演示）、py-capstone
   - 更新共享文件：`content/roadmap.md`（P1–P10 状态 → ✅，按 hunk 级暂存避开并行任务的 ac-wiki 条目）、`content/appendix/glossary.md`（新增 Python 术语 26 条）、板块 `index.md` 重排为基础篇/进阶篇
 - **事实核查**: 全部课程代码示例在本地 Python 3.13.14 + NumPy 2.4.2 / Pandas 3.0.0 / Matplotlib 3.10.8 实测；正文引用的统计数字（r=0.828、斜率 3.71、describe 输出、speedup ≈1/20 等）均为真实运行结果；NumPy 加速比初稿写「50~100 倍」，实测 10M 元素约 18–23 倍后已修正为「约 1/20」
-- **自检**: 第二十二章清单通过——任务范围内完成（python 目录 + py-* widget + 两个共享文件的对应小节）；11 个 widget JS 语法检查通过且均含主题同步；YAML frontmatter 全部通过解析（修复 capstone 标题含半角冒号问题）；双链目标全部存在；prettier 全绿；`npx quartz build` 通过（118 文件 221 输出）、`npx tsc --noEmit` 通过；git diff 已复查
+- **自检**: 第二十二章清单通过——任务范围内完成（python 目录 + py-\* widget + 两个共享文件的对应小节）；11 个 widget JS 语法检查通过且均含主题同步；YAML frontmatter 全部通过解析（修复 capstone 标题含半角冒号问题）；双链目标全部存在；prettier 全绿；`npx quartz build` 通过（118 文件 221 输出）、`npx tsc --noEmit` 通过；git diff 已复查
 - **协作备注**: 会话期间多个 Agent 在同一工作分支并行提交（ENG/MATH/QNX/AIC-NN）；本任务 commit 只含自己的 20 个文件；roadmap.md 中 QNX Agent 未提交的 ac-wiki 行保留在工作区未动
 - **审查**: 待 REV 审查（建议 REV-AIC-P1-P10）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-NN-003 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，NN 板块维护）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -60,12 +78,14 @@
 - **状态**: 完成（已上线）
 
 ## MATH-RES-001（修正 1） — 2026-08-22
+
 - **Agent**: MATH Writer（数学 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **修正内容**: 用户复核原文后指出计数口径不一致——标题写「22 个」但正文实为 23 项（用户清单 22 + 苏德矿）。已勘误：标题/摘要统一改为「23 个」，「其余 15 个」改「16 个」，并补 `last_verified`。提交 e9c630a。
 - **状态**: 完成（待人工审核合并）
 
 ## MATH-RES-001 — 2026-08-22
+
 - **Agent**: MATH Writer（数学 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -79,6 +99,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## ENG-RES-001 — 2026-08-22
+
 - **Agent**: ENG Writer（英语 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -92,6 +113,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-002 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -105,6 +127,7 @@
 - **状态**: 完成（已合并至 main 并上线验证）
 
 ## ENG-E1-E4 — 2026-08-22
+
 - **Agent**: ENG Writer（英语 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
@@ -118,6 +141,7 @@
 - **状态**: 完成（待人工审核合并）
 
 ## MATH-B1B-PILOT — 2026-08-22
+
 - **Agent**: MATH Writer（数学 Agent）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
