@@ -7,6 +7,22 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## AIC-EXPANSION-003 — 2026-08-24
+
+- **Agent**: AIC Writer（AI 课程 Agent，Python 实战扩展）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - Python 板块新增「实战篇」P11–P14 四课：
+  - ① `automation.md` Python 自动化——批量重命名（re.sub 清理垃圾字符）/CSV 数据处理排序/自动整理下载文件夹/自动化思维三问框架
+  - ② `regex.md` 正则表达式——十符号速查表+记忆口诀/search/findall/sub 三函数/分组引用脱敏/贪婪 vs 懒惰坑/日志分析器综合实战
+  - ③ `git-basics.md` Git 版本控制——三区域类比拍照流程/init/add/commit/push 六命令/分支平行宇宙/stash 应急/push 前 pull 黄金法则
+  - ④ `chatbot.md` 聊天机器人——15 行最小版→system prompt 人设→带命令完整版三层递进/messages=机器人大脑/prompt injection 防御/Gradio 一行出 Web 界面
+- **事实核查说明**: 全部代码在本地 Python 3.13 实测（批量重命名正则、CSV 排序、正则邮箱手机号提取、聊天机器人对话历史管理）；Git 命令为标准用法。无外部引用。
+- **自检**: 第二十二章清单通过——改动仅限 python 目录五文件 + index.md；`npx quartz build` 通过（194 文件 305 输出）；四页 wikilink 全解析；prettier 全绿
+- **协作备注**: 基于 main (14a8686，含 EXPANSION-002) 切分支。选题依据「热度高的受欢迎课程」：自动化和正则是 Stack Overflow 最常问的 Python 实用主题，Git 是开发者第一课，聊天机器人是最热门的 AI 入门项目。每课 ≤20 行核心代码+逐行拆解+安全提示。
+- **审查**: 待 REV 审查（建议 REV-AIC-EXPANSION-003）
+- **状态**: 完成（待人工审核合并）
+
 ## AIC-EXPANSION-002 — 2026-08-24
 
 - **Agent**: AIC Writer（AI 课程 Agent，GenAI 实战进阶）
