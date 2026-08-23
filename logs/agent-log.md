@@ -106,6 +106,19 @@
 - **自检**: 第二十二章清单通过——改动仅限 ai/rl 目录六文件 + rl/index.md + roadmap RL 行 + glossary 对应小节；`npx quartz build` 通过（127 文件 238 输出）；六课 wikilink 全解析；链接扫描 real-broken=0（3 条跨分支依赖指向 M/DL 板块，合并后闭合）；prettier 全绿
 - **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-RL1-6`。**至此 AIC 全部课程任务收官**：全站累计新增课程 54 篇正文（M10+ML10+DL12+NLP8+GenAI8+RL6），分布于 6 个待合并分支。合并顺序建议：MATH-M1-M10 → AIC-ML1-ML10 → AIC-DL1-DL6 → AIC-DL7-DL12 → AIC-NLP1-NLP8 → AIC-GenAI1-8 → AIC-RL1-6（或全部同批合入 main 后统一构建验证）。
 - **审查**: 待 REV 审查（建议 REV-AIC-RL1-6）
+
+## AIC-FORMULA-001 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，附录基建）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - `content/appendix/formulas.md` 从施工占位骨架扩写为正式版公式速查卡（约 310 行）
+  - 八章结构：基础运算 / 微积分 / 线代 / 概率统计 / ML 核心 / DL 核心（含注意力★与参数估算）/ RL 核心（含 Q-Learning 更新★与 RLHF 目标函数）/ 速算工具箱表
+  - 每条公式三件套：公式 → 人话翻译 → 📍出处双链（精确到课程的具体概念节）；关键条目附「实测参考」数字与各课正文严格一致
+- **事实核查说明**: 全部实测参考数字取自各课程编写时的本地 Python 运行结果（w=0.8189/b=49.0180、贝叶斯 16.7%、掩码归零、GPT-3 复算 174B、悬崖行走 -31.22→-17.20 等），未引入新的未经验证内容。RLHF 目标函数标注「概念版」（简化呈现 KL 约束思想，非精确论文形式）。
+- **自检**: 第二十二章清单通过——改动仅限 formulas.md 单文件；`npx quartz build` 通过；wikilink 全解析、关键回链抽查通过。⚠️ 本页密集回链各板块新课程页，**强依赖全部课程分支先行合并**——建议作为合并链条的最后一环合入 main。
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-FORMULA-001`。合并顺序建议在 RL1-6 之后（或与全部课程分支同批合入）。
+- **审查**: 待 REV 审查（建议 REV-AIC-FORMULA-001，重点：公式转写是否与正文一致）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-004 — 2026-08-22
