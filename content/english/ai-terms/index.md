@@ -8,11 +8,14 @@ description: 高频 AI 术语的词源、易混辨析与真实语境用法
 
 ## 规划中的课程
 
-| #   | 课程                 | 内容                                             | 状态 |
-| --- | -------------------- | ------------------------------------------------ | ---- |
-| T1  | 易混词对辨析（一）   | model / module · parameter / hyperparameter      | 🚧   |
-| T2  | 易混词对辨析（二）   | train / training / trainer · inference / predict | 🚧   |
-| T3  | 有词源的术语         | token、embed、fine-tune 背后的故事               | 🚧   |
-| T4  | 论文英语 vs 新闻英语 | 同一概念的两副面孔：utilize vs use               | 🚧   |
+| #   | 课程                                                        | 内容                                          | 状态 |
+| --- | ----------------------------------------------------------- | --------------------------------------------- | ---- |
+| T1  | [[english/ai-terms/terms-confusable-1\|易混词对辨析（一）]] | model/module · parameter/hyperparameter 等    | ✅   |
+| T2  | [[english/ai-terms/terms-confusable-2\|易混词对辨析（二）]] | train 家族 · inference/predict · epoch 四刻度 | ✅   |
+| T3  | [[english/ai-terms/terms-etymology\|有词源的术语]]          | token、embed、fine-tune、gradient、attention  | ✅   |
+| T4  | [[english/ai-terms/terms-register\|论文英语 vs 新闻英语]]   | 语域概念 · 五大替换对 · 名词化拆解            | ✅   |
+
+> [!success] 子板块毕业标准
+> 能答对三题即毕业：① model 和 module 各指什么；② epoch/iteration/batch 的换算关系；③ 看到一句论文腔能当场降维成人话。
 
 → 返回 [[english/index|🔤 英语进阶目录]]
