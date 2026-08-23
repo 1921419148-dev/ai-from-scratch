@@ -13,9 +13,10 @@ const REDIRECTS = {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url)
-    const path = url.pathname.replace(/\/+$/, "") || "/" // 去尾部斜杠归一化
+    // 去尾部斜杠归一化 + 大小写不敏感（/Home、/HOME 同样命中）
+    const path = (url.pathname.replace(/\/+$/, "") || "/").toLowerCase()
 
-    const target = REDIRECTS[path]
+    const target = REDIRECTS[path.toLowerCase()]
     if (target) {
       return Response.redirect(new URL(target + url.search, request.url), 301)
     }
