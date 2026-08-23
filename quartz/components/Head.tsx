@@ -5,6 +5,7 @@ import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
 import { CustomOgImagesEmitterName } from "../plugins/emitters/ogImage"
+import { PORTAL_SLUGS } from "./Portal"
 export default (() => {
   const Head: QuartzComponent = ({
     cfg,
@@ -49,6 +50,13 @@ export default (() => {
               <link rel="stylesheet" href={googleFontSubsetHref(cfg.theme, cfg.pageTitle)} />
             )}
           </>
+        )}
+        {/* 门厅页专属：衬线展示字体（排版即导航），非门厅页零开销 */}
+        {PORTAL_SLUGS.includes((fileData.slug ?? "") as (typeof PORTAL_SLUGS)[number]) && (
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500&display=swap"
+          />
         )}
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
