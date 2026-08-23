@@ -153,7 +153,7 @@ C 型的真相往往扎心：不是「听力词汇量小」，而是**同一个�
 
 ## 下一步
 
-- [[english/cet/reading|C3 · 阅读理解：先看题还是先读文]]（编写中）
+- [[english/cet/reading|C3 · 阅读理解：先看题还是先读文]]
 - 词汇地基：[[english/cet/vocabulary|C1 四级词汇的高效记法]]
 
 → 返回 [[english/cet/index|🎓 CET 目录]]

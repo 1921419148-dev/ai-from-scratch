@@ -19,6 +19,7 @@ description: 大学英语四六级备考——词汇、听力、阅读、写作�
 > [!success] 子板块进行中
 > C1/C2 已完成——完成这两课后即可开始真题训练；C3–C5 编写中。
 
-> 🚧 本子板块正在编写。等不及可以先去 [[english/readers/index|分级阅读库]] 用 B1 水平的文章练手感——四级阅读大致对应 CEFR B1，六级对应 B2。
+> [!tip] 配套练习
+> 理论学完立刻去 [[english/readers/index|分级阅读库]] 实战——四级阅读大致对应 CEFR B1，六级对应 B2。
 
 → 返回 [[english/index|🔤 英语进阶目录]]
