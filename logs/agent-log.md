@@ -7,6 +7,21 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## ENG-T-C-001 — 2026-08-23
+
+- **Agent**: ENG Writer（英语 Agent）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - AI 术语深挖子板块 T1–T4 四课全部完成：terms-confusable-1（四组易混词对）/ terms-confusable-2（train 家族+inference/predict+epoch 四刻度换算）/ terms-etymology（五词源故事）/ terms-register（语域与名词化拆解）
+  - CET 子板块 C1–C2 完成：vocabulary（三层词表+艾宾浩斯节奏）/ listening（三源诊断法+精听流程）；C3–C5 留待后续
+  - 共享文件：ai-terms/index.md 转 ✅ + 毕业标准；cet/index.md C1/C2 转 ✅
+  - 设计特色：每课与站内课程深度互链——T1 的 accuracy/precision 接 ML9/M10，T2 换算公式接 DL12 日志诊断，T4 significantly 举证责任接 M10 假设检验
+- **事实核查说明**: 词源信息（token<拉丁 signum、gradient<gradi、attention 认知科学借用链条）为公开词源学共识；Hugging Face Trainer 类命名、sklearn feature API 为可查证的行业事实。无编造引用。
+- **自检**: 第二十二章清单通过——改动仅限 english 目录八文件；`npx quartz build` 通过（180 文件 291 输出）；六新页 wikilink 全解析；prettier 全绿
+- **协作备注**: 基于 main (4e8895d，已含全部课程分支) 切分支 `ai/english/ENG-EXPAND`——本分支回链的各板块页面在 main 上均已存在，无跨分支依赖。剩余待写：CET C3–C5。
+- **审查**: 待 REV 审查（建议 REV-ENG-T-C-001）
+- **状态**: 完成（待人工审核合并）
+
 ## MATH-M1-M10 — 2026-08-23
 
 - **Agent**: MATH Writer（数学 Agent）
@@ -121,6 +136,7 @@
 - **审查**: 待 REV 审查（建议 REV-AIC-FORMULA-001，重点：公式转写是否与正文一致）
 
 ## AIC-INFRA-005 — 2026-08-23
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
