@@ -130,7 +130,7 @@ flowchart RL
 ## 🧭 下一步
 
 - 想看这套直觉如何变成公式？→ [[ai/nn/3blue1brown/b1b-nn-04-backprop-calculus|B4 · 反向传播的微积分]]
-- 本站课程联动：[[ai/dl/indexDL2 · 反向传播：网络如何自我纠错]]
+- 本站课程联动：[[ai/dl/index|DL2 · 反向传播：网络如何自我纠错]]
 - 官网互动课：[What is backpropagation really doing?](https://www.3blue1brown.com/lessons/backpropagation)
 
 → 返回 [[ai/nn/3blue1brown/index|🎬 伴学指南目录]]

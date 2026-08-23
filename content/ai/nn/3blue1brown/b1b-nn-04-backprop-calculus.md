@@ -130,7 +130,7 @@ $$\frac{dz}{dx} = \frac{dz}{du}\cdot\frac{du}{dx}$$
 
 🎉 恭喜走完全系列！你现在拥有了理解「AI 怎么训练」的完整直觉链条：结构（B1）→ 学习=下山（B2）→ 责任分摊（B3）→ 微积分引擎（B4）。
 
-- 把直觉落地成代码：[[ai/dl/index深度学习板块]] DL2《反向传播》、DL3《PyTorch 初体验》
+- 把直觉落地成代码：[[ai/dl/index|深度学习板块]] DL2《反向传播》、DL3《PyTorch 初体验》
 - 回顾全站最重要的原创推导：[[prerequisites/math/gradient-descent|M7 · 梯度下降]]
 - 官网互动课：[Backpropagation calculus](https://www.3blue1brown.com/lessons/backpropagation-calculus)
 - 二期预告：《线性代数的本质》系列伴学（配合 M8 向量与矩阵）
