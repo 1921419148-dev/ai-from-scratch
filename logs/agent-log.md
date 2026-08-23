@@ -121,6 +121,7 @@
 - **审查**: 待 REV 审查（建议 REV-AIC-FORMULA-001，重点：公式转写是否与正文一致）
 
 ## AIC-INFRA-005 — 2026-08-23
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
