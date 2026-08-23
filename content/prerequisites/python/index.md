@@ -28,6 +28,15 @@ description: 零基础学 Python——AI 世界的通用语言
 | P9  | [[prerequisites/python/matplotlib\|Matplotlib：让数据开口说话]] | 可视化训练过程            | ✅   |
 | P10 | [[prerequisites/python/capstone\|实战：分析一份真实数据集]]     | 综合运用                  | ✅   |
 
+**实战篇（P11–P14）：让 Python 替你干活**
+
+| #   | 课程                                                       | 学它干什么用                   | 状态 |
+| --- | ---------------------------------------------------------- | ------------------------------ | ---- |
+| P11 | [[prerequisites/python/automation\|Python 自动化实战]]     | 批量重命名/Excel处理/文件整理  | ✅   |
+| P12 | [[prerequisites/python/regex\|正则表达式：文字的瑞士军刀]] | 从文本中提取邮箱/电话/日期     | ✅   |
+| P13 | [[prerequisites/python/git-basics\|Git 版本控制速成]]      | 给代码装时间机器，多人不冲突   | ✅   |
+| P14 | [[prerequisites/python/chatbot\|用 AI 做一个聊天机器人]]   | 30 行代码 + API Key = 你的 bot | ✅   |
+
 > [!tip] 编程学习心法
 >
 > - **一定要动手敲代码**，看懂 ≠ 会写（每课的演示 widget 都可以玩，但真机练习不可替代）
