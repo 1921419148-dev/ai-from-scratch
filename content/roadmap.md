@@ -117,7 +117,7 @@ flowchart LR
 
 **自然语言处理 NLP**（[[ai/nlp/index|目录]]）：词向量 → 文本分类 → 命名实体识别 → 机器翻译 → 预训练语言模型 BERT → GPT 家族 → 提示词工程 → 对话系统（共 8 课）
 
-**生成式 AI GenAI**（[[ai/genai/index|目录]]）：什么是生成式 AI → 语言模型原理 → RAG 检索增强 → AI Agent → 扩散模型与图像生成 → 多模态 → 微调与部署 → 安全与伦理（共 8 课）
+**生成式 AI GenAI**（[[ai/genai/index|目录]]）：[[ai/genai/what-is-generative-ai|什么是生成式 AI]] → [[ai/genai/language-model-principles|语言模型原理]] → [[ai/genai/rag|RAG]] → [[ai/genai/agent|AI Agent]] → [[ai/genai/diffusion|扩散模型]] → [[ai/genai/multimodal|多模态]] → [[ai/genai/fine-tuning-deployment|微调与部署]] → [[ai/genai/safety-ethics|安全与伦理]]（共 8 课，全部 ✅）
 
 **强化学习 RL**（[[ai/rl/index|目录]]）：什么是强化学习 → 马尔可夫决策过程 → Q-Learning → 策略梯度 → AlphaGo 的故事 → RLHF 与大模型对齐（共 6 课）
 

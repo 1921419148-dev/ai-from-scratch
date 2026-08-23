@@ -132,4 +132,29 @@ description: 全站术语中英对照速查表
 | Correlation coefficient | r           | 相关系数（−1 到 1，绝对值越大关系越强） |
 | Causation               | —           | 因果关系（相关 ≠ 因果！）               |
 
+## 生成式 AI 板块新增（G1–G8）
+
+| 英文                           | 缩写 | 中文                                      |
+| ------------------------------ | ---- | ----------------------------------------- |
+| Generative model               | —    | 生成模型（学分布，造新样本）              |
+| Discriminative model           | —    | 判别模型（学边界，管分类）                |
+| Prefill / Decode               | —    | 预填充 / 解码（推理两阶段）               |
+| Context window                 | —    | 上下文窗口（工作记忆上限）                |
+| Hallucination                  | —    | 幻觉（流畅但编造，可治理不可根除）        |
+| Grounding                      | —    | 扎根（回答锚定真实资料）                  |
+| Retrieval-Augmented Generation | RAG  | 检索增强生成（开卷考试架构）              |
+| Chunking                       | —    | 切片（RAG 第一坑）                        |
+| Vector database                | —    | 向量数据库                                |
+| Faithfulness                   | —    | 忠实度（RAG 核心评估指标）                |
+| ReAct                          | —    | 思考-行动-观察的 Agent 循环               |
+| Function calling               | —    | 函数调用（工具使用的机制）                |
+| Human-in-the-loop              | —    | 人机协同（关键节点人工闸门）              |
+| Latent diffusion               | —    | 潜在扩散（Stable Diffusion 的省算力核心） |
+| Cross-modal alignment          | —    | 跨模态对齐（CLIP 的桥梁魔法）             |
+| Vision Transformer             | ViT  | 视觉变换器（图像切块当 token）            |
+| Quantization                   | —    | 量化（降精度换体积，Q4 是甜点位）         |
+| Prompt injection               | —    | 提示词注入（藏在内容里的恶意指令）        |
+| Deepfake                       | —    | 深度伪造                                  |
+| Bias amplification             | —    | 偏见放大                                  |
+
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]
