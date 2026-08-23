@@ -119,6 +119,20 @@
 - **自检**: 第二十二章清单通过——改动仅限 formulas.md 单文件；`npx quartz build` 通过；wikilink 全解析、关键回链抽查通过。⚠️ 本页密集回链各板块新课程页，**强依赖全部课程分支先行合并**——建议作为合并链条的最后一环合入 main。
 - **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-FORMULA-001`。合并顺序建议在 RL1-6 之后（或与全部课程分支同批合入）。
 - **审查**: 待 REV 审查（建议 REV-AIC-FORMULA-001，重点：公式转写是否与正文一致）
+
+## AIC-INFRA-005 — 2026-08-23
+- **Agent**: AIC Writer（AI 课程 Agent，基建任务）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - 门厅三层视觉全面升级（用户需求：柔和/宁静/高清/绚丽/微梦幻/元素多而不乱/排版即导航/悬停优雅过渡/高级感/3D 视差）
+  - 双主题：浅色=晨曦云海、深色=极光夜空，跟随 saved-theme；色彩全部收敛到 portal.scss 的 `--pt-*` token 区，canvas 运行时 getComputedStyle 读色并随 themechange ~600ms lerp 交叉淡化（JS 不写死颜色）
+  - 五层 3D 视差：CSS 天空+日月光球+三条光带（远 ±6px）→ 低分辨率 canvas 云海/极光（中 ±12px）→ 全 DPR canvas 花粉/星星+流星（近 ±18px）→ 噪点防色带+晕影 → 舞台 perspective 微倾 ≤1.3°；指针驱动 + 闲置/触屏自主 Lissajous 漂移；单 rAF 循环
+  - 排版即导航：选项去边框盒子改衬线大字（Noto Serif SC 300，Head.tsx 仅门厅三页加载），hover 辉光浮现 + 字距展宽 + 流光扫字（background-clip:text）+ 中心展开下划线；浮岛玻璃卡 18px 圆角 + 上浮柔影
+  - 新增 `portal-theme.inline.ts`：门厅右上角日/夜切换钮（与 darkmode.inline.ts 同逻辑）；新增过场遮罩 data-persist 修复（micromorph 撕除隐患）+ 连击守卫 + 幕布颜色 token 化
+  - 视口高度用 @supports 包裹 svh/dvh（lightningcss 按 safari 15.6 目标折叠声明，保留 100vh 兜底）
+- **自检**: 第二十二章清单通过——`npx tsc --noEmit` 干净；`npx quartz build` 通过（121 文件 232 输出）；prettier 全绿；构建产物核验：门厅三页均含场景层/双 canvas/主题钮/字体 link 且 stagger 变量正确注入，roadmap/guide/python/what-is-ai 四个非门厅页零泄漏；postscript.js 含 slug 门控与 ptInit/ptBound 守卫；index.css 含 dark token 覆盖块、@supports 回退块、reduced-motion 降级、800/600 断点；PaletteLerp（读色/收敛/rgba 拼装）与 ParallaxController（指针收敛至 ±1、漂移持续变化）经 Node 单测验证无 NaN；本地 serve 三页 HTML 正常返回。**未做真实浏览器目测**（本机无浏览器自动化），建议人工打开 localhost:8080 或线上预览确认视觉效果
+- **协作备注**: 从 origin/main 最新提交 (35811c0 = AIC-INFRA-004) 切分支 `ai/aic/AIC-INFRA-005`；仅动 quartz/components/{Portal,Head}.tsx、portal.scss、portal-{scene,theme,menu} 六文件，未触碰其他 Agent 目录与共享内容文件
+- **审查**: 待 REV 审查（建议 REV-AIC-INFRA-005，重点：iOS Safari 实机过场动画、深浅切换交叉淡化观感、Google Fonts 在大陆网络的加载回退）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-004 — 2026-08-22
