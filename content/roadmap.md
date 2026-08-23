@@ -115,7 +115,7 @@ flowchart LR
 
 ### 三大方向
 
-**自然语言处理 NLP**（[[ai/nlp/index|目录]]）：词向量 → 文本分类 → 命名实体识别 → 机器翻译 → 预训练语言模型 BERT → GPT 家族 → 提示词工程 → 对话系统（共 8 课）
+**自然语言处理 NLP**（[[ai/nlp/index|目录]]）：[[ai/nlp/tokenization|分词与表示]] → [[ai/nlp/word-embedding|词向量]] → [[ai/nlp/text-classification|文本分类]] → [[ai/nlp/sequence-labeling|序列标注]] → [[ai/nlp/machine-translation|机器翻译]] → [[ai/nlp/bert|BERT]] → [[ai/nlp/gpt-family|GPT 家族]] → [[ai/nlp/prompt-engineering|提示词工程]]（共 8 课，全部 ✅）
 
 **生成式 AI GenAI**（[[ai/genai/index|目录]]）：什么是生成式 AI → 语言模型原理 → RAG 检索增强 → AI Agent → 扩散模型与图像生成 → 多模态 → 微调与部署 → 安全与伦理（共 8 课）
 
