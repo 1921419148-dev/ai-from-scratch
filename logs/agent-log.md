@@ -80,6 +80,19 @@
 - **自检**: 第二十二章清单通过——改动仅限 ai/nlp 目录八文件 + nlp/index.md + roadmap NLP 行 + glossary 对应小节；`npx quartz build` 通过（129 文件 240 输出）；八课 wikilink 全解析；链接扫描 real-broken=0（3 条跨分支依赖指向 DL/M 板块新页，合并后闭合）；prettier 全绿
 - **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-NLP1-NLP8`。跨分支依赖同前（MATH-M1-M10、AIC-DL 两分支的页面），最终合并顺序建议不变。剩余板块：GenAI（8 课）、RL（6 课）待写
 - **审查**: 待 REV 审查（建议 REV-AIC-NLP1-NLP8）
+
+## AIC-GenAI1-8 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，GenAI 板块）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - G1–G8 八课完成：what-is-generative-ai / language-model-principles / rag / agent / diffusion / multimodal / fine-tuning-deployment / safety-ethics——**生成式 AI 板块 8 课全部完成**
+  - 主线设计：范式认知（G1）→ 文字发动机拆解（G2）→ 三大应用架构 RAG/Agent/扩散（G3-G5）→ 多模态统一（G6）→ 自有化部署（G7）→ 安全伦理收官（G8）
+  - 代表性实测：扩散前向加噪信号保留序列 0.99→0.57、去噪恢复递减结构；RAG 字符向量检索 doc1 命中 0.334 其余归零；ReAct 轨迹演示
+- **事实核查说明**: 全部可运行示例在本地 Python 实测。扩散公式、CLIP 对比训练、LoRA/量化参数为公开文献共识；律师假案例事件（2023 Mata v. Avianca）为公开报道。伦理部分刻意呈现争议两面（涌现式能力 vs 插值论、检测 vs 溯源路线）。
+- **自检**: 第二十二章清单通过——改动仅限 ai/genai 目录八文件 + genai/index.md + roadmap GenAI 行 + glossary 对应小节；`npx quartz build` 通过（129 文件 240 输出）；八课 wikilink 全解析；链接扫描 real-broken=0（9 条跨分支依赖指向 DL/NLP/M 板块，合并后闭合）；G1 表格管道符渲染已专项验证无破损；prettier 全绿
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-GenAI1-8`。跨分支依赖同前。**仅剩 RL 板块（6 课）未写**，完成后 AIC 全部课程任务收官。
+- **审查**: 待 REV 审查（建议 REV-AIC-GenAI1-8）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-004 — 2026-08-22
