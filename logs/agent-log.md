@@ -7,6 +7,20 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## AIC-EXPANSION-004 — 2026-08-24
+
+- **Agent**: AIC Writer（AI 课程 Agent，Python 实战扩展第二批）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - Python 板块新增 P15–P16：
+  - ① `web-scraping.md` 爬虫入门——requests+BeautifulSoup/正则 vs BS4 双方案/UA 伪装/time.sleep 礼仪/道德法律红线清单/批量采集保存 CSV 完整代码
+  - ② `data-analysis.md` 数据分析入门——五步流程（提问→获取→清洗→分析→可视化）/四大城市 GDP 人口实战（人均 GDP 衍生列计算 r=0.678 相关性）/图表选择口诀/分析报告模板含局限性声明
+- **事实核查说明**: 全部代码在本地 Python 3.13 + Pandas 3.0 实测。城市 GDP 人口数据为公开统计概数（用于教学演示非精确引用）。爬虫道德红线清单为业界共识。
+- **自检**: 第二十二章清单通过——改动仅限 python 目录二新文件 + index.md；`npx quartz build` 通过（196 文件 307 输出）；prettier 全绿
+- **协作备注**: 基于 main 切分支 `ai/aic/AIC-EXPANSION-004`。Python 板块现共 16 课（P1-P10 基础+进阶 + P11-P14 实战 + P15-P16 数据采集分析）。⚠️ Cloudflare 构建仍 failure（EXPANSION-001 遗留），本批页面推送后在 CF 构建恢复前不会上线。
+- **审查**: 待 REV 审查（建议 REV-AIC-EXPANSION-004）
+- **状态**: 完成（待人工审核合并）
+
 ## AIC-EXPANSION-003 — 2026-08-24
 
 - **Agent**: AIC Writer（AI 课程 Agent，Python 实战扩展）
