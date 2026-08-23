@@ -7,6 +7,21 @@
 
 <!-- 日志条目从这条线下面开始，最新的在最上面 -->
 
+## AIC-EXPANSION-001 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，进阶扩展）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - 三篇「总装/衔接/出口」定位的进阶精品课：
+  - ① `ai/genai/llm-inference-journey.md` 大模型是怎么想的——一次问答九站流水线（每站标注出处课程：NLP1→DL9→DL8→DL6/NLP7→G2），KV Cache 原理、TTFT/TPOT 指标表、批量并行的三个产品现象；自测 4 为全站毕业题（五句话向外行解释 LLM 推理）
+  - ② `getting-started/read-paper-walkthrough.md` 看懂 AI 论文实战篇——Attention Is All You Need 逐节拆解：「你已会的 vs 真正新增」对照表（新增占比<20% 论证课程价值）、LayerNorm vs BatchNorm 彩蛋辨析、可抄走的精读笔记模板、架构类vs实证类论文读法切换
+  - ③ `appendix/next-steps.md` AI 学习资源全景图——按四目标分流（做项目 Kaggle/HF/fast.ai/d2l；读论文 arXiv/PwC/李沐精读；找工作岗位技能映射表含本站课程对应列；追前沿信息衰减链分析）
+- **事实核查说明**: 推理流程（prefill/decode/KV cache/投机解码）为公开 Infra 共识；Transformer 论文细节（BLEU 28.4、8卡3.5天、d_model=512）为原文数据；推荐资源（Kaggle/HF/fast.ai/d2l/PwC/李沐精读/Distill）为长期稳定的公开口碑项目。已标注无法实时复核 URL 的限制。
+- **自检**: 第二十二章清单通过——改动仅限三新文件（无共享文件改动）；`npx quartz build` 通过（186 文件 297 输出）；三页 wikilink 全解析且回链目标在 main 上均已存在（基于 main 096c9b1 切分支，无跨分支依赖）；prettier 全绿
+- **协作备注**: 定位说明——这三篇不是凑数：①是全站知识总装体检表，②是 E4 方法论的落地件，③是本站与外部生态的接口。后续可选扩展方向：ML 板块加「Kaggle 首战实录」、RL 板块加「PPO 代码逐行」。
+- **审查**: 待 REV 审查（建议 REV-AIC-EXPANSION-001）
+- **状态**: 完成（待人工审核合并）
+
 ## ENG-C3-C5 — 2026-08-23
 
 - **Agent**: ENG Writer（英语 Agent）
