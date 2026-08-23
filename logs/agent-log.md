@@ -133,6 +133,18 @@
 - **自检**: 第二十二章清单通过——`npx tsc --noEmit` 干净；`npx quartz build` 通过（121 文件 232 输出）；prettier 全绿；构建产物核验：门厅三页均含场景层/双 canvas/主题钮/字体 link 且 stagger 变量正确注入，roadmap/guide/python/what-is-ai 四个非门厅页零泄漏；postscript.js 含 slug 门控与 ptInit/ptBound 守卫；index.css 含 dark token 覆盖块、@supports 回退块、reduced-motion 降级、800/600 断点；PaletteLerp（读色/收敛/rgba 拼装）与 ParallaxController（指针收敛至 ±1、漂移持续变化）经 Node 单测验证无 NaN；本地 serve 三页 HTML 正常返回。**未做真实浏览器目测**（本机无浏览器自动化），建议人工打开 localhost:8080 或线上预览确认视觉效果
 - **协作备注**: 从 origin/main 最新提交 (35811c0 = AIC-INFRA-004) 切分支 `ai/aic/AIC-INFRA-005`；仅动 quartz/components/{Portal,Head}.tsx、portal.scss、portal-{scene,theme,menu} 六文件，未触碰其他 Agent 目录与共享内容文件
 - **审查**: 待 REV 审查（建议 REV-AIC-INFRA-005，重点：iOS Safari 实机过场动画、深浅切换交叉淡化观感、Google Fonts 在大陆网络的加载回退）
+
+## AIC-INFRA-006 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，基建修复任务）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - 修复 MATH-M1-M10 移交的门厅跨层链接 bug：`/ch/` 页面的 `../learn/`、`../home` 解析为 `/learn/`、`/home`（404）
+  - 根因：门厅三层均为 folder-index 页（URL 形如 /ch/），浏览器以页面 URL 所在目录为相对基准；而 `resolveRelative/pathToRoot` 按文件路径计算，对 folder-index 多退一层。与 QNX-ACWIKI-001 记录的同类问题同源
+  - 修复：`Portal.tsx` 新增 `dirRelative(cur, target)`——以页面目录为基准按共同前缀计算上跳/下探；三层全部导航链接与浮岛 href 均改用该函数；删除死代码 totalChars
+- **自检**: 第二十二章清单通过——tsc 干净；prettier 通过；构建产物门厅全部 9 个导航链接逐一做 URL 解析比对目标文件 ALL PASS；本地 serve /ch/learn/、/ch/home、/roadmap 全部 200；改动仅 Portal.tsx 一个文件
+- **协作备注**: 本修复基于 origin/main (35811c0) 切分支 `ai/aic/AIC-INFRA-006`，未包含 AIC-INFRA-005 的视觉升级内容——两分支合并顺序建议：005 先合，006 rebase 后再合（或由 REV 决定合并策略；两者均只动 Portal.tsx/样式层，冲突风险低）
+- **审查**: 待 REV 审查（建议 REV-AIC-INFRA-006）
 - **状态**: 完成（待人工审核合并）
 
 ## AIC-INFRA-004 — 2026-08-22

@@ -1,6 +1,6 @@
 import { formatDate } from "./Date"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import { FullSlug, RelativeURL, resolveRelative, pathToRoot } from "../util/path"
+import { FullSlug, SimpleSlug, RelativeURL, simplifySlug } from "../util/path"
 import { QuartzPluginData } from "../plugins/vfile"
 // @ts-ignore
 import sceneScript from "./scripts/portal-scene.inline"
@@ -90,6 +90,33 @@ function ThemeToggle() {
   )
 }
 
+/**
+ * 门厅页专属相对链接：以【页面目录】为基准解析。
+ *
+ * 门厅三层都是 folder-index 页面（URL 形如 /ch/），浏览器解析相对链接的
+ * 基准是页面 URL 所在目录；而 resolveRelative/pathToRoot 按「文件路径」
+ * 计算，对 folder-index 会多退一层（pathToRoot("ch/index") = ".."，从
+ * /ch/ 出发 ../learn/ 越界成 /learn/）。这里改为：先取页面目录
+ * （slug 去掉尾部 index 的部分），再按共同前缀计算上跳与下探。
+ */
+function dirRelative(cur: FullSlug, target: FullSlug | SimpleSlug): RelativeURL {
+  const baseDir = cur.replace(/(^|\/)index$/, "") || ""
+  const targetPath = simplifySlug(target as FullSlug) // e.g. "learn/" / "roadmap" / "/"
+  const isDir = targetPath.endsWith("/")
+  const b = baseDir.split("/").filter(Boolean)
+  let t = targetPath.split("/").filter(Boolean)
+  let i = 0
+  while (i < b.length && i < t.length && b[i] === t[i]) i++
+  const ups = b.length - i
+  t = t.slice(i).filter((s) => s !== "")
+  const tail = t.join("/")
+  if (ups === 0) {
+    if (!tail) return "./" as RelativeURL
+    return `./${tail}${isDir ? "/" : ""}` as RelativeURL
+  }
+  return (`../`.repeat(ups) + tail + (isDir && tail ? "/" : "")) as RelativeURL
+}
+
 /** 第三层板块浮岛定义 */
 const LEARN_ISLANDS = [
   { prefix: "prerequisites/math", name: "数学基础", desc: "从加减乘除补到微积分" },
@@ -141,7 +168,7 @@ function islandStats(allFiles: QuartzPluginData[], curSlug: FullSlug): IslandSta
     return {
       name: island.name,
       desc: island.desc,
-      href: resolveRelative(curSlug, `${island.prefix}/index` as FullSlug),
+      href: dirRelative(curSlug, `${island.prefix}/index` as FullSlug),
       pages: files.length,
       chars: formatCount(chars),
       latest,
@@ -155,7 +182,7 @@ const Portal: QuartzComponent = ({ allFiles, fileData, cfg }: QuartzComponentPro
 
   if (slug === "index") {
     // ---------- 第一层：语言选择 ----------
-    const chHref = resolveRelative("index" as FullSlug, "ch/index" as FullSlug)
+    const chHref = dirRelative("index" as FullSlug, "ch/index" as FullSlug)
     return (
       <div class="portal portal-lang">
         {SceneLayers()}
@@ -191,14 +218,11 @@ const Portal: QuartzComponent = ({ allFiles, fileData, cfg }: QuartzComponentPro
 
   if (slug === "ch/index") {
     // ---------- 第二层：中文主菜单 ----------
-    const learnHref = resolveRelative("ch/index" as FullSlug, "learn/index" as FullSlug)
-    const roadmapHref = resolveRelative("ch/index" as FullSlug, "../../roadmap" as FullSlug)
-    const glossaryHref = resolveRelative(
-      "ch/index" as FullSlug,
-      "../../appendix/glossary" as FullSlug,
-    )
-    const homeHref = resolveRelative("ch/index" as FullSlug, "home" as FullSlug)
-    const rootHref = pathToRoot("ch/index" as FullSlug) as RelativeURL
+    const learnHref = dirRelative("ch/index" as FullSlug, "ch/learn/index" as FullSlug)
+    const roadmapHref = dirRelative("ch/index" as FullSlug, "roadmap" as FullSlug)
+    const glossaryHref = dirRelative("ch/index" as FullSlug, "appendix/glossary" as FullSlug)
+    const homeHref = dirRelative("ch/index" as FullSlug, "ch/home" as FullSlug)
+    const rootHref = dirRelative("ch/index" as FullSlug, "index" as FullSlug)
 
     const menuItems = [
       {
@@ -246,7 +270,7 @@ const Portal: QuartzComponent = ({ allFiles, fileData, cfg }: QuartzComponentPro
 
   // ---------- 第三层：板块浮岛 ----------
   const stats = islandStats(allFiles, fileData.slug as FullSlug)
-  const menuHref = "../" as RelativeURL // ch/learn → 上一级即 /ch 主菜单
+  const menuHref = dirRelative("ch/learn/index" as FullSlug, "ch/index" as FullSlug)
   const siteLatest = stats
     .map((s) => s.latest)
     .filter((d): d is Date => d !== undefined)
