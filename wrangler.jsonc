@@ -2,8 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   // 「零基础 AI 学堂」静态站点 —— Cloudflare Workers Static Assets 配置
   "name": "ai-from-scratch",
+  // Worker 入口：处理旧链接 301 跳转，其余交给静态资产
+  "main": "worker.js",
   "compatibility_date": "2026-08-01",
   "assets": {
+    "binding": "ASSETS",
     "directory": "./public",
     // /roadmap 自动命中 roadmap.html；文件夹路径 /ml/ 命中 ml/index.html
     "html_handling": "auto-trailing-slash",
