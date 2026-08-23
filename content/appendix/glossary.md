@@ -132,4 +132,54 @@ description: 全站术语中英对照速查表
 | Correlation coefficient | r           | 相关系数（−1 到 1，绝对值越大关系越强） |
 | Causation               | —           | 因果关系（相关 ≠ 因果！）               |
 
+## 数学板块新增（M1–M10）
+
+| 英文                        | 缩写    | 中文                                       |
+| --------------------------- | ------- | ------------------------------------------ |
+| Expression                  | —       | 式子（数字与运算符的组合）                 |
+| Exponent / Power            | —       | 指数 / 幂（肩膀上的小数字）                |
+| Square root                 | √       | 平方根（平方的逆操作）                     |
+| Scientific notation         | —       | 科学计数法（a×10ⁿ）                        |
+| Equation / Root             | —       | 方程 / 根（方程的解）                      |
+| Quadratic equation          | —       | 一元二次方程                               |
+| Discriminant                | Δ       | 判别式 b²−4ac（决定根的个数）              |
+| Inequality                  | —       | 不等式（除以负数要翻转！）                 |
+| Function                    | f(x)    | 函数（输入→输出的机器）                    |
+| Domain / Range              | —       | 定义域 / 值域                              |
+| Composition                 | ∘       | 复合（函数串联，深度网络的骨架）           |
+| Sigmoid                     | σ       | S 形函数（把任意数压进 0~1）               |
+| Logarithm                   | log     | 对数（「问几次方」；乘法变加法）           |
+| Natural logarithm           | ln      | 自然对数（底为 e≈2.71828）                 |
+| Entropy                     | H       | 熵（不确定性的度量）                       |
+| Sine / Cosine               | sin/cos | 正弦 / 余弦（旋转与波动的语言）            |
+| Radian                      | rad     | 弧度（π rad = 180°，代码里用它）           |
+| Derivative                  | f′      | 导数（瞬时变化率，曲线的速度计）           |
+| Limit                       | lim     | 极限（无限逼近的归宿）                     |
+| Product rule                | —       | 乘积法则 u′v+uv′                           |
+| Chain rule                  | —       | 链式法则（外导×内导，反向传播的心脏）      |
+| Local minimum               | —       | 局部最小值（小水洼，非真山谷）             |
+| Loss function               | L       | 损失函数（给模型错误程度打分）             |
+| Gradient                    | ∇       | 梯度（各方向偏导向量，最陡上坡方向）       |
+| Partial derivative          | ∂       | 偏导数（冻结其他参数求导）                 |
+| Learning rate               | η       | 学习率（每步迈多大；太大发散太小磨蹭）     |
+| Convergence / Divergence    | —       | 收敛 / 发散                                |
+| Stochastic Gradient Descent | SGD     | 随机梯度下降（小批量估梯度+噪声逃逸）      |
+| Vector                      | —       | 向量（一串有序数字）                       |
+| Matrix                      | —       | 矩阵（数字表格，向量加工机）               |
+| Dot product                 | ·       | 点积（对位相乘再求和，得一个数）           |
+| Cosine similarity           | cos sim | 余弦相似度（方向合拍程度）                 |
+| Shape mismatch              | —       | 形状不匹配（矩阵乘法头号报错）             |
+| Probability                 | P       | 概率（0~1 刻度的不确定性）                 |
+| Prior / Posterior           | —       | 先验 / 后验（见证据前后的判断）            |
+| Bayes' theorem              | —       | 贝叶斯定理（证据更新信念）                 |
+| Expected value              | E       | 期望（长期平均）                           |
+| Monte Carlo method          | MC      | 蒙特卡洛方法（随机采样逼近数值解）         |
+| Mean / Median               | x̄       | 均值 / 中位数（后者抗离群值）              |
+| Standard deviation          | σ       | 标准差（波动大小，罕见程度的汇率）         |
+| Normal distribution         | —       | 正态分布（钟形曲线，68-95-99.7 法则）      |
+| Outlier                     | —       | 离群值（拉飞均值的元凶）                   |
+| Sample / Population         | —       | 样本 / 总体（一勺汤 / 整锅汤）             |
+| Confusion matrix            | —       | 混淆矩阵（TP/FP/FN/TN 四格表）             |
+| Precision / Recall          | —       | 精确率（报警准不准）/ 召回率（抓得全不全） |
+
 → 相关：[[appendix/formulas|🧮 公式速查卡]] · [[appendix/resources|🔗 学习资源]]
