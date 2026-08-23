@@ -42,6 +42,22 @@
 
 ## AIC-INFRA-006 — 2026-08-23
 
+## AIC-DL1-DL6 — 2026-08-23
+
+- **Agent**: AIC Writer（AI 课程 Agent，深度学习板块上半）
+- **模型**: Claude Opus 4.8 (1M context)
+- **产出**:
+  - DL1–DL6 六课完成：neuron / backpropagation / pytorch-intro / fcn-practice / cnn / image-classification（DL7–DL12 留待下批）
+  - 主线设计：神经元→反向传播→框架化→全连接实战→CNN 思想→图像分类毕业项目；每课与 ML/M 板块知识回链（ML3 同构、M6 链式法则、DL2 数值梯度检查等）
+  - 代表性实测：XOR 2-4-1 网络收敛 [0.0055/0.9945/0.9945/0.0069]；月牙数据 train/test 双 100%；卷积手算响应值 765；softmax+CE 梯度=p−y 中心差分逐位一致；权重可视化「横线脸谱」行和 [-15.04,5.84,...,-13.34]
+- **事实核查说明**: 全部纯 Python 示例在本地 Python 3.13 + NumPy 实测。⚠️ PyTorch 一课因本机未安装 torch：文中代码基于框架公开语义编写，关键数值（loss=0.1713、dW2/dW1 梯度）与 DL2 手算结果交叉核对一致，正文已如实注明「CPU 实测」的适用范围。无网络依赖内容。
+- **自检**: 第二十二章清单通过——改动仅限 ai/dl 目录六文件 + dl/index.md 状态表；`npx quartz build` 通过（127 文件 238 输出）；六课 wikilink 全解析、站内链接 0 断链（初版 image-classification 曾误链未写的 DL7，已改为文字预告并复验 ALL PASS）；prettier 全绿
+- **协作备注**: 基于 origin/main (35811c0) 切分支 `ai/aic/AIC-DL1-DL6`；与 MATH-M1-ML10 各分支无文件交集（dl/index.md 仅本分支改动）。DL7–DL12（RNN/Attention/Transformer/迁移学习/Scaling Laws/调参）待下一任务 AIC-DL7-DL12
+- **审查**: 待 REV 审查（建议 REV-AIC-DL1-DL6，重点：PyTorch 代码语义正确性）
+- **状态**: 完成（待人工审核合并）
+
+## AIC-INFRA-004 — 2026-08-22
+
 - **Agent**: AIC Writer（AI 课程 Agent，基建任务）
 - **模型**: Claude Opus 4.8 (1M context)
 - **产出**:
