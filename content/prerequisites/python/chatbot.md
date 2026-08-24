@@ -178,6 +178,18 @@ gr.ChatInterface(respond, type="messages").launch()
 | Gradio               | —          | 三行代码出 Web 界面的库  |
 | Launch               | 启动       | 开启本地服务             |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。浏览器实验使用虚拟文件或固定响应；真实系统、网络和 API 项目请继续完成后面的本机步骤，API Key 只能放在环境变量中。
+
+<iframe src="/static/labs/lab?lesson=python-chatbot" class="widget-frame code-lab-frame" style="height:520px" title="用 AI 做一个聊天机器人 Build a Chatbot with AI Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 如果去掉 `messages.append({"role": "assistant", ...})` 这一行，机器人会怎样？

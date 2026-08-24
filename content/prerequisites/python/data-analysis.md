@@ -189,6 +189,18 @@ print("图表已保存")
 | Limitation     | 局限性   | 分析的边界与不足       |
 | Outlier        | 异常值   | 远离群体的数据点       |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=python-data-analysis" class="widget-frame code-lab-frame" style="height:520px" title="数据分析入门：用 Python 读懂世界 Data Analysis with Python Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 为什么先算「人均 GDP」而不是直接比较 GDP 总量？

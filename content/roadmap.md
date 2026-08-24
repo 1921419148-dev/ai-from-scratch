@@ -57,6 +57,18 @@ flowchart LR
 | P9  | Matplotlib：让数据开口说话    | ✅   |
 | P10 | 实战：分析一份真实数据集      | ✅   |
 
+### 编程学院
+
+**[[programming/index|编程学院]]** 将编程能力扩展为三条可独立学习、也可互相衔接的路线：
+
+| 路线                    | 内容                                               | 状态                                |
+| ----------------------- | -------------------------------------------------- | ----------------------------------- | --- |
+| Python 与数据           | 16 课，覆盖语法、NumPy、Pandas、自动化、Git 与项目 | ✅                                  |
+| [[programming/sql/index | SQL 数据库]]                                       | 6 课，从 SELECT 到多表综合分析      | ✅  |
+| [[programming/web/index | Web 开发]]                                         | 22 课，HTML/CSS/JS/TS/React/Node.js | ✅  |
+
+每课的 Code Lab 会在浏览器本机保存代码和完成状态；Node.js、真实爬虫和 API 项目采用“浏览器安全练习 + 本机真实项目”的双轨方式。
+
 **AI 英语**（[[prerequisites/english/index|目录]]）：
 
 | #   | 课程                        | 状态 |

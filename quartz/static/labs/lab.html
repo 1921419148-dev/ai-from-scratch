@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Code Lab</title>
+    <link rel="stylesheet" href="./lab.css" />
+  </head>
+  <body>
+    <main class="lab" aria-live="polite">
+      <header class="toolbar">
+        <div><strong id="title">Code Lab</strong><span id="status">准备就绪</span></div>
+        <div class="actions">
+          <button id="run" type="button">运行</button>
+          <button id="reset" class="secondary" type="button">重置本课</button>
+        </div>
+      </header>
+      <section class="workspace">
+        <div class="editor-pane">
+          <label id="filename" for="editor">代码</label>
+          <textarea id="editor" spellcheck="false" autocomplete="off"></textarea>
+        </div>
+        <div class="result-pane">
+          <div class="result-label">输出与预览</div>
+          <pre id="output">点击“运行”查看结果。</pre>
+          <iframe id="preview" title="网页运行结果" sandbox="allow-scripts allow-forms"></iframe>
+        </div>
+      </section>
+      <footer>
+        <span id="check"></span>
+        <button id="clear-all" class="link" type="button">清除全部学习记录</button>
+      </footer>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/sql-wasm.js"></script>
+    <script type="module" src="./lab.js"></script>
+  </body>
+</html>

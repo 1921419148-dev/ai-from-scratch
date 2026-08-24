@@ -1,52 +1,37 @@
 ---
 title: Python 编程
-description: 零基础学 Python——AI 世界的通用语言
+description: 从第一行代码到数据分析、自动化、Git 和 AI 应用的 16 课路线
+last_verified: 2026-08-25
 ---
 
-> [!abstract] 本板块解决
-> Python 是 AI 领域使用最广泛的编程语言，语法接近自然语言，最适合零基础入门。本板块带你从安装环境开始，一路学到能独立完成数据分析小项目。
+> [!abstract] 零基础也可以开始
+> 课程按“基础语法 → AI 数据工具 → 真实项目”排列。每课都包含浏览器 Code Lab；代码和进度只保存在本机。
 
 ## 学习顺序
 
-**基础篇（P1–P5）：语言本身**
+| #   | 课程                                  | 你会解决的问题        | 状态                  |
+| --- | ------------------------------------- | --------------------- | --------------------- | --- |
+| P1  | [[prerequisites/python/install-python | 安装与第一段 Python]] | 让代码真正运行        | ✅  |
+| P2  | [[prerequisites/python/variables      | 变量与数据类型]]      | 让程序记住信息        | ✅  |
+| P3  | [[prerequisites/python/lists-dicts    | 列表与字典]]          | 组织一批数据          | ✅  |
+| P4  | [[prerequisites/python/control-flow   | 条件与循环]]          | 让程序选择和重复      | ✅  |
+| P5  | [[prerequisites/python/functions      | 函数]]                | 封装可复用规则        | ✅  |
+| P6  | [[prerequisites/python/classes        | 类与对象]]            | 看懂 PyTorch 常见写法 | ✅  |
+| P7  | [[prerequisites/python/numpy          | NumPy]]               | 批量进行数值计算      | ✅  |
+| P8  | [[prerequisites/python/pandas         | Pandas]]              | 清洗和分析表格        | ✅  |
+| P9  | [[prerequisites/python/matplotlib     | Matplotlib]]          | 把数据变成图表        | ✅  |
+| P10 | [[prerequisites/python/capstone       | 数据分析综合项目]]    | 串联 P1–P9            | ✅  |
+| P11 | [[prerequisites/python/automation     | 自动化实战]]          | 处理虚拟与本机文件    | ✅  |
+| P12 | [[prerequisites/python/regex          | 正则表达式]]          | 从文本提取信息        | ✅  |
+| P13 | [[prerequisites/python/git-basics     | Git 版本控制]]        | 在虚拟仓库真实提交    | ✅  |
+| P14 | [[prerequisites/python/chatbot        | 聊天机器人]]          | 安全处理 API 调用     | ✅  |
+| P15 | [[prerequisites/python/web-scraping   | 爬虫入门]]            | 从固定页面到合规采集  | ✅  |
+| P16 | [[prerequisites/python/data-analysis  | 数据分析入门]]        | 从问题走到结论        | ✅  |
 
-| #   | 课程                                                            | 学它干什么用           | 状态 |
-| --- | --------------------------------------------------------------- | ---------------------- | ---- |
-| P1  | [[prerequisites/python/install-python\|安装你的第一个编程环境]] | 让电脑跑起来第一行代码 | ✅   |
-| P2  | [[prerequisites/python/variables\|变量与数据类型]]              | 程序如何「记住」东西   | ✅   |
-| P3  | [[prerequisites/python/lists-dicts\|列表、字典：装数据的容器]]  | 组织批量数据           | ✅   |
-| P4  | [[prerequisites/python/control-flow\|条件判断与循环]]           | 让程序学会选择和重复   | ✅   |
-| P5  | [[prerequisites/python/functions\|函数：把重复的事打包]]        | 写可复用的代码         | ✅   |
+## 浏览器练习与本机项目
 
-**进阶篇（P6–P10）：AI 工程师的三件套**
+标准 Python、NumPy 和 Pandas 在浏览器内真实执行。Git 使用浏览器虚拟文件系统。自动化、爬虫和聊天机器人采用双轨教学：先在本站完成安全练习，再按讲义在本机访问文件或网络；任何 API Key 都不得写入网页或 Git。
 
-| #   | 课程                                                            | 学它干什么用              | 状态 |
-| --- | --------------------------------------------------------------- | ------------------------- | ---- |
-| P6  | [[prerequisites/python/classes\|类与对象初识]]                  | 理解 PyTorch 的写法基础   | ✅   |
-| P7  | [[prerequisites/python/numpy\|NumPy：数字的瑞士军刀]]           | **AI 数值计算的事实标准** | ✅   |
-| P8  | [[prerequisites/python/pandas\|Pandas：像 Excel 一样处理表格]]  | 数据清洗与准备            | ✅   |
-| P9  | [[prerequisites/python/matplotlib\|Matplotlib：让数据开口说话]] | 可视化训练过程            | ✅   |
-| P10 | [[prerequisites/python/capstone\|实战：分析一份真实数据集]]     | 综合运用                  | ✅   |
+## 下一步
 
-**实战篇（P11–P14）：让 Python 替你干活**
-
-| #   | 课程                                                       | 学它干什么用                   | 状态 |
-| --- | ---------------------------------------------------------- | ------------------------------ | ---- |
-| P11 | [[prerequisites/python/automation\|Python 自动化实战]]     | 批量重命名/Excel处理/文件整理  | ✅   |
-| P12 | [[prerequisites/python/regex\|正则表达式：文字的瑞士军刀]] | 从文本中提取邮箱/电话/日期     | ✅   |
-| P13 | [[prerequisites/python/git-basics\|Git 版本控制速成]]      | 给代码装时间机器，多人不冲突   | ✅   |
-| P14 | [[prerequisites/python/chatbot\|用 AI 做一个聊天机器人]]   | 30 行代码 + API Key = 你的 bot | ✅   |
-
-> [!tip] 编程学习心法
->
-> - **一定要动手敲代码**，看懂 ≠ 会写（每课的演示 widget 都可以玩，但真机练习不可替代）
-> - 报错不可怕，错误信息是程序在跟你说话
-> - 每天写 30 分钟，胜过周末突击 5 小时
-
-> [!tip] 学完去哪？
->
-> - 数学侧补票：[[prerequisites/math/index|M8 向量与矩阵]]——搞懂 NumPy 里 `@` 的数学含义
-> - 直接开练：[[ai/ml/index|机器学习板块]]——P10 已经提前做过一次线性回归了
-> - 深度学习：[[ai/dl/index|DL3 · PyTorch 初体验]]——你会发现 API 处处是老朋友
-
-→ 相关：[[roadmap|🗺 路线图]] · [[prerequisites/math/index|📐 数学目录]]
+完成 P1–P10 后，可以进入 [[programming/sql/index|SQL 数据库]]；想制作网页和应用，可以从 [[programming/web/index|Web 开发]] 开始。全部路线见 [[programming/index|编程学院]]。

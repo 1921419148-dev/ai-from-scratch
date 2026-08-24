@@ -110,6 +110,18 @@ Hello, AI!
 | Syntax Error       | 语法错误      | 打错了字，Python 读不懂了（人人都天天犯） |
 | Install / Setup    | 安装 / 配置   | 文档里的 Installation 就是教你怎么装      |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=python-first-run" class="widget-frame code-lab-frame" style="height:520px" title="安装你的第一个编程环境 Setting Up Your First Python Environment Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 解释器和编辑器分别负责什么？只用其中一个能跑代码吗？

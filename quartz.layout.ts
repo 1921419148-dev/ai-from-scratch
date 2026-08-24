@@ -8,6 +8,7 @@ export const sharedPageComponents: SharedLayout = {
   afterBody: [Component.TTSReader(), Component.MusicPlayer()],
   footer: Component.Footer({
     links: {
+      编程学院: "/programming",
       学习路线: "/roadmap",
       术语表: "/appendix/glossary",
       GitHub: "https://github.com/1921419148-dev/ai-from-scratch",

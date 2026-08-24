@@ -208,6 +208,18 @@ print(f"共采集 {len(data)} 条数据，已保存到 results.csv")
 | Robots.txt      | 爬虫协议    | 网站对爬虫的「行为准则」声明 |
 | API vs Scraping | API vs 爬取 | 有官方接口优先用接口         |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。浏览器实验使用虚拟文件或固定响应；真实系统、网络和 API 项目请继续完成后面的本机步骤，API Key 只能放在环境变量中。
+
+<iframe src="/static/labs/lab?lesson=python-scraping" class="widget-frame code-lab-frame" style="height:520px" title="Python 爬虫入门：让电脑帮你收集数据 Web Scraping with Python Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 为什么有些网站用 `requests.get()` 拿到的内容和浏览器里看到的不一样？

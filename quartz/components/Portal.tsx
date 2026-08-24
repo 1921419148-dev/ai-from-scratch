@@ -121,6 +121,7 @@ function dirRelative(cur: FullSlug, target: FullSlug | SimpleSlug): RelativeURL 
 const LEARN_ISLANDS = [
   { prefix: "prerequisites/math", name: "数学基础", desc: "从加减乘除补到微积分" },
   { prefix: "prerequisites/python", name: "Python 编程", desc: "零基础学编程，边写边学" },
+  { prefix: "programming", name: "编程学院", desc: "Python · SQL · Web 全栈实践" },
   { prefix: "prerequisites/english", name: "AI 英语", desc: "术语密码与论文阅读" },
   { prefix: "ai", name: "人工智能大类", desc: "ML · DL · NLP · GenAI · RL · 神经网络伴学" },
   { prefix: "qingnian", name: "青年大学习", desc: "每期主题与题目整理" },

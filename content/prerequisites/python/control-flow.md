@@ -154,6 +154,18 @@ print("这行总是执行")       # 没缩进 → 不属于 if，在它外面
 | Nested Loop      | 嵌套循环    | 循环里套循环（表格的行列遍历全靠它）      |
 | Break / Continue | 跳出/跳过   | break 提前结束整个循环；continue 跳过本轮 |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=python-control-flow" class="widget-frame code-lab-frame" style="height:520px" title="条件判断与循环 Conditions and Loops Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 下面的代码打印什么？

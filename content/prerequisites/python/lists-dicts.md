@@ -133,6 +133,18 @@ print(nums[-1])      # 60            ← 负数从末尾倒数
 | Length               | 长度        | 元素个数，用 `len()` 获得             |
 | Mutable / Immutable  | 可变/不可变 | 列表可变；字符串不可变（改它=造新的） |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=python-collections" class="widget-frame code-lab-frame" style="height:520px" title="列表、字典：装数据的容器 Lists and Dictionaries Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. `colors = ["红", "绿", "蓝"]`，`colors[1]` 和 `colors[-1]` 分别是什么？

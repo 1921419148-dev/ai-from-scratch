@@ -152,6 +152,18 @@ git push origin main     # 把本地推送到远端
 | Clone       | 克隆      | 复制整个远程仓库到本地         |
 | Conflict    | 冲突      | 两个人改了同一行，需要人工裁决 |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=git-basics" class="widget-frame code-lab-frame" style="height:520px" title="Git 版本控制速成 Git Essentials Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 你改了三个文件但只想提交其中一个，该怎么做？

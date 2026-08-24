@@ -166,6 +166,18 @@ print("延迟(ms):", latencies)
 | Group (…)         | 分组      | 用括号捕获子模式                |
 | Greedy / Lazy     | 贪婪/懒惰 | 尽量多吃 / 尽量少吃             |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=python-regex" class="widget-frame code-lab-frame" style="height:520px" title="正则表达式：文字的瑞士军刀 Regular Expressions Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 写一个正则表达式，匹配合法的中国手机号（以 1 开头共 11 位，第二位为 3-9）。

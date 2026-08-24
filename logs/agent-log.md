@@ -369,3 +369,14 @@
 - **自检**: 第二十二章清单通过——任务范围内完成；未改其他 Agent 目录；事实性信息（视频标题/日期/链接）于 2026-08-22 从官网 lessons 页面与官方频道 oEmbed 双来源核实；无伪造引用；双链闭环已建；`npx quartz build` 通过（24 文件 45 输出）、`npx tsc --noEmit` 通过、4 个 widget 脚本语法检查通过；git diff 已复查
 - **审查**: 待 REV 审查（建议 REV-MATH-B1B-PILOT）
 - **状态**: 完成（待人工审核合并）
+
+## AIC-PROG-001 — 2026-08-25
+
+- **Agent**: AIC Writer（AI 课程 Agent，编程学院任务）
+- **模型**: OpenAI Codex（GPT-5）
+- **产出**: 新增编程学院总览、SQL 6 课、Web 22 课；为原有 Python 16 课接入统一 Code Lab；新增 Python/Pyodide、NumPy/Pandas、SQLite、虚拟 Git、HTML/CSS/JS、TypeScript、React 运行适配、本机进度与课程 manifest；接入门厅、仪表盘、路线图和页脚；新增内容生成器及 manifest/进度/内容契约测试
+- **来源核查**: W3Schools 仅在学院总览集中引用，11 个官方链接于 2026-08-25 实测均返回 HTTP 200；页面明确声明本站非官方合作且不镜像或批量翻译其内容
+- **自检**: 第二十二章清单通过；`git diff --check`、TypeScript 检查、生产构建通过；76/76 测试通过；Playwright 实测 Python、NumPy、SQL、Git、React、进度恢复及 390px 移动端布局；未部署生产环境
+- **协作备注**: 开始任务前工作区已有 Portal 门厅视觉改动、portal.scss 改动、门厅图片及 `.playwright-cli/` 产物；本任务保留这些用户改动，提交时不纳入无关文件
+- **审查**: 待独立 REV 审查（建议 REV-AIC-PROG-001）
+- **状态**: 完成（待人工审核合并）

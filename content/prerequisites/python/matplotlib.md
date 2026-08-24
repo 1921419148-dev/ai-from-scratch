@@ -121,6 +121,18 @@ df["城市"].value_counts().plot.bar()  # 各城市人数柱状图
 | Axis (复 axes) | 坐标轴    | xlabel / ylabel 分别给两轴命名                |
 | Overfitting    | 过拟合    | 在损失曲线上长什么样？回看演示 B 的第二种剧本 |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=python-matplotlib" class="widget-frame code-lab-frame" style="height:520px" title="Matplotlib：让数据开口说话 Matplotlib Essentials Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 想回答下面三个问题，各该用什么图？① 模型准确率随训练轮次怎么变化；② 数据集中猫狗各占几成；③ 学生的分数集中在哪个区间。

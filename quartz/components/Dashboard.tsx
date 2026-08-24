@@ -13,11 +13,14 @@ interface SectionDef {
 }
 
 const CATEGORY_AI = "人工智能"
+const CATEGORY_PROGRAMMING = "编程学院"
 
 const SECTIONS: SectionDef[] = [
   { prefix: "getting-started", name: "入门" },
   { prefix: "prerequisites/math", name: "数学基础" },
-  { prefix: "prerequisites/python", name: "Python 编程" },
+  { prefix: "prerequisites/python", name: "Python 与数据", category: CATEGORY_PROGRAMMING },
+  { prefix: "programming/sql", name: "SQL 数据库", category: CATEGORY_PROGRAMMING },
+  { prefix: "programming/web", name: "Web 开发", category: CATEGORY_PROGRAMMING },
   { prefix: "prerequisites/english", name: "AI 英语" },
   { prefix: "ai/ml", name: "机器学习", category: CATEGORY_AI },
   { prefix: "ai/dl", name: "深度学习", category: CATEGORY_AI },
@@ -70,7 +73,7 @@ function computeStats(allFiles: QuartzPluginData[]): SectionStats[] {
 
 const Dashboard: QuartzComponent = ({ allFiles, fileData, cfg }: QuartzComponentProps) => {
   // 只在首页渲染（slug 门控）
-  if (fileData.slug !== "index") return null
+  if (fileData.slug !== "ch/home") return null
 
   const stats = computeStats(allFiles)
   const totalPages = stats.reduce((acc, s) => acc + s.pages, 0)
@@ -116,7 +119,7 @@ const Dashboard: QuartzComponent = ({ allFiles, fileData, cfg }: QuartzComponent
           <h3 class="dashboard-group-title">{group.name}</h3>
           <div class="dashboard-grid">
             {group.stats.map(({ def, pages, chars, latest }) => {
-              const href = resolveRelative("index" as FullSlug, `${def.prefix}/index` as FullSlug)
+              const href = resolveRelative("ch/home" as FullSlug, `${def.prefix}/index` as FullSlug)
               return (
                 <a class="dashboard-card" href={href}>
                   <div class="dashboard-card-head">

@@ -126,6 +126,18 @@ is_trained = False       # bool   —— 训练了吗？
 | Dynamic Typing | 动态类型   | type 由运行时的值决定，不用提前声明          |
 | Case-sensitive | 区分大小写 | `Name` 和 `name` 是两个不同的变量！          |
 
+## Code Lab：亲手运行
+
+下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
+
+<iframe src="/static/labs/lab?lesson=python-variables" class="widget-frame code-lab-frame" style="height:520px" title="变量与数据类型 Variables and Data Types Code Lab"></iframe>
+
+### 分步任务
+
+1. 运行默认代码并解释输入、处理和输出。
+2. 修改一个值或条件，预测结果后再次运行。
+3. 完成本课挑战，直到自动检查通过。
+
 ## 自测一下
 
 > [!question]- 1. 执行下面三行后，屏幕上打印出什么？

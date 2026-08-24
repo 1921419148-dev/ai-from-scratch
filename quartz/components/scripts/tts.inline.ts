@@ -162,3 +162,14 @@ document.addEventListener("themechange", (e) => {
     frame.contentWindow?.postMessage({ type: "theme", theme }, "*")
   }
 })
+
+document.addEventListener(
+  "load",
+  (event) => {
+    const frame = event.target
+    if (!(frame instanceof HTMLIFrameElement) || !frame.matches("iframe.widget-frame")) return
+    const theme = document.documentElement.getAttribute("saved-theme") ?? "light"
+    frame.contentWindow?.postMessage({ type: "theme", theme }, "*")
+  },
+  true,
+)
