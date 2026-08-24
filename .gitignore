@@ -4,3 +4,4 @@ public/
 *.log
 tsconfig.tsbuildinfo
 quartz/.quartz-cache/
+.playwright-cli/

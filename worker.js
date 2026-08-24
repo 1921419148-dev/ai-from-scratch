@@ -10,9 +10,27 @@ const REDIRECTS = {
   "/home": "/ch/home", // 传统首页：content/index.md → content/ch/home.md
 }
 
+export function legacyRedirect(url) {
+  const normalized = (url.pathname.replace(/\/+$/, "") || "/").toLowerCase()
+
+  if (normalized === "/qingnian" || normalized.startsWith("/qingnian/2026-s2")) {
+    return new URL(`/adulting/${url.search}`, url)
+  }
+
+  const legacyPrefix = "/qingnian/ac-wiki"
+  if (normalized === legacyPrefix || normalized.startsWith(`${legacyPrefix}/`)) {
+    const suffix = url.pathname.slice(legacyPrefix.length).replace(/^\/+/, "")
+    return new URL(`/adulting/${suffix}${url.search}`, url)
+  }
+
+  return undefined
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url)
+    const legacyTarget = legacyRedirect(url)
+    if (legacyTarget) return Response.redirect(legacyTarget, 301)
     // 去尾部斜杠归一化 + 大小写不敏感（/Home、/HOME 同样命中）
     const path = (url.pathname.replace(/\/+$/, "") || "/").toLowerCase()
 

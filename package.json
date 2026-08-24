@@ -18,7 +18,7 @@
     "format": "npx prettier . --write",
     "test": "tsx --test",
     "profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1",
-    "build": "node quartz/bootstrap-cli.mjs build && node scripts/check-built-code-labs.mjs",
+    "build": "node quartz/bootstrap-cli.mjs build && node scripts/check-built-code-labs.mjs && node scripts/check-built-adulting.mjs",
     "deploy": "npm run build && npx wrangler deploy"
   },
   "engines": {

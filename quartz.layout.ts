@@ -9,6 +9,8 @@ export const sharedPageComponents: SharedLayout = {
   footer: Component.Footer({
     links: {
       编程学院: "/programming",
+      青年大学习: "/adulting",
+      来源与许可: "/adulting/credits",
       学习路线: "/roadmap",
       术语表: "/appendix/glossary",
       GitHub: "https://github.com/1921419148-dev/ai-from-scratch",
@@ -52,6 +54,20 @@ export const defaultContentPageLayout: PageLayout = {
       ],
     }),
     Component.Explorer({
+      filterFn: (node) => {
+        if (node.slugSegment === "tags") return false
+        const slug = node.data?.slug ?? ""
+        if (!slug.startsWith("adulting/")) return true
+        return ![
+          "adulting/academic-resources/index",
+          "adulting/blog/index",
+          "adulting/campus-life/index",
+          "adulting/general-skills/index",
+          "adulting/growth-path/index",
+          "adulting/friendly-links",
+          "adulting/LICENSE-CC-BY-4.0",
+        ].includes(slug)
+      },
       mapFn: (node) => {
         // 用 index 页面的 frontmatter title 作为文件夹显示名（如「机器学习 Machine Learning」）
         if (node.isFolder && node.data?.title) {

@@ -28,7 +28,7 @@ const SECTIONS: SectionDef[] = [
   { prefix: "ai/genai", name: "生成式 AI", category: CATEGORY_AI },
   { prefix: "ai/rl", name: "强化学习", category: CATEGORY_AI },
   { prefix: "ai/nn/3blue1brown", name: "神经网络伴学", category: CATEGORY_AI },
-  { prefix: "qingnian", name: "青年大学习" },
+  { prefix: "adulting", name: "青年大学习 · Adulting" },
 ]
 
 /** CJK 感知字数：中文字符逐个计数，英文按单词计数 */

@@ -61,11 +61,11 @@ flowchart LR
 
 **[[programming/index|编程学院]]** 将编程能力扩展为三条可独立学习、也可互相衔接的路线：
 
-| 路线                    | 内容                                               | 状态                                |
+| 路线 | 内容 | 状态 |
 | ----------------------- | -------------------------------------------------- | ----------------------------------- | --- |
-| Python 与数据           | 16 课，覆盖语法、NumPy、Pandas、自动化、Git 与项目 | ✅                                  |
-| [[programming/sql/index | SQL 数据库]]                                       | 6 课，从 SELECT 到多表综合分析      | ✅  |
-| [[programming/web/index | Web 开发]]                                         | 22 课，HTML/CSS/JS/TS/React/Node.js | ✅  |
+| Python 与数据 | 16 课，覆盖语法、NumPy、Pandas、自动化、Git 与项目 | ✅ |
+| [[programming/sql/index | SQL 数据库]] | 6 课，从 SELECT 到多表综合分析 | ✅ |
+| [[programming/web/index | Web 开发]] | 22 课，HTML/CSS/JS/TS/React/Node.js | ✅ |
 
 每课的 Code Lab 会在浏览器本机保存代码和完成状态；Node.js、真实爬虫和 API 项目采用“浏览器安全练习 + 本机真实项目”的双轨方式。
 
@@ -133,11 +133,9 @@ flowchart LR
 
 **强化学习 RL**（[[ai/rl/index|目录]]）：[[ai/rl/what-is-rl|什么是强化学习]] → [[ai/rl/mdp|马尔可夫决策过程]] → [[ai/rl/q-learning|Q-Learning]] → [[ai/rl/policy-gradient|策略梯度]] → [[ai/rl/alphago|AlphaGo 的故事]] → [[ai/rl/rlhf|RLHF 与大模型对齐]]（共 6 课，全部 ✅）
 
-## 附属板块：青年大学习
+## 独立知识库：青年大学习 · Adulting
 
-**[[qingnian/index|青年大学习]]**：按学期整理每期主题要点与题目答案。属于 L2 级内容——答案全部标注出处，无法确认的明确标「待验证」。
-
-**[[qingnian/ac-wiki/index|Ac-Wiki 镜像]]**：开源项目 [Ac-Wiki](https://github.com/Ac-Wiki/Ac-Wiki) 的本地完整镜像（CC BY 4.0）——校园生活、学术资源、通识技能、考研真题等 70 余篇大学生实用知识，与主题团课整理互补。
+**[[adulting/index|青年大学习 · Adulting]]** 面向大学生活、生存技能与长期成长，按学业研究、校园生活、数字技能、健康安全、职业成长和生活办事六条路线组织。涉及政策、健康、金融与安全的页面标注适用地区、核验日期和风险等级；改编来源集中见 [[adulting/credits/index|来源与许可]]。
 
 ## 附录
 

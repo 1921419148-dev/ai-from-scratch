@@ -124,7 +124,7 @@ const LEARN_ISLANDS = [
   { prefix: "programming", name: "编程学院", desc: "Python · SQL · Web 全栈实践" },
   { prefix: "prerequisites/english", name: "AI 英语", desc: "术语密码与论文阅读" },
   { prefix: "ai", name: "人工智能大类", desc: "ML · DL · NLP · GenAI · RL · 神经网络伴学" },
-  { prefix: "qingnian", name: "青年大学习", desc: "每期主题与题目整理" },
+  { prefix: "adulting", name: "青年大学习", desc: "Adulting · 大学生活、生存技能与长期成长" },
   { prefix: "appendix", name: "工具箱", desc: "术语表 · 公式卡 · 资源库" },
 ]
 
