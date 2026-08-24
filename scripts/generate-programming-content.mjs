@@ -388,7 +388,7 @@ last_verified: ${verified}
 
 | # | 课程 | 状态 |
 | --- | --- | --- |
-${items.map((item, i) => `| ${track === "sql" ? `SQL${i + 1}` : `W${i + 1}`} | [[programming/${track}/${item[0]}|${item[1].replace(/^.+? · /, "")}]] | ✅ |`).join("\n")}
+${items.map((item, i) => `| ${track === "sql" ? `SQL${i + 1}` : `W${i + 1}`} | [${item[1].replace(/^.+? · /, "")}](/programming/${track}/${item[0]}) | ✅ |`).join("\n")}
 
 ## 学完之后
 

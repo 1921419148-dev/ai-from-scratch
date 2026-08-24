@@ -42,6 +42,21 @@ describe("programming curriculum", () => {
     }
   })
 
+  it("renders SQL and Web course indexes as three-column tables", async () => {
+    for (const track of ["sql", "web"]) {
+      const content = await readFile(
+        join(process.cwd(), "content", "programming", track, "index.md"),
+        "utf8",
+      )
+      const tableLines = content.split("\n").filter((line) => line.startsWith("|"))
+      assert.ok(tableLines.length > 2)
+      for (const line of tableLines) {
+        assert.equal((line.match(/\|/g) ?? []).length, 4, `${track}: malformed table row ${line}`)
+      }
+      assert.ok(tableLines.every((line) => !line.includes("[[")))
+    }
+  })
+
   it("integrates all 16 Python lessons without changing their paths", async () => {
     const root = join(process.cwd(), "content", "prerequisites", "python")
     const files = (await markdownFiles(root)).filter((file) => basename(file) !== "index.md")

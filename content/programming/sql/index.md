@@ -9,14 +9,14 @@ last_verified: 2026-08-25
 
 ## 课程顺序
 
-| #    | 课程                        | 状态                        |
-| ---- | --------------------------- | --------------------------- | --- |
-| SQL1 | [[programming/sql/select    | SELECT：从表格中取出数据]]  | ✅  |
-| SQL2 | [[programming/sql/filter    | WHERE：只留下符合条件的行]] | ✅  |
-| SQL3 | [[programming/sql/aggregate | 聚合与分组]]                | ✅  |
-| SQL4 | [[programming/sql/join      | JOIN：把多张表拼起来]]      | ✅  |
-| SQL5 | [[programming/sql/write     | INSERT、UPDATE 与 DELETE]]  | ✅  |
-| SQL6 | [[programming/sql/project   | 课程数据分析项目]]          | ✅  |
+| #    | 课程                                                 | 状态 |
+| ---- | ---------------------------------------------------- | ---- |
+| SQL1 | [SELECT：从表格中取出数据](/programming/sql/select)  | ✅   |
+| SQL2 | [WHERE：只留下符合条件的行](/programming/sql/filter) | ✅   |
+| SQL3 | [聚合与分组](/programming/sql/aggregate)             | ✅   |
+| SQL4 | [JOIN：把多张表拼起来](/programming/sql/join)        | ✅   |
+| SQL5 | [INSERT、UPDATE 与 DELETE](/programming/sql/write)   | ✅   |
+| SQL6 | [课程数据分析项目](/programming/sql/project)         | ✅   |
 
 ## 学完之后
 
