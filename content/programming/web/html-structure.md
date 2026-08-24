@@ -22,7 +22,7 @@ HTML 描述内容是什么，浏览器据此建立页面结构。先把它看成
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=html-structure" class="widget-frame code-lab-frame" style="height:520px" title="W1 · HTML 页面骨架 Code Lab"></iframe>
+<iframe src="/static/labs/lab#html-structure" class="widget-frame code-lab-frame" style="height:520px" title="W1 · HTML 页面骨架 Code Lab"></iframe>
 
 ## 分步任务
 

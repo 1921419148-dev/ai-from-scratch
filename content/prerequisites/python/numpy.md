@@ -150,7 +150,7 @@ print(heights.mean().round(2))            # 约 170 —— 大数定律！
 
 下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
 
-<iframe src="/static/labs/lab?lesson=python-numpy" class="widget-frame code-lab-frame" style="height:520px" title="NumPy：数字的瑞士军刀 NumPy Essentials Code Lab"></iframe>
+<iframe src="/static/labs/lab#python-numpy" class="widget-frame code-lab-frame" style="height:520px" title="NumPy：数字的瑞士军刀 NumPy Essentials Code Lab"></iframe>
 
 ### 分步任务
 

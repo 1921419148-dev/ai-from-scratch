@@ -22,7 +22,7 @@ tags:
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=sql-aggregate" class="widget-frame code-lab-frame" style="height:520px" title="SQL3 · 聚合与分组 Code Lab"></iframe>
+<iframe src="/static/labs/lab#sql-aggregate" class="widget-frame code-lab-frame" style="height:520px" title="SQL3 · 聚合与分组 Code Lab"></iframe>
 
 ## 分步任务
 

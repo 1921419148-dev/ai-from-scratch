@@ -22,7 +22,7 @@ tags:
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=sql-join" class="widget-frame code-lab-frame" style="height:520px" title="SQL4 · JOIN：把多张表拼起来 Code Lab"></iframe>
+<iframe src="/static/labs/lab#sql-join" class="widget-frame code-lab-frame" style="height:520px" title="SQL4 · JOIN：把多张表拼起来 Code Lab"></iframe>
 
 ## 分步任务
 

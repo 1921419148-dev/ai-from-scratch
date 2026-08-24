@@ -212,7 +212,7 @@ print(f"共采集 {len(data)} 条数据，已保存到 results.csv")
 
 下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。浏览器实验使用虚拟文件或固定响应；真实系统、网络和 API 项目请继续完成后面的本机步骤，API Key 只能放在环境变量中。
 
-<iframe src="/static/labs/lab?lesson=python-scraping" class="widget-frame code-lab-frame" style="height:520px" title="Python 爬虫入门：让电脑帮你收集数据 Web Scraping with Python Code Lab"></iframe>
+<iframe src="/static/labs/lab#python-scraping" class="widget-frame code-lab-frame" style="height:520px" title="Python 爬虫入门：让电脑帮你收集数据 Web Scraping with Python Code Lab"></iframe>
 
 ### 分步任务
 

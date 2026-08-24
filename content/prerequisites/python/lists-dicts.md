@@ -137,7 +137,7 @@ print(nums[-1])      # 60            ← 负数从末尾倒数
 
 下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
 
-<iframe src="/static/labs/lab?lesson=python-collections" class="widget-frame code-lab-frame" style="height:520px" title="列表、字典：装数据的容器 Lists and Dictionaries Code Lab"></iframe>
+<iframe src="/static/labs/lab#python-collections" class="widget-frame code-lab-frame" style="height:520px" title="列表、字典：装数据的容器 Lists and Dictionaries Code Lab"></iframe>
 
 ### 分步任务
 

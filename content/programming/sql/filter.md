@@ -22,7 +22,7 @@ WHERE 像筛子：每一行都接受一次条件检查，结果为真才留下�
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=sql-filter" class="widget-frame code-lab-frame" style="height:520px" title="SQL2 · WHERE：只留下符合条件的行 Code Lab"></iframe>
+<iframe src="/static/labs/lab#sql-filter" class="widget-frame code-lab-frame" style="height:520px" title="SQL2 · WHERE：只留下符合条件的行 Code Lab"></iframe>
 
 ## 分步任务
 

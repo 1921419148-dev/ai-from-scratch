@@ -22,7 +22,7 @@ State 保存会影响界面的可变信息，更新它会触发重新渲染。�
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=react-state" class="widget-frame code-lab-frame" style="height:520px" title="W18 · React State Code Lab"></iframe>
+<iframe src="/static/labs/lab#react-state" class="widget-frame code-lab-frame" style="height:520px" title="W18 · React State Code Lab"></iframe>
 
 ## 分步任务
 

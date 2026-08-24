@@ -22,7 +22,7 @@ JavaScript 给网页加入行为；变量让程序记住会变化的数据。先
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=js-values" class="widget-frame code-lab-frame" style="height:520px" title="W8 · JavaScript 变量与值 Code Lab"></iframe>
+<iframe src="/static/labs/lab#js-values" class="widget-frame code-lab-frame" style="height:520px" title="W8 · JavaScript 变量与值 Code Lab"></iframe>
 
 ## 分步任务
 

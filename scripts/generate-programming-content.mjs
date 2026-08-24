@@ -292,7 +292,7 @@ ${intro}先把它看成解决具体问题的工具，不需要一次记住所有
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=${lab}" class="widget-frame code-lab-frame" style="height:520px" title="${title} Code Lab"></iframe>
+<iframe src="/static/labs/lab#${lab}" class="widget-frame code-lab-frame" style="height:520px" title="${title} Code Lab"></iframe>
 
 ## 分步任务
 
@@ -435,14 +435,17 @@ const pythonRoot = path.resolve("content/prerequisites/python")
 for (const [filename, lab] of Object.entries(pythonLabs)) {
   const file = path.join(pythonRoot, filename)
   let content = await readFile(file, "utf8")
-  content = content.replaceAll("/static/labs/lab.html?lesson=", "/static/labs/lab?lesson=")
+  content = content.replace(
+    /\/static\/labs\/lab(?:\.html)?\?lesson=([\w-]+)/g,
+    "/static/labs/lab#$1",
+  )
   if (!/^last_verified:/m.test(content)) {
     content = content.replace(/^(description:.*)$/m, `$1\nlast_verified: ${verified}`)
   }
-  if (!content.includes("/static/labs/lab?lesson=")) {
+  if (!content.includes("/static/labs/lab#")) {
     const title = content.match(/^title:\s*["']?(.+?)["']?$/m)?.[1] || filename
     const restricted = ["automation.md", "chatbot.md", "web-scraping.md"].includes(filename)
-    const labSection = `## Code Lab：亲手运行\n\n下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。${restricted ? "浏览器实验使用虚拟文件或固定响应；真实系统、网络和 API 项目请继续完成后面的本机步骤，API Key 只能放在环境变量中。" : "先运行默认代码，再按本课任务修改。"}\n\n<iframe src="/static/labs/lab?lesson=${lab}" class="widget-frame code-lab-frame" style="height:520px" title="${title} Code Lab"></iframe>\n\n### 分步任务\n\n1. 运行默认代码并解释输入、处理和输出。\n2. 修改一个值或条件，预测结果后再次运行。\n3. 完成本课挑战，直到自动检查通过。\n\n`
+    const labSection = `## Code Lab：亲手运行\n\n下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。${restricted ? "浏览器实验使用虚拟文件或固定响应；真实系统、网络和 API 项目请继续完成后面的本机步骤，API Key 只能放在环境变量中。" : "先运行默认代码，再按本课任务修改。"}\n\n<iframe src="/static/labs/lab#${lab}" class="widget-frame code-lab-frame" style="height:520px" title="${title} Code Lab"></iframe>\n\n### 分步任务\n\n1. 运行默认代码并解释输入、处理和输出。\n2. 修改一个值或条件，预测结果后再次运行。\n3. 完成本课挑战，直到自动检查通过。\n\n`
     const marker = content.includes("## 自测一下") ? "## 自测一下" : "## 下一步"
     content = content.replace(marker, `${labSection}${marker}`)
   }

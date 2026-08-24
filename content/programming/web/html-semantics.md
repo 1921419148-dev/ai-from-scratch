@@ -22,7 +22,7 @@ header、nav、main、article 不只是盒子，也向浏览器和辅助技术�
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=html-semantics" class="widget-frame code-lab-frame" style="height:520px" title="W2 · 语义化 HTML Code Lab"></iframe>
+<iframe src="/static/labs/lab#html-semantics" class="widget-frame code-lab-frame" style="height:520px" title="W2 · 语义化 HTML Code Lab"></iframe>
 
 ## 分步任务
 

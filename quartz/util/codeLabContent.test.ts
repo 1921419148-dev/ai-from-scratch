@@ -37,7 +37,7 @@ describe("programming curriculum", () => {
       ]) {
         assert.ok(content.includes(heading), `${file} is missing ${heading}`)
       }
-      const lessonId = content.match(/\/static\/labs\/lab\?lesson=([\w-]+)/)?.[1]
+      const lessonId = content.match(/\/static\/labs\/lab#([\w-]+)/)?.[1]
       assert.ok(lessonId && lessonMap.has(lessonId), `${file} has an invalid lesson id`)
     }
   })
@@ -71,7 +71,7 @@ describe("programming curriculum", () => {
     for (const file of files) {
       const content = await readFile(file, "utf8")
       assert.match(content, /^last_verified: 2026-08-\d{2}$/m)
-      const lessonId = content.match(/\/static\/labs\/lab\?lesson=([\w-]+)/)?.[1]
+      const lessonId = content.match(/\/static\/labs\/lab#([\w-]+)/)?.[1]
       assert.ok(lessonId && lessonMap.has(lessonId), `${file} has an invalid lesson id`)
     }
   })

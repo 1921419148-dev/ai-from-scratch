@@ -131,7 +131,7 @@ df.to_csv("students_cleaned.csv", index=False)       # 存回文件
 
 下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
 
-<iframe src="/static/labs/lab?lesson=python-pandas" class="widget-frame code-lab-frame" style="height:520px" title="Pandas：像 Excel 一样处理表格 Pandas Essentials Code Lab"></iframe>
+<iframe src="/static/labs/lab#python-pandas" class="widget-frame code-lab-frame" style="height:520px" title="Pandas：像 Excel 一样处理表格 Pandas Essentials Code Lab"></iframe>
 
 ### 分步任务
 

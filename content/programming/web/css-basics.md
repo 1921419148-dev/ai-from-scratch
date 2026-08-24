@@ -22,7 +22,7 @@ CSS 用选择器找到元素，再用属性和值改变呈现。先把它看成�
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=css-basics" class="widget-frame code-lab-frame" style="height:520px" title="W4 · CSS 选择器与样式 Code Lab"></iframe>
+<iframe src="/static/labs/lab#css-basics" class="widget-frame code-lab-frame" style="height:520px" title="W4 · CSS 选择器与样式 Code Lab"></iframe>
 
 ## 分步任务
 

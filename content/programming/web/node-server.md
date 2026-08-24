@@ -22,7 +22,7 @@ HTTP 服务接收请求并返回状态码、响应头和正文。先把它看成
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=node-server" class="widget-frame code-lab-frame" style="height:520px" title="W22 · Node HTTP 服务 Code Lab"></iframe>
+<iframe src="/static/labs/lab#node-server" class="widget-frame code-lab-frame" style="height:520px" title="W22 · Node HTTP 服务 Code Lab"></iframe>
 
 ## 分步任务
 

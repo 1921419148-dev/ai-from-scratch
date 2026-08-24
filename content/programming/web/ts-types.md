@@ -22,7 +22,7 @@ TypeScript 在运行前检查 JavaScript 中可能出现的类型错误。先把
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=ts-types" class="widget-frame code-lab-frame" style="height:520px" title="W14 · TypeScript 类型 Code Lab"></iframe>
+<iframe src="/static/labs/lab#ts-types" class="widget-frame code-lab-frame" style="height:520px" title="W14 · TypeScript 类型 Code Lab"></iframe>
 
 ## 分步任务
 

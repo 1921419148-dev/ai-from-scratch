@@ -123,7 +123,7 @@ result = calc()        # result = 198
 
 下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。先运行默认代码，再按本课任务修改。
 
-<iframe src="/static/labs/lab?lesson=python-functions" class="widget-frame code-lab-frame" style="height:520px" title="函数：把重复的事打包 Functions Code Lab"></iframe>
+<iframe src="/static/labs/lab#python-functions" class="widget-frame code-lab-frame" style="height:520px" title="函数：把重复的事打包 Functions Code Lab"></iframe>
 
 ### 分步任务
 

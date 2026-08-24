@@ -22,7 +22,7 @@ Flex 适合沿一条轴排列，Grid 适合同时控制行和列。先把它看�
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=css-layout" class="widget-frame code-lab-frame" style="height:520px" title="W6 · Flex 与 Grid 布局 Code Lab"></iframe>
+<iframe src="/static/labs/lab#css-layout" class="widget-frame code-lab-frame" style="height:520px" title="W6 · Flex 与 Grid 布局 Code Lab"></iframe>
 
 ## 分步任务
 

@@ -22,7 +22,7 @@ Props 是父组件传给子组件的只读输入。先把它看成解决具体�
 
 下面的 Code Lab 在浏览器内运行。代码和完成状态只保存在当前设备，不会上传到服务器。
 
-<iframe src="/static/labs/lab?lesson=react-props" class="widget-frame code-lab-frame" style="height:520px" title="W17 · React Props Code Lab"></iframe>
+<iframe src="/static/labs/lab#react-props" class="widget-frame code-lab-frame" style="height:520px" title="W17 · React Props Code Lab"></iframe>
 
 ## 分步任务
 

@@ -162,7 +162,7 @@ for filename in os.listdir(folder):
 
 下面的实验会真实执行代码，内容和完成状态只保存在当前浏览器。浏览器实验使用虚拟文件或固定响应；真实系统、网络和 API 项目请继续完成后面的本机步骤，API Key 只能放在环境变量中。
 
-<iframe src="/static/labs/lab?lesson=python-automation" class="widget-frame code-lab-frame" style="height:520px" title="Python 自动化实战：让电脑替你干活 Python Automation Code Lab"></iframe>
+<iframe src="/static/labs/lab#python-automation" class="widget-frame code-lab-frame" style="height:520px" title="Python 自动化实战：让电脑替你干活 Python Automation Code Lab"></iframe>
 
 ### 分步任务
 

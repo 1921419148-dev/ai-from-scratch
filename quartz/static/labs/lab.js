@@ -2,7 +2,8 @@ import { lessonMap, lessons, MANIFEST_VERSION } from "./manifest.js"
 import { clearProgress, readProgress, writeProgress } from "./progress.js"
 
 const params = new URLSearchParams(location.search)
-const lesson = lessonMap.get(params.get("lesson"))
+const lessonId = params.get("lesson") || location.hash.slice(1)
+const lesson = lessonMap.get(lessonId)
 const editor = document.querySelector("#editor")
 const output = document.querySelector("#output")
 const preview = document.querySelector("#preview")
