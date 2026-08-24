@@ -227,10 +227,26 @@ export interface TransformOptions {
 }
 
 export function transformLink(src: FullSlug, target: string, opts: TransformOptions): RelativeURL {
-  let targetSlug = transformInternalLink(target)
+  const queryIndex = target.indexOf("?")
+  const anchorIndex = queryIndex === -1 ? -1 : target.indexOf("#", queryIndex)
+  const query =
+    queryIndex === -1 ? "" : target.slice(queryIndex, anchorIndex === -1 ? undefined : anchorIndex)
+  const targetWithoutQuery =
+    queryIndex === -1
+      ? target
+      : target.slice(0, queryIndex) + (anchorIndex === -1 ? "" : target.slice(anchorIndex))
+
+  const restoreQuery = (link: string): RelativeURL => {
+    if (!query) return link as RelativeURL
+    const linkAnchorIndex = link.indexOf("#")
+    if (linkAnchorIndex === -1) return (link + query) as RelativeURL
+    return (link.slice(0, linkAnchorIndex) + query + link.slice(linkAnchorIndex)) as RelativeURL
+  }
+
+  let targetSlug = transformInternalLink(targetWithoutQuery)
 
   if (opts.strategy === "relative") {
-    return targetSlug as RelativeURL
+    return restoreQuery(targetSlug)
   } else {
     const folderTail = isFolderPath(targetSlug) ? "/" : ""
     const canonicalSlug = stripSlashes(targetSlug.slice(".".length))
@@ -247,12 +263,12 @@ export function transformLink(src: FullSlug, target: string, opts: TransformOpti
       // only match, just use it
       if (matchingFileNames.length === 1) {
         const targetSlug = matchingFileNames[0]
-        return (resolveRelative(src, targetSlug) + targetAnchor) as RelativeURL
+        return restoreQuery(resolveRelative(src, targetSlug) + targetAnchor)
       }
     }
 
     // if it's not unique, then it's the absolute path from the vault root
-    return (joinSegments(pathToRoot(src), canonicalSlug) + folderTail) as RelativeURL
+    return restoreQuery(joinSegments(pathToRoot(src), canonicalSlug) + folderTail)
   }
 }
 

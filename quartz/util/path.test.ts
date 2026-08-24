@@ -223,6 +223,14 @@ describe("link strategies", () => {
       assert.strictEqual(path.transformLink(cur, "tag/test", opts), "../../tag/test")
       assert.strictEqual(path.transformLink(cur, "a/b/c#test", opts), "../../a/b/c#test")
       assert.strictEqual(path.transformLink(cur, "a/test.png", opts), "../../a/test.png")
+      assert.strictEqual(
+        path.transformLink(cur, "a/b/d?view=compact", opts),
+        "../../a/b/d?view=compact",
+      )
+      assert.strictEqual(
+        path.transformLink(cur, "a/b/d?view=compact#My Heading", opts),
+        "../../a/b/d?view=compact#my-heading",
+      )
     })
 
     test("from a/b/index", () => {
@@ -257,6 +265,10 @@ describe("link strategies", () => {
       assert.strictEqual(path.transformLink(cur, "index.png", opts), "../../index.png")
       assert.strictEqual(path.transformLink(cur, "test.png", opts), "../../a/test.png")
       assert.strictEqual(path.transformLink(cur, "index#abc", opts), "../../#abc")
+      assert.strictEqual(
+        path.transformLink(cur, "h?mode=preview", opts),
+        "../../e/g/h?mode=preview",
+      )
     })
 
     test("from a/b/index", () => {
@@ -297,6 +309,10 @@ describe("link strategies", () => {
       assert.strictEqual(path.transformLink(cur, "../../../e/g/h", opts), "../../../e/g/h")
       assert.strictEqual(path.transformLink(cur, "../../../e/g/h", opts), "../../../e/g/h")
       assert.strictEqual(path.transformLink(cur, "../../../e/g/h#abc", opts), "../../../e/g/h#abc")
+      assert.strictEqual(
+        path.transformLink(cur, "../../../e/g/h?mode=preview#My Heading", opts),
+        "../../../e/g/h?mode=preview#my-heading",
+      )
     })
 
     test("from a/b/index", () => {

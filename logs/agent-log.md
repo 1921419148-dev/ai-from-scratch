@@ -381,6 +381,16 @@
 - **审查**: 待独立 REV 审查（建议 REV-AIC-PROG-001）
 - **状态**: 完成（待人工审核合并）
 
+## AIC-PROG-404 — 2026-08-25
+
+- **Agent**: AIC Writer（AI 课程 Agent，编程学院修复任务）
+- **模型**: OpenAI Codex（GPT-5）
+- **产出**: 修复 Quartz `transformLink` 丢失查询参数的问题，覆盖 absolute/shortest/relative 及 query+anchor；为 Code Lab 增加 favicon；生产构建新增 44 个实验 iframe 地址与 lesson ID 校验
+- **兼容说明**: 并行提交已将课程实验入口统一为 hash 形式，运行器继续兼容 hash 与 query；本修复保留该现状，同时防止未来内部资源查询参数再次被吞
+- **自检**: 77/77 测试、TypeScript 检查和生产构建通过；构建产物确认 44/44 实验地址有效；Playwright 抽查 Python、SQL、Git、React 页面均正常加载；全新静态服务请求日志无 404
+- **审查**: 待独立 REV 审查（建议 REV-AIC-PROG-404）
+- **状态**: 完成（待人工审核合并）
+
 ## AIC-PROG-001（目录表格修正）— 2026-08-25
 
 - **Agent**: AIC Writer（AI 课程 Agent）
