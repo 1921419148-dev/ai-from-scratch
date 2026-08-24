@@ -42,16 +42,23 @@ describe("programming curriculum", () => {
     }
   })
 
-  it("renders SQL and Web course indexes as three-column tables", async () => {
-    for (const track of ["sql", "web"]) {
-      const content = await readFile(
-        join(process.cwd(), "content", "programming", track, "index.md"),
-        "utf8",
-      )
+  it("renders course indexes without wiki-link table separators", async () => {
+    const indexes = [
+      join(process.cwd(), "content", "programming", "sql", "index.md"),
+      join(process.cwd(), "content", "programming", "web", "index.md"),
+      join(process.cwd(), "content", "prerequisites", "python", "index.md"),
+    ]
+    for (const file of indexes) {
+      const content = await readFile(file, "utf8")
       const tableLines = content.split("\n").filter((line) => line.startsWith("|"))
       assert.ok(tableLines.length > 2)
+      const expectedSeparators = file.includes("python") ? 5 : 4
       for (const line of tableLines) {
-        assert.equal((line.match(/\|/g) ?? []).length, 4, `${track}: malformed table row ${line}`)
+        assert.equal(
+          (line.match(/\|/g) ?? []).length,
+          expectedSeparators,
+          `${file}: malformed table row ${line}`,
+        )
       }
       assert.ok(tableLines.every((line) => !line.includes("[[")))
     }

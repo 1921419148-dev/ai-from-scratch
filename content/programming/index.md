@@ -11,11 +11,9 @@ last_verified: 2026-08-25
 
 ## 三条学习路线
 
-| 路线          | 入口                                       | 适合谁                     | 推荐前置                |
-| ------------- | ------------------------------------------ | -------------------------- | ----------------------- |
-| Python 与数据 | [进入 Python 路线](/prerequisites/python/) | AI、自动化、数据分析学习者 | 无                      |
-| SQL           | [进入 SQL 路线](/programming/sql/)         | 想查询和分析结构化数据     | Python P1–P5 或同等基础 |
-| Web 开发      | [进入 Web 路线](/programming/web/)         | 想制作网页和全栈应用       | 无                      |
+- **[Python 与数据](/prerequisites/python/)**：适合 AI、自动化与数据分析学习者，不要求编程前置。
+- **[SQL 数据库](/programming/sql/)**：学习查询和分析结构化数据，建议先完成 Python P1–P5 或具备同等基础。
+- **[Web 开发](/programming/web/)**：从网页结构一路学到 React 与本机 Node.js，不要求编程前置。
 
 ```mermaid
 flowchart LR

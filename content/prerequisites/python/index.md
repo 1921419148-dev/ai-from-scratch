@@ -9,24 +9,24 @@ last_verified: 2026-08-25
 
 ## 学习顺序
 
-| #   | 课程                                  | 你会解决的问题        | 状态                  |
-| --- | ------------------------------------- | --------------------- | --------------------- | --- |
-| P1  | [[prerequisites/python/install-python | 安装与第一段 Python]] | 让代码真正运行        | ✅  |
-| P2  | [[prerequisites/python/variables      | 变量与数据类型]]      | 让程序记住信息        | ✅  |
-| P3  | [[prerequisites/python/lists-dicts    | 列表与字典]]          | 组织一批数据          | ✅  |
-| P4  | [[prerequisites/python/control-flow   | 条件与循环]]          | 让程序选择和重复      | ✅  |
-| P5  | [[prerequisites/python/functions      | 函数]]                | 封装可复用规则        | ✅  |
-| P6  | [[prerequisites/python/classes        | 类与对象]]            | 看懂 PyTorch 常见写法 | ✅  |
-| P7  | [[prerequisites/python/numpy          | NumPy]]               | 批量进行数值计算      | ✅  |
-| P8  | [[prerequisites/python/pandas         | Pandas]]              | 清洗和分析表格        | ✅  |
-| P9  | [[prerequisites/python/matplotlib     | Matplotlib]]          | 把数据变成图表        | ✅  |
-| P10 | [[prerequisites/python/capstone       | 数据分析综合项目]]    | 串联 P1–P9            | ✅  |
-| P11 | [[prerequisites/python/automation     | 自动化实战]]          | 处理虚拟与本机文件    | ✅  |
-| P12 | [[prerequisites/python/regex          | 正则表达式]]          | 从文本提取信息        | ✅  |
-| P13 | [[prerequisites/python/git-basics     | Git 版本控制]]        | 在虚拟仓库真实提交    | ✅  |
-| P14 | [[prerequisites/python/chatbot        | 聊天机器人]]          | 安全处理 API 调用     | ✅  |
-| P15 | [[prerequisites/python/web-scraping   | 爬虫入门]]            | 从固定页面到合规采集  | ✅  |
-| P16 | [[prerequisites/python/data-analysis  | 数据分析入门]]        | 从问题走到结论        | ✅  |
+| #   | 课程                                                        | 你会解决的问题        | 状态 |
+| --- | ----------------------------------------------------------- | --------------------- | ---- |
+| P1  | [安装与第一段 Python](/prerequisites/python/install-python) | 让代码真正运行        | ✅   |
+| P2  | [变量与数据类型](/prerequisites/python/variables)           | 让程序记住信息        | ✅   |
+| P3  | [列表与字典](/prerequisites/python/lists-dicts)             | 组织一批数据          | ✅   |
+| P4  | [条件与循环](/prerequisites/python/control-flow)            | 让程序选择和重复      | ✅   |
+| P5  | [函数](/prerequisites/python/functions)                     | 封装可复用规则        | ✅   |
+| P6  | [类与对象](/prerequisites/python/classes)                   | 看懂 PyTorch 常见写法 | ✅   |
+| P7  | [NumPy](/prerequisites/python/numpy)                        | 批量进行数值计算      | ✅   |
+| P8  | [Pandas](/prerequisites/python/pandas)                      | 清洗和分析表格        | ✅   |
+| P9  | [Matplotlib](/prerequisites/python/matplotlib)              | 把数据变成图表        | ✅   |
+| P10 | [数据分析综合项目](/prerequisites/python/capstone)          | 串联 P1–P9            | ✅   |
+| P11 | [自动化实战](/prerequisites/python/automation)              | 处理虚拟与本机文件    | ✅   |
+| P12 | [正则表达式](/prerequisites/python/regex)                   | 从文本提取信息        | ✅   |
+| P13 | [Git 版本控制](/prerequisites/python/git-basics)            | 在虚拟仓库真实提交    | ✅   |
+| P14 | [聊天机器人](/prerequisites/python/chatbot)                 | 安全处理 API 调用     | ✅   |
+| P15 | [爬虫入门](/prerequisites/python/web-scraping)              | 从固定页面到合规采集  | ✅   |
+| P16 | [数据分析入门](/prerequisites/python/data-analysis)         | 从问题走到结论        | ✅   |
 
 ## 浏览器练习与本机项目
 
